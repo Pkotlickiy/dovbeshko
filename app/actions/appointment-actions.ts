@@ -12,9 +12,7 @@ const appointmentSchema = z.object({
   date: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: "Выберите корректную дату",
   }),
-  time: z.string().regex(/^([0-1]?[0-9]|2[0-2]):[0-5][0-9]$/, {
-    message: "Выберите корректное время",
-  }),
+  time: z.string().min(1, { message: "Выберите время консультации" }).optional().or(z.literal("")),
   service: z.string().min(1, { message: "Выберите услугу" }),
   message: z.string().optional(),
 })
@@ -67,9 +65,9 @@ export async function bookAppointment(formData: FormData) {
     email: formData.get("email") as string,
     phone: formData.get("phone") as string,
     date: formData.get("date") as string,
-    time: formData.get("time") as string,
+    time: (formData.get("time") as string) || "",
     service: formData.get("service") as string,
-    message: formData.get("message") as string,
+    message: (formData.get("message") as string) || "",
   }
 
   // Validate the data
@@ -88,7 +86,12 @@ export async function bookAppointment(formData: FormData) {
   // Отправляем уведомление в Telegram
   try {
     const message = formatAppointmentMessage(validationResult.data)
-    await sendTelegramNotification(message)
+    const sent = await sendTelegramNotification(message)
+
+    if (!sent) {
+      console.error("Failed to send Telegram notification for appointment")
+      // Не прерываем выполнение, даже если отправка уведомления не удалась
+    }
   } catch (error) {
     console.error("Ошибка при отправке уведомления в Telegram:", error)
     // Не прерываем выполнение, даже если отправка уведомления не удалась

@@ -18,6 +18,7 @@ export const metadata: Metadata = {
 }
 
 export default function CourtRepresentationPage() {
+  // Проверяем, что используются правильные пропсы
   const services = [
     "Представительство в судах общей юрисдикции всех инстанций",
     "Представительство в арбитражных судах",
@@ -77,24 +78,18 @@ export default function CourtRepresentationPage() {
       answer:
         "Да, на любой стадии процесса возможно заключение мирового соглашения. Я всегда рассматриваю возможность мирного урегулирования спора, если это соответствует вашим интересам.",
     },
-    {
-      question: "Входит ли в помощь подача документов в суд или другие органы?",
-      answer:
-        "Базовая помощь включает только составление документа. Подача документов в суд или другие органы оформляется как дополнительная услуга.",
-    },
   ]
 
-  // Хлебные крошки для микроразметки
-  const breadcrumbs = [
-    { label: "Главная", href: "/" },
-    { label: "Помощь", href: "/services" },
-    { label: "Представительство в суде", href: "/services/court-representation" },
-  ]
-
+  // Все пропсы соответствуют ожидаемым в ServicePageTemplate
   return (
     <>
-      {/* Дополнительная расширенная микроразметка */}
-      <BreadcrumbSchema items={breadcrumbs} />
+      <BreadcrumbSchema
+        items={[
+          { label: "Главная", href: "/" },
+          { label: "Помощь", href: "/services" },
+          { label: "Представительство в суде", href: "/services/court-representation" },
+        ]}
+      />
 
       <LegalServiceSchema
         name="Представительство в суде"

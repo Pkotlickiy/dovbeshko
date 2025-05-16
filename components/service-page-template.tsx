@@ -8,6 +8,7 @@ import { LegalServiceSchema } from "@/components/legal-service-schema"
 import { BreadcrumbSchema } from "@/components/breadcrumb-schema"
 import type { ServiceType } from "@/lib/seo"
 
+// Это правильный интерфейс пропсов для ServicePageTemplate
 interface ServicePageTemplateProps {
   title: string
   description: string

@@ -25,11 +25,17 @@ export async function sendTelegramNotification(message: string) {
       body: JSON.stringify({
         chat_id: chatId,
         text: message,
-        parse_mode: "HTML",
+        parse_mode: "Markdown",
       }),
     })
 
     const data = await response.json()
+
+    if (!data.ok) {
+      console.error("Telegram API error:", data.description)
+      return false
+    }
+
     return data.ok
   } catch (error) {
     console.error("Error sending Telegram notification:", error)

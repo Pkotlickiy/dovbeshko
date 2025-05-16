@@ -18,6 +18,7 @@ export const metadata: Metadata = {
 }
 
 export default function DocumentPreparationPage() {
+  // Проверяем, что используются правильные пропсы
   const services = [
     "Составление исковых заявлений и отзывов на иски",
     "Подготовка апелляционных, кассационных и надзорных жалоб",
@@ -79,17 +80,16 @@ export default function DocumentPreparationPage() {
     },
   ]
 
-  // Хлебные крошки для микроразметки
-  const breadcrumbs = [
-    { label: "Главная", href: "/" },
-    { label: "Помощь", href: "/services" },
-    { label: "Составление юридических документов", href: "/services/document-preparation" },
-  ]
-
+  // Все пропсы соответствуют ожидаемым в ServicePageTemplate
   return (
     <>
-      {/* Дополнительная расширенная микроразметка */}
-      <BreadcrumbSchema items={breadcrumbs} />
+      <BreadcrumbSchema
+        items={[
+          { label: "Главная", href: "/" },
+          { label: "Помощь", href: "/services" },
+          { label: "Составление юридических документов", href: "/services/document-preparation" },
+        ]}
+      />
 
       <LegalServiceSchema
         name="Составление юридических документов"

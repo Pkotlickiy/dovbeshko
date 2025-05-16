@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { BookingForm } from "@/components/booking-form"
+import { Suspense } from "react"
 
 export const metadata: Metadata = {
   title: "Консультация юриста СПб | Запись к адвокату | Цены",
@@ -21,9 +22,11 @@ export const metadata: Metadata = {
 export default function BookingPage() {
   return (
     <main className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6 text-center">Запись на консультацию</h1>
-      <div className="max-w-2xl mx-auto">
-        <BookingForm />
+      <h1 className="mb-6 text-center text-3xl font-bold">Запись на консультацию</h1>
+      <div className="mx-auto max-w-2xl">
+        <Suspense fallback={<div className="text-center">Загрузка формы...</div>}>
+          <BookingForm />
+        </Suspense>
       </div>
     </main>
   )
