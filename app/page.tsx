@@ -8,12 +8,20 @@ import { CaseTimeline } from "@/components/case-timeline"
 import { FaqSection } from "@/components/faq-section"
 import { Contact } from "@/components/contact"
 import { ScrollToTop } from "@/components/scroll-to-top"
+import { StructuredData } from "@/components/structured-data"
 
 export const metadata: Metadata = {
-  title: "Адвокат Довбешко С.Ю. | Юридические услуги в Санкт-Петербурге",
+  title: "Адвокат в СПб | Юридические услуги Довбешко С.Ю. | Консультация",
   description:
-    "Профессиональная юридическая помощь в Санкт-Петербурге. Защита ваших прав и интересов в уголовных, военных и гражданских делах.",
-  keywords: ["адвокат", "юрист", "Санкт-Петербург", "юридические услуги", "правовая помощь"],
+    "Опытный адвокат в СПб. Консультации, представительство в суде, защита по уголовным и гражданским делам. Работаем в Московском районе. Звоните!",
+  keywords: [
+    "адвокат спб",
+    "юрист санкт-петербург",
+    "адвокат довбешко",
+    "юридические услуги спб цены",
+    "консультация адвоката спб",
+    "опытный адвокат московский район спб",
+  ],
 }
 
 export default function Home() {
@@ -30,6 +38,74 @@ export default function Home() {
         <Contact />
       </main>
       <ScrollToTop />
+      <StructuredData
+        data={{
+          "@context": "https://schema.org",
+          "@type": "LegalService",
+          name: "Адвокат Довбешко Светлана Юрьевна",
+          description:
+            "Профессиональная юридическая помощь в Санкт-Петербурге. Защита ваших прав и интересов в уголовных, военных и гражданских делах.",
+          url: "https://example.com",
+          telephone: "+79310070752",
+          email: "S0070752@mail.ru",
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: "Московский проспект 143",
+            addressLocality: "Санкт-Петербург",
+            postalCode: "196084",
+            addressCountry: "RU",
+            addressRegion: "Московский район",
+          },
+          geo: {
+            "@type": "GeoCoordinates",
+            latitude: "59.891605",
+            longitude: "30.318705",
+          },
+          openingHours: "Mo,Tu,We,Th,Fr 09:00-18:00 Sa 10:00-15:00",
+          priceRange: "От 2000 ₽",
+          serviceArea: {
+            "@type": "GeoCircle",
+            geoMidpoint: {
+              "@type": "GeoCoordinates",
+              latitude: "59.891605",
+              longitude: "30.318705",
+            },
+            geoRadius: "50000",
+          },
+          hasOfferCatalog: {
+            "@type": "OfferCatalog",
+            name: "Юридическая помощь",
+            itemListElement: [
+              {
+                "@type": "Offer",
+                itemOffered: {
+                  "@type": "Service",
+                  name: "Представительство в суде",
+                  url: "https://example.com/services/court-representation",
+                },
+              },
+              {
+                "@type": "Offer",
+                itemOffered: {
+                  "@type": "Service",
+                  name: "Составление юридических документов",
+                  url: "https://example.com/services/document-preparation",
+                },
+              },
+              {
+                "@type": "Offer",
+                itemOffered: {
+                  "@type": "Service",
+                  name: "Консультации",
+                  url: "https://example.com/services/consultations",
+                },
+              },
+            ],
+          },
+          areaServed: "Санкт-Петербург и Ленинградская область",
+          sameAs: ["https://vk.com/example", "https://t.me/example"],
+        }}
+      />
     </>
   )
 }

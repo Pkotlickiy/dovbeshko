@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og"
 import { ogImageFactory } from "@/lib/og-image-factory"
 
 export const runtime = "edge"
-export const alt = "Юридические услуги | Адвокат Довбешко С.Ю."
+export const alt = "Юридическая помощь | Адвокат Довбешко С.Ю."
 export const size = {
   width: 1200,
   height: 630,
@@ -11,9 +11,9 @@ export const size = {
 export default async function Image() {
   return new ImageResponse(
     ogImageFactory({
-      title: "Юридические услуги",
+      title: "Юридическая помощь",
       subtitle: "Адвокат Довбешко С.Ю.",
-      description: "Профессиональные юридические услуги: подготовка документов, представительство в суде, консультации",
+      description: "Профессиональная юридическая помощь: подготовка документов, представительство в суде, консультации",
     }),
     {
       ...size,

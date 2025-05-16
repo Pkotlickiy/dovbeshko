@@ -1,34 +1,7 @@
 "use client"
 
-import { useState } from "react"
 import { motion } from "framer-motion"
-import {
-  Scale,
-  Home,
-  Landmark,
-  ShoppingCart,
-  Building2,
-  Scroll,
-  Stethoscope,
-  Coins,
-  Shield,
-  Users,
-  Briefcase,
-  Receipt,
-  Lightbulb,
-  FileText,
-  TrendingDown,
-  Building,
-  Umbrella,
-  BanknoteIcon as Bank,
-  Leaf,
-  Gavel,
-  Car,
-  Globe,
-  Heart,
-  BadgeAlert,
-} from "lucide-react"
-import { cn } from "@/lib/utils"
+import { Scale, FileText, Home, Map, ShoppingBag, Briefcase, FileCheck, Heart, Shield, Award } from "lucide-react"
 
 export type PracticeArea =
   | "criminal"
@@ -38,131 +11,59 @@ export type PracticeArea =
   | "arbitration"
   | "inheritance"
   | "medical"
-  | "unjust-enrichment"
   | "military"
-  | "family"
-  | "labor"
-  | "tax"
-  | "intellectual"
-  | "administrative"
-  | "bankruptcy"
-  | "corporate"
-  | "insurance"
-  | "banking"
-  | "environmental"
-  | "civil"
-  | "traffic"
-  | "international"
-  | "divorce"
-  | "immigration"
+  | "unjust-enrichment"
 
 interface PracticeIconProps {
   area: PracticeArea
-  className?: string
   size?: number
-  animated?: boolean
+  className?: string
   delay?: number
 }
 
-export function PracticeIcon({ area, className, size = 48, animated = true, delay = 0 }: PracticeIconProps) {
-  const [isHovered, setIsHovered] = useState(false)
-
-  const iconMap = {
-    criminal: Gavel,
-    realestate: Home,
-    land: Landmark,
-    consumer: ShoppingCart,
-    arbitration: Building2,
-    inheritance: Scroll,
-    medical: Stethoscope,
-    "unjust-enrichment": Coins,
-    military: Shield,
-    family: Users,
-    labor: Briefcase,
-    tax: Receipt,
-    intellectual: Lightbulb,
-    administrative: FileText,
-    bankruptcy: TrendingDown,
-    corporate: Building,
-    insurance: Umbrella,
-    banking: Bank,
-    environmental: Leaf,
-    civil: Scale,
-    traffic: Car,
-    international: Globe,
-    divorce: Heart,
-    immigration: BadgeAlert,
-  }
-
-  const Icon = iconMap[area] || Scale
-
-  // Анимация при загрузке
-  const containerVariants = {
-    hidden: { opacity: 0, scale: 0.8 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: {
-        duration: 0.5,
-        delay: delay * 0.1,
-        ease: "easeOut",
-      },
-    },
-  }
-
-  // Анимация при наведении
+export function PracticeIcon({ area, size = 24, className = "", delay = 0 }: PracticeIconProps) {
   const iconVariants = {
-    idle: {
+    hidden: { scale: 0, opacity: 0 },
+    visible: {
       scale: 1,
-      rotate: 0,
-      transition: { duration: 0.3 },
-    },
-    hover: {
-      scale: 1.15,
-      rotate: [0, -5, 5, -3, 3, 0],
+      opacity: 1,
       transition: {
-        scale: { duration: 0.3 },
-        rotate: { duration: 0.5, ease: "easeInOut" },
+        type: "spring",
+        stiffness: 260,
+        damping: 20,
+        delay: delay * 0.1,
       },
     },
   }
 
-  // Анимация фона
-  const backgroundVariants = {
-    idle: {
-      backgroundColor: "rgb(243, 244, 246)",
-      boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
-      transition: { duration: 0.3 },
-    },
-    hover: {
-      backgroundColor: "rgb(255, 255, 255)",
-      boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
-      transition: { duration: 0.3 },
-    },
-  }
-
-  if (!animated) {
-    return (
-      <div className={cn("flex items-center justify-center rounded-full bg-gray-100 shadow-md p-4", className)}>
-        <Icon size={size} className="text-[#741717]" />
-      </div>
-    )
+  const renderIcon = () => {
+    switch (area) {
+      case "criminal":
+        return <Scale size={size} />
+      case "realestate":
+        return <Home size={size} />
+      case "land":
+        return <Map size={size} />
+      case "consumer":
+        return <ShoppingBag size={size} />
+      case "arbitration":
+        return <Briefcase size={size} />
+      case "inheritance":
+        return <FileCheck size={size} />
+      case "medical":
+        return <Heart size={size} />
+      case "military":
+        return <Shield size={size} />
+      case "unjust-enrichment":
+        return <Award size={size} />
+      default:
+        return <FileText size={size} />
+    }
   }
 
   return (
-    <motion.div
-      className={cn("flex items-center justify-center rounded-full p-4", className)}
-      initial="hidden"
-      animate="visible"
-      variants={containerVariants}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      animate={isHovered ? "hover" : "idle"}
-      variants={backgroundVariants}
-    >
-      <motion.div variants={iconVariants}>
-        <Icon size={size} className="text-[#741717]" />
-      </motion.div>
+    <motion.div className={`text-[#741717] ${className}`} variants={iconVariants} initial="hidden" animate="visible">
+      {renderIcon()}
     </motion.div>
   )
 }

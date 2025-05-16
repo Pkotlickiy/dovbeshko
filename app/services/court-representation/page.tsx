@@ -1,10 +1,20 @@
 import type { Metadata } from "next"
 import { FileCheck, Users, FileText, Scale, CheckCircle } from "lucide-react"
 import { ServicePageTemplate } from "@/components/service-page-template"
+import { LegalServiceSchema } from "@/components/legal-service-schema"
+import { BreadcrumbSchema } from "@/components/breadcrumb-schema"
 
 export const metadata: Metadata = {
-  title: "Представительство в суде | Адвокат Довбешко Светлана Юрьевна",
-  description: "Профессиональное представительство ваших интересов в судах всех инстанций",
+  title: "Представительство в суде СПб | Адвокат | Все инстанции",
+  description:
+    "Профессиональное представительство в судах СПб. Подготовка документов, участие в заседаниях, обжалование решений. От 15000 руб.",
+  keywords: [
+    "представительство в суде спб",
+    "услуги представителя в суде",
+    "стоимость представительства в суде",
+    "адвокат в гражданском процессе",
+    "представитель в суде по семейным делам",
+  ],
 }
 
 export default function CourtRepresentationPage() {
@@ -67,18 +77,50 @@ export default function CourtRepresentationPage() {
       answer:
         "Да, на любой стадии процесса возможно заключение мирового соглашения. Я всегда рассматриваю возможность мирного урегулирования спора, если это соответствует вашим интересам.",
     },
+    {
+      question: "Входит ли в помощь подача документов в суд или другие органы?",
+      answer:
+        "Базовая помощь включает только составление документа. Подача документов в суд или другие органы оформляется как дополнительная услуга.",
+    },
+  ]
+
+  // Хлебные крошки для микроразметки
+  const breadcrumbs = [
+    { label: "Главная", href: "/" },
+    { label: "Помощь", href: "/services" },
+    { label: "Представительство в суде", href: "/services/court-representation" },
   ]
 
   return (
-    <ServicePageTemplate
-      title="Представительство в суде"
-      description="Профессиональное представительство ваших интересов в судах всех инстанций. Защита прав и законных интересов на всех стадиях судебного процесса с максимальной эффективностью."
-      imageSrc="/female-lawyer-courtroom.png"
-      imageAlt="Адвокат представляет интересы клиента в суде"
-      services={services}
-      process={process}
-      faqs={faqs}
-      serviceType="LegalService"
-    />
+    <>
+      {/* Дополнительная расширенная микроразметка */}
+      <BreadcrumbSchema items={breadcrumbs} />
+
+      <LegalServiceSchema
+        name="Представительство в суде"
+        description="Профессиональное представительство ваших интересов в судах всех инстанций. Защита прав и законных интересов на всех стадиях судебного процесса с максимальной эффективностью."
+        url="/services/court-representation"
+        serviceType="LegalRepresentation"
+        serviceOutput="Судебное представительство"
+        offers={{
+          price: "от 15000",
+          priceCurrency: "RUB",
+          availability: "https://schema.org/InStock",
+        }}
+        audience="Физические и юридические лица"
+        award="Более 500 выигранных судебных дел"
+      />
+
+      <ServicePageTemplate
+        title="Представительство в суде"
+        description="Профессиональное представительство ваших интересов в судах всех инстанций. Защита прав и законных интересов на всех стадиях судебного процесса с максимальной эффективностью."
+        imageSrc="/female-lawyer-courtroom.png"
+        imageAlt="Адвокат представляет интересы клиента в суде"
+        services={services}
+        process={process}
+        faqs={faqs}
+        serviceType="LegalService"
+      />
+    </>
   )
 }

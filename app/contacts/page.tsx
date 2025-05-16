@@ -4,15 +4,15 @@ import { Breadcrumbs } from "@/components/breadcrumbs"
 import { StructuredData } from "@/components/structured-data"
 
 export const metadata: Metadata = {
-  title: "Контакты | Адвокат Довбешко С.Ю.",
+  title: "Адвокат СПб контакты | Запись на консультацию | Московский р-н",
   description:
-    "Свяжитесь с адвокатом Довбешко С.Ю. для получения юридической консультации. Адрес, телефон и форма обратной связи.",
+    "Адвокат Довбешко С.Ю. в Московском районе СПб. Адрес: Московский пр-кт, 143. Тел: +7 (931) 007-07-52. Запись на консультацию онлайн.",
   keywords: [
-    "адвокат контакты",
-    "юрист контакты",
-    "Санкт-Петербург",
-    "юридическая консультация",
-    "записаться к адвокату",
+    "адвокат спб контакты",
+    "юридическая консультация спб",
+    "записаться на консультацию к юристу",
+    "адвокат московский район спб",
+    "бесплатная консультация юриста спб",
   ],
 }
 
@@ -20,12 +20,12 @@ export const metadata: Metadata = {
 const contactPageSchema = {
   "@context": "https://schema.org",
   "@type": "ContactPage",
-  name: "Контакты адвоката Довбешко С.Ю.",
-  description: "Контактная информация и форма связи с адвокатом Довбешко С.Ю.",
+  name: "Контакты адвоката Довбешко С.Ю. в Санкт-Петербурге",
+  description: "Контактная информация и форма связи с адвокатом Довбешко С.Ю. в Московском районе СПб",
   mainEntity: {
     "@type": "Attorney",
     name: "Довбешко Светлана Юрьевна",
-    description: "Адвокат в Санкт-Петербурге",
+    description: "Адвокат в Санкт-Петербурге, Московский район",
     telephone: "+79310070752",
     email: "S0070752@mail.ru",
     address: {
@@ -34,6 +34,7 @@ const contactPageSchema = {
       addressLocality: "Санкт-Петербург",
       postalCode: "196084",
       addressCountry: "RU",
+      addressRegion: "Московский район",
     },
     geo: {
       "@type": "GeoCoordinates",
@@ -41,6 +42,17 @@ const contactPageSchema = {
       longitude: "30.318705",
     },
     openingHours: "Mo,Tu,We,Th,Fr 09:00-18:00 Sa 10:00-15:00",
+    url: "https://example.com/contacts",
+    priceRange: "От 2000 ₽",
+    areaServed: {
+      "@type": "GeoCircle",
+      geoMidpoint: {
+        "@type": "GeoCoordinates",
+        latitude: "59.891605",
+        longitude: "30.318705",
+      },
+      geoRadius: "50000",
+    },
   },
 }
 

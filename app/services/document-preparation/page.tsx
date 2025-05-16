@@ -1,10 +1,20 @@
 import type { Metadata } from "next"
 import { MessageCircle, FileText, CheckCircle, Edit, Send } from "lucide-react"
 import { ServicePageTemplate } from "@/components/service-page-template"
+import { LegalServiceSchema } from "@/components/legal-service-schema"
+import { BreadcrumbSchema } from "@/components/breadcrumb-schema"
 
 export const metadata: Metadata = {
-  title: "Составление юридических документов | Адвокат Довбешко Светлана Юрьевна",
-  description: "Профессиональная подготовка юридических документов: исков, договоров, жалоб и заявлений",
+  title: "Составление исковых заявлений СПб | Юридические документы",
+  description:
+    "Грамотное составление исков, договоров, претензий и жалоб. Опытный юрист в СПб. Срочная подготовка документов от 2000 руб.",
+  keywords: [
+    "составление исковых заявлений",
+    "юрист составление документов спб",
+    "составление договоров юрист",
+    "составление претензий и жалоб",
+    "стоимость составления юридических документов",
+  ],
 }
 
 export default function DocumentPreparationPage() {
@@ -63,22 +73,49 @@ export default function DocumentPreparationPage() {
         "Да, возможно срочное составление документов в течение 24 часов, но это может повлиять на стоимость услуги.",
     },
     {
-      question: "Входит ли в услугу подача документов в суд или другие органы?",
+      question: "Входит ли в помощь подача документов в суд или другие органы?",
       answer:
-        "Базовая услуга включает только составление документа. Подача документов в суд или другие органы оформляется как дополнительная услуга.",
+        "Базовая помощь включает только составление документа. Подача документов в суд или другие органы оформляется как дополнительная услуга.",
     },
   ]
 
+  // Хлебные крошки для микроразметки
+  const breadcrumbs = [
+    { label: "Главная", href: "/" },
+    { label: "Помощь", href: "/services" },
+    { label: "Составление юридических документов", href: "/services/document-preparation" },
+  ]
+
   return (
-    <ServicePageTemplate
-      title="Составление юридических документов"
-      description="Профессиональная подготовка юридических документов любой сложности: исковых заявлений, договоров, жалоб, претензий и других документов с учетом всех требований законодательства и судебной практики."
-      imageSrc="/placeholder-y3ajp.png"
-      imageAlt="Адвокат составляет юридические документы"
-      services={services}
-      process={process}
-      faqs={faqs}
-      serviceType="LegalService"
-    />
+    <>
+      {/* Дополнительная расширенная микроразметка */}
+      <BreadcrumbSchema items={breadcrumbs} />
+
+      <LegalServiceSchema
+        name="Составление юридических документов"
+        description="Профессиональная подготовка юридических документов любой сложности: исковых заявлений, договоров, жалоб, претензий и других документов с учетом всех требований законодательства и судебной практики."
+        url="/services/document-preparation"
+        serviceType="LegalDocumentPreparation"
+        serviceOutput="Юридический документ"
+        offers={{
+          price: "от 2000",
+          priceCurrency: "RUB",
+          availability: "https://schema.org/InStock",
+        }}
+        audience="Физические и юридические лица"
+        termsOfService="Срок подготовки документа зависит от его сложности: от 1 до 7 дней"
+      />
+
+      <ServicePageTemplate
+        title="Составление юридических документов"
+        description="Профессиональная подготовка юридических документов любой сложности: исковых заявлений, договоров, жалоб, претензий и других документов с учетом всех требований законодательства и судебной практики."
+        imageSrc="/placeholder-y3ajp.png"
+        imageAlt="Адвокат составляет юридические документы"
+        services={services}
+        process={process}
+        faqs={faqs}
+        serviceType="LegalService"
+      />
+    </>
   )
 }

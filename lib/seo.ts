@@ -328,14 +328,11 @@ export function getServiceSchema({ name, description, url, serviceType, serviceO
     serviceType: serviceOutput,
     hasOfferCatalog: {
       "@type": "OfferCatalog",
-      name: "Юридические услуги",
+      name: "Юридическая помощь",
       itemListElement: [
         {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": serviceType,
-            name: name,
-          },
+          "@type": serviceType,
+          name: name,
         },
       ],
     },

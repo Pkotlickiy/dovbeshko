@@ -5,7 +5,7 @@ import TimeContext from "@/contexts/time-context"
 
 type TimeOfDay = "morning" | "afternoon" | "evening" | "night"
 
-export default function Providers({ children }: { children: ReactNode }) {
+export function Providers({ children }: { children: ReactNode }) {
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>("morning")
 
   useEffect(() => {

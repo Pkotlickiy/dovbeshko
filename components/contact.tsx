@@ -21,6 +21,7 @@ import { MapPin, Phone, Mail, Clock } from "lucide-react"
 import { motion } from "framer-motion"
 import { AnimatedSection, AnimatedItem } from "@/components/animated-section"
 import { submitContactForm } from "@/app/actions/contact-actions"
+import { StructuredData } from "@/components/structured-data"
 
 // Типы для контактной информации
 interface ContactInfo {
@@ -39,6 +40,46 @@ interface FormData {
 
 interface YandexMapProps {
   apiKey: string
+}
+
+// Данные для микроразметки LocalBusiness
+const localBusinessData = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "@id": "https://example.com/#localbusiness",
+  name: "Адвокат Довбешко Светлана Юрьевна",
+  image: "https://example.com/lawyer-courtroom.png",
+  telephone: "+79310070752",
+  email: "S0070752@mail.ru",
+  url: "https://example.com",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "Московский проспект 143",
+    addressLocality: "Санкт-Петербург",
+    postalCode: "196084",
+    addressCountry: "RU",
+    addressRegion: "Московский район",
+  },
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: 59.891605,
+    longitude: 30.318705,
+  },
+  openingHoursSpecification: [
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      opens: "09:00",
+      closes: "18:00",
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Saturday"],
+      opens: "10:00",
+      closes: "15:00",
+    },
+  ],
+  priceRange: "От 2000 ₽",
 }
 
 export function Contact() {
@@ -173,192 +214,244 @@ export function Contact() {
   )
 
   return (
-    <AnimatedSection id="contact" className="relative bg-white py-16 md:py-24">
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute left-0 top-0 h-64 w-64 rounded-full bg-[#f8f5f2] blur-3xl" />
-        <div className="absolute bottom-0 right-0 h-64 w-64 rounded-full bg-[#f8f5f2] blur-3xl" />
-      </div>
+    <>
+      <StructuredData data={localBusinessData} />
 
-      <div className="container relative px-4 md:px-6">
-        <div className="flex flex-col items-center justify-center gap-4 text-center">
-          <AnimatedItem>
-            <div className="inline-block rounded-full bg-[#741717]/10 px-3 py-1 text-sm font-medium text-[#741717]">
-              Связаться
-            </div>
-          </AnimatedItem>
-          <AnimatedItem>
-            <h2 className="text-3xl font-bold tracking-tighter text-[#741717] sm:text-4xl md:text-5xl">
-              Контактная информация
-            </h2>
-          </AnimatedItem>
-          <AnimatedItem delay={0.1}>
-            <p className="max-w-[700px] text-[#603a30] md:text-xl/relaxed">
-              Свяжитесь со мной для получения юридической консультации
-            </p>
-          </AnimatedItem>
+      <AnimatedSection id="contact" className="relative bg-white py-16 md:py-24">
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute left-0 top-0 h-64 w-64 rounded-full bg-[#f8f5f2] blur-3xl" />
+          <div className="absolute bottom-0 right-0 h-64 w-64 rounded-full bg-[#f8f5f2] blur-3xl" />
         </div>
 
-        <div className="mt-12 grid gap-8 md:grid-cols-2">
-          <div className="space-y-6">
-            {contactInfoItems.map((item, index) => (
-              <AnimatedItem key={index} delay={0.1 * (index + 1)}>
-                <motion.div
-                  className="flex items-start gap-3 rounded-lg border border-transparent bg-[#f8f5f2] p-4 transition-all duration-300 hover:border-[#741717]/20 hover:shadow-md"
-                  whileHover={{ x: 5 }}
-                  transition={{ duration: 0.2 }}
-                >
+        <div className="container relative px-4 md:px-6">
+          <div className="flex flex-col items-center justify-center gap-4 text-center">
+            <AnimatedItem>
+              <div className="inline-block rounded-full bg-[#741717]/10 px-3 py-1 text-sm font-medium text-[#741717]">
+                Связаться
+              </div>
+            </AnimatedItem>
+            <AnimatedItem>
+              <h2 className="text-3xl font-bold tracking-tighter text-[#741717] sm:text-4xl md:text-5xl">
+                Контактная информация
+              </h2>
+            </AnimatedItem>
+            <AnimatedItem delay={0.1}>
+              <p className="max-w-[700px] text-[#603a30] md:text-xl/relaxed">
+                Свяжитесь со мной для получения юридической консультации
+              </p>
+            </AnimatedItem>
+          </div>
+
+          <div className="mt-12 grid gap-8 md:grid-cols-2">
+            <div className="space-y-6">
+              {contactInfoItems.map((item, index) => (
+                <AnimatedItem key={index} delay={0.1 * (index + 1)}>
                   <motion.div
-                    className="rounded-full bg-white p-2 shadow-sm"
-                    whileHover={{ scale: 1.1 }}
+                    className="flex items-start gap-3 rounded-lg border border-transparent bg-[#f8f5f2] p-4 transition-all duration-300 hover:border-[#741717]/20 hover:shadow-md"
+                    whileHover={{ x: 5 }}
                     transition={{ duration: 0.2 }}
                   >
-                    {item.icon}
+                    <motion.div
+                      className="rounded-full bg-white p-2 shadow-sm"
+                      whileHover={{ scale: 1.1 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      {item.icon}
+                    </motion.div>
+                    <div>
+                      <h3 className="font-medium text-[#741717]">{item.title}</h3>
+                      {item.content}
+                    </div>
                   </motion.div>
-                  <div>
-                    <h3 className="font-medium text-[#741717]">{item.title}</h3>
-                    {item.content}
-                  </div>
+                </AnimatedItem>
+              ))}
+
+              <AnimatedItem delay={0.5}>
+                <motion.div
+                  className="relative h-[300px] w-full overflow-hidden rounded-lg bg-[#f8f5f2] shadow-md"
+                  whileHover={{ scale: 1.01 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <YandexMap apiKey="313b1e4a-4ae6-4275-bf36-aa9496dc61b6" />
                 </motion.div>
               </AnimatedItem>
-            ))}
+            </div>
 
-            <AnimatedItem delay={0.5}>
+            <AnimatedItem delay={0.3}>
               <motion.div
-                className="relative h-[300px] w-full overflow-hidden rounded-lg bg-[#f8f5f2] shadow-md"
-                whileHover={{ scale: 1.01 }}
-                transition={{ duration: 0.3 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="rounded-lg border border-[#c4bab3]/20 bg-white p-6 shadow-md"
               >
-                <YandexMap apiKey="313b1e4a-4ae6-4275-bf36-aa9496dc61b6" />
+                <form onSubmit={handleSubmit} className="space-y-4" aria-label="Контактная форма" ref={formRef}>
+                  <FormField
+                    id="name"
+                    name="name"
+                    label="Имя"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required={true}
+                  />
+
+                  <FormField
+                    id="email"
+                    name="email"
+                    label="Email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required={true}
+                    type="email"
+                  />
+
+                  <FormField
+                    id="phone"
+                    name="phone"
+                    label="Телефон"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    required={true}
+                  />
+
+                  <FormField
+                    id="message"
+                    name="message"
+                    label="Сообщение"
+                    value={formData.message}
+                    onChange={handleChange}
+                    required={true}
+                    isTextarea={true}
+                  />
+
+                  <motion.div
+                    className="relative overflow-hidden rounded-md"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <Button
+                      type="submit"
+                      className="relative w-full bg-[#741717] text-white transition-all duration-300 hover:bg-[#603a30]"
+                      disabled={isSubmitting}
+                      aria-busy={isSubmitting}
+                    >
+                      <span className="relative z-10">
+                        {isSubmitting ? (
+                          <div className="flex items-center">
+                            <svg
+                              className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                            >
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                              ></circle>
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                              ></path>
+                            </svg>
+                            Отправка...
+                          </div>
+                        ) : (
+                          "Отправить сообщение"
+                        )}
+                      </span>
+                      <motion.span
+                        className="absolute inset-0 -z-0 bg-gradient-to-r from-[#8B0000] to-[#741717] opacity-0"
+                        whileHover={{ opacity: 1 }}
+                        transition={{ duration: 0.3 }}
+                      />
+                    </Button>
+                  </motion.div>
+
+                  {submitSuccess !== null && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="p-3 rounded-md bg-green-50 text-green-800"
+                    >
+                      {submitSuccess}
+                    </motion.div>
+                  )}
+
+                  {formError && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="p-3 rounded-md bg-red-50 text-red-800"
+                    >
+                      {formError}
+                    </motion.div>
+                  )}
+
+                  <p className="text-xs text-[#603a30]">
+                    * Отправляя форму, вы соглашаетесь с{" "}
+                    <Link href="/privacy" className="underline hover:text-[#741717]">
+                      политикой конфиденциальности
+                    </Link>
+                  </p>
+                </form>
               </motion.div>
             </AnimatedItem>
           </div>
 
-          <AnimatedItem delay={0.3}>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="rounded-lg border border-[#c4bab3]/20 bg-white p-6 shadow-md"
-            >
-              <form onSubmit={handleSubmit} className="space-y-4" aria-label="Контактная форма" ref={formRef}>
-                <FormField
-                  id="name"
-                  name="name"
-                  label="Имя"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required={true}
-                />
+          {/* Добавляем блок с Google Maps и дополнительной информацией */}
+          <div className="mt-16">
+            <AnimatedItem>
+              <div className="bg-[#f8f5f2] rounded-lg shadow-md p-6">
+                <h3 className="text-2xl font-bold text-[#741717] mb-4">Как нас найти в Санкт-Петербурге</h3>
 
-                <FormField
-                  id="email"
-                  name="email"
-                  label="Email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required={true}
-                  type="email"
-                />
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div>
+                    <div className="mb-4">
+                      <h4 className="text-lg font-semibold text-[#603a30] mb-2">Адрес офиса:</h4>
+                      <p className="text-[#603a30]">Московский проспект 143, Санкт-Петербург, 196084</p>
+                      <p className="text-[#603a30] mt-1">Московский район</p>
+                    </div>
 
-                <FormField
-                  id="phone"
-                  name="phone"
-                  label="Телефон"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  required={true}
-                />
+                    <div className="mb-4">
+                      <h4 className="text-lg font-semibold text-[#603a30] mb-2">Как добраться:</h4>
+                      <ul className="list-disc list-inside text-[#603a30]">
+                        <li>Станция метро "Электросила" - 7 минут пешком</li>
+                        <li>Станция метро "Московские ворота" - 12 минут пешком</li>
+                        <li>Автобусы: 3, 26, 50, 62, 64, 72</li>
+                        <li>Троллейбусы: 15, 17, 44</li>
+                      </ul>
+                    </div>
 
-                <FormField
-                  id="message"
-                  name="message"
-                  label="Сообщение"
-                  value={formData.message}
-                  onChange={handleChange}
-                  required={true}
-                  isTextarea={true}
-                />
+                    <div>
+                      <h4 className="text-lg font-semibold text-[#603a30] mb-2">Парковка:</h4>
+                      <p className="text-[#603a30]">Рядом с офисом есть бесплатная парковка для клиентов</p>
+                    </div>
+                  </div>
 
-                <motion.div
-                  className="relative overflow-hidden rounded-md"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <Button
-                    type="submit"
-                    className="relative w-full bg-[#741717] text-white transition-all duration-300 hover:bg-[#603a30]"
-                    disabled={isSubmitting}
-                    aria-busy={isSubmitting}
-                  >
-                    <span className="relative z-10">
-                      {isSubmitting ? (
-                        <div className="flex items-center">
-                          <svg
-                            className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                          >
-                            <circle
-                              className="opacity-25"
-                              cx="12"
-                              cy="12"
-                              r="10"
-                              stroke="currentColor"
-                              strokeWidth="4"
-                            ></circle>
-                            <path
-                              className="opacity-75"
-                              fill="currentColor"
-                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                            ></path>
-                          </svg>
-                          Отправка...
-                        </div>
-                      ) : (
-                        "Отправить сообщение"
-                      )}
-                    </span>
-                    <motion.span
-                      className="absolute inset-0 -z-0 bg-gradient-to-r from-[#8B0000] to-[#741717] opacity-0"
-                      whileHover={{ opacity: 1 }}
-                      transition={{ duration: 0.3 }}
-                    />
-                  </Button>
-                </motion.div>
-
-                {submitSuccess !== null && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="p-3 rounded-md bg-green-50 text-green-800"
-                  >
-                    {submitSuccess}
-                  </motion.div>
-                )}
-
-                {formError && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="p-3 rounded-md bg-red-50 text-red-800"
-                  >
-                    {formError}
-                  </motion.div>
-                )}
-
-                <p className="text-xs text-[#603a30]">
-                  * Отправляя форму, вы соглашаетесь с{" "}
-                  <Link href="/privacy" className="underline hover:text-[#741717]">
-                    политикой конфиденциальности
-                  </Link>
-                </p>
-              </form>
-            </motion.div>
-          </AnimatedItem>
+                  <div className="h-[300px] rounded-lg overflow-hidden">
+                    <iframe
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1999.2959345318453!2d30.316516!3d59.891605!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTnCsDUzJzI5LjgiTiAzMMKwMTgnNTkuNSJF!5e0!3m2!1sru!2sru!4v1621234567890!5m2!1sru!2sru"
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0 }}
+                      allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      title="Адвокат Довбешко С.Ю. на карте Санкт-Петербурга"
+                      aria-label="Местоположение офиса адвоката Довбешко С.Ю. в Московском районе Санкт-Петербурга"
+                    ></iframe>
+                  </div>
+                </div>
+              </div>
+            </AnimatedItem>
+          </div>
         </div>
-      </div>
-    </AnimatedSection>
+      </AnimatedSection>
+    </>
   )
 }
 

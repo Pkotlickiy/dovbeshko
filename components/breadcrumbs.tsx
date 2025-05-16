@@ -15,6 +15,14 @@ interface BreadcrumbsProps {
 }
 
 export function Breadcrumbs({ items, className = "" }: BreadcrumbsProps) {
+  // Маппинг путей к читаемым названиям
+  const pathNames: Record<string, string> = {
+    services: "Помощь",
+    practice: "Практика",
+    contacts: "Контакты",
+    booking: "Запись",
+    privacy: "Политика конфиденциальности",
+  }
   return (
     <motion.nav
       className={`text-sm ${className}`}

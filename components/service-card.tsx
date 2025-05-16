@@ -13,9 +13,18 @@ interface ServiceCardProps {
   className?: string
   onMouseEnter?: () => void
   onMouseLeave?: () => void
+  imageSrc?: string // Added imageSrc prop
 }
 
-export function ServiceCard({ icon, title, description, className, onMouseEnter, onMouseLeave }: ServiceCardProps) {
+export function ServiceCard({
+  icon,
+  title,
+  description,
+  className,
+  onMouseEnter,
+  onMouseLeave,
+  imageSrc,
+}: ServiceCardProps) {
   const [isHovered, setIsHovered] = useState(false)
 
   const handleMouseEnter = () => {

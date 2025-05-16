@@ -1,188 +1,213 @@
 "use client"
 
+import type React from "react"
+
 import { motion } from "framer-motion"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
 import { useDevicePerformance } from "@/hooks/use-device-performance"
+import { useMemo } from "react"
 import { cn } from "@/lib/utils"
-import type { ReactNode } from "react"
 
-interface AnimatedHeroBackgroundProps {
+type AnimatedHeroBackgroundProps = {
+  children: React.ReactNode
   className?: string
   variant?: "primary" | "secondary" | "dark"
-  children: ReactNode
-  withPattern?: boolean
-  withLines?: boolean
-  withShapes?: boolean
 }
 
-export function AnimatedHeroBackground({
-  className,
-  variant = "primary",
-  children,
-  withPattern = true,
-  withLines = true,
-  withShapes = true,
-}: AnimatedHeroBackgroundProps) {
+export function AnimatedHeroBackground({ children, className, variant = "primary" }: AnimatedHeroBackgroundProps) {
   const prefersReducedMotion = useReducedMotion()
   const devicePerformance = useDevicePerformance()
 
   // Определяем настройки анимаций в зависимости от устройства и предпочтений
-  const shouldAnimate = !prefersReducedMotion && devicePerformance !== "low"
-  const shouldUseComplexEffects = !prefersReducedMotion && devicePerformance === "high"
+  const { shouldAnimate, shouldUseBackgroundEffects, decorElementsCount } = useMemo(() => {
+    return {
+      shouldAnimate: !prefersReducedMotion && devicePerformance !== "low",
+      shouldUseBackgroundEffects: !prefersReducedMotion && devicePerformance === "high",
+      decorElementsCount: prefersReducedMotion
+        ? 0
+        : devicePerformance === "low"
+          ? 2
+          : devicePerformance === "medium"
+            ? 4
+            : 6,
+    }
+  }, [prefersReducedMotion, devicePerformance])
 
-  // Цветовые схемы для разных вариантов
-  const variantStyles = {
-    primary: "bg-gradient-to-br from-[#741717] to-[#8B0000]",
-    secondary: "bg-gradient-to-br from-[#1a1a2e] to-[#16213e]",
-    dark: "bg-gradient-to-br from-[#121212] to-[#2d2d2d]",
-  }
+  // Определяем цвета в зависимости от варианта
+  const colors = useMemo(() => {
+    switch (variant) {
+      case "primary":
+        return {
+          from: "#741717",
+          to: "#8B0000",
+          accent: "rgba(255, 255, 255, 0.1)",
+        }
+      case "secondary":
+        return {
+          from: "#1a365d",
+          to: "#2c5282",
+          accent: "rgba(255, 255, 255, 0.1)",
+        }
+      case "dark":
+        return {
+          from: "#1a202c",
+          to: "#2d3748",
+          accent: "rgba(255, 255, 255, 0.05)",
+        }
+      default:
+        return {
+          from: "#741717",
+          to: "#8B0000",
+          accent: "rgba(255, 255, 255, 0.1)",
+        }
+    }
+  }, [variant])
 
-  // Количество элементов в зависимости от производительности
-  const linesCount = devicePerformance === "low" ? 3 : devicePerformance === "medium" ? 5 : 7
-  const shapesCount = devicePerformance === "low" ? 2 : devicePerformance === "medium" ? 4 : 6
+  // Варианты анимации для линий
+  const lineVariants = useMemo(() => {
+    return {
+      hidden: { scaleY: 0, opacity: 0 },
+      visible: (i: number) => ({
+        scaleY: 1,
+        opacity: 0.3,
+        transition: {
+          delay: i * 0.1,
+          duration: 1,
+          ease: "easeOut",
+        },
+      }),
+    }
+  }, [])
+
+  // Варианты анимации для геометрических фигур
+  const shapeVariants = useMemo(() => {
+    return {
+      hidden: { opacity: 0, scale: 0 },
+      visible: (i: number) => ({
+        opacity: 0.2,
+        scale: 1,
+        transition: {
+          delay: i * 0.2,
+          duration: 0.8,
+          ease: "easeOut",
+        },
+      }),
+    }
+  }, [])
 
   return (
-    <div className={cn("relative overflow-hidden", variantStyles[variant], className)}>
-      {/* Фоновый узор */}
-      {withPattern && shouldUseComplexEffects && (
-        <div className="absolute inset-0 opacity-5">
-          <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="0.5" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grid)" />
-          </svg>
-        </div>
-      )}
+    <div
+      className={cn("relative overflow-hidden", className)}
+      style={{
+        background: `linear-gradient(135deg, ${colors.from}, ${colors.to})`,
+      }}
+    >
+      {/* Сетка - для всех устройств */}
+      <div
+        className="absolute inset-0 opacity-10"
+        style={{
+          backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px), 
+                           linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px)`,
+          backgroundSize: "20px 20px",
+        }}
+      />
 
-      {/* Анимированные линии */}
-      {withLines && (
-        <div className="absolute inset-0 overflow-hidden">
-          {/* Горизонтальные линии */}
-          {shouldAnimate &&
-            Array.from({ length: linesCount }).map((_, i) => (
-              <motion.div
-                key={`h-line-${i}`}
-                className="absolute h-px bg-white opacity-10"
-                style={{
-                  left: 0,
-                  right: 0,
-                  top: `${15 + (i * 70) / linesCount}%`,
-                }}
-                initial={{ scaleX: 0, opacity: 0 }}
-                animate={{ scaleX: 1, opacity: 0.1 }}
-                transition={{
-                  duration: 1.5 + i * 0.2,
-                  delay: i * 0.1,
-                  ease: "easeOut",
-                }}
-              />
-            ))}
-
-          {/* Вертикальные линии */}
-          {shouldAnimate &&
-            Array.from({ length: linesCount }).map((_, i) => (
-              <motion.div
-                key={`v-line-${i}`}
-                className="absolute w-px bg-white opacity-10"
-                style={{
-                  top: 0,
-                  bottom: 0,
-                  left: `${15 + (i * 70) / linesCount}%`,
-                }}
-                initial={{ scaleY: 0, opacity: 0 }}
-                animate={{ scaleY: 1, opacity: 0.1 }}
-                transition={{
-                  duration: 1.5 + i * 0.2,
-                  delay: 0.2 + i * 0.1,
-                  ease: "easeOut",
-                }}
-              />
-            ))}
-        </div>
-      )}
-
-      {/* Геометрические фигуры */}
-      {withShapes && shouldAnimate && (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {Array.from({ length: shapesCount }).map((_, i) => {
-            // Определяем тип фигуры: 0 - квадрат, 1 - круг, 2 - треугольник
-            const shapeType = i % 3
-            // Размер фигуры
-            const size = 20 + i * 10
-            // Позиция фигуры
-            const posX = 10 + ((i * 15) % 80)
-            const posY = 10 + ((i * 20 + 15) % 80)
-
-            return (
-              <motion.div
-                key={`shape-${i}`}
-                className={cn(
-                  "absolute border border-white opacity-10",
-                  shapeType === 0 ? "" : shapeType === 1 ? "rounded-full" : "",
-                )}
-                style={{
-                  width: size,
-                  height: size,
-                  left: `${posX}%`,
-                  top: `${posY}%`,
-                }}
-                initial={{
-                  opacity: 0,
-                  scale: 0,
-                  rotate: shapeType === 2 ? -45 : 0,
-                }}
-                animate={{
-                  opacity: 0.1,
-                  scale: 1,
-                  rotate: shapeType === 2 ? 0 : 0,
-                }}
-                transition={{
-                  duration: 1,
-                  delay: i * 0.2,
-                  ease: "easeOut",
-                }}
-              >
-                {shapeType === 2 && (
-                  <div className="w-full h-full border-t border-l border-white transform rotate-45" />
-                )}
-              </motion.div>
-            )
-          })}
-        </div>
-      )}
-
-      {/* Диагональные линии для создания глубины */}
-      {withShapes && shouldUseComplexEffects && (
-        <div className="absolute inset-0 overflow-hidden">
-          {Array.from({ length: 3 }).map((_, i) => (
+      {/* Вертикальные линии - для средних и высоких устройств */}
+      {shouldAnimate && (
+        <div className="absolute inset-0">
+          {[15, 35, 65, 85].slice(0, devicePerformance === "low" ? 2 : 4).map((position, i) => (
             <motion.div
-              key={`diagonal-${i}`}
-              className="absolute bg-white opacity-5"
-              style={{
-                height: 1,
-                width: "150%",
-                top: `${30 + i * 20}%`,
-                left: "-25%",
-                transformOrigin: "center",
-                transform: `rotate(${-20 + i * 15}deg)`,
-              }}
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{
-                duration: 2,
-                delay: 0.5 + i * 0.3,
-                ease: "easeOut",
-              }}
+              key={`line-${i}`}
+              className="absolute top-0 w-[1px] h-full bg-white"
+              style={{ left: `${position}%` }}
+              variants={lineVariants}
+              initial="hidden"
+              animate="visible"
+              custom={i}
             />
           ))}
         </div>
       )}
 
+      {/* Геометрические фигуры - только для высокопроизводительных устройств */}
+      {shouldUseBackgroundEffects && (
+        <>
+          {Array.from({ length: decorElementsCount }).map((_, i) => {
+            // Определяем тип фигуры: 0 - круг, 1 - квадрат, 2 - треугольник
+            const shapeType = i % 3
+
+            // Базовые стили для всех фигур
+            const baseStyles = {
+              position: "absolute",
+              top: `${10 + ((i * 15) % 70)}%`,
+              left: `${5 + ((i * 20) % 90)}%`,
+              opacity: 0.2,
+              backgroundColor: "transparent",
+              border: "1px solid rgba(255, 255, 255, 0.3)",
+              width: `${20 + ((i * 5) % 15)}px`,
+              height: `${20 + ((i * 5) % 15)}px`,
+            } as React.CSSProperties
+
+            // Дополнительные стили в зависимости от типа фигуры
+            let additionalStyles = {}
+
+            if (shapeType === 0) {
+              // Круг
+              additionalStyles = {
+                borderRadius: "50%",
+              }
+            } else if (shapeType === 1) {
+              // Квадрат (уже есть в базовых стилях)
+              additionalStyles = {
+                transform: `rotate(${45 * i}deg)`,
+              }
+            } else {
+              // Треугольник (используем clip-path)
+              additionalStyles = {
+                clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)",
+              }
+            }
+
+            return (
+              <motion.div
+                key={`shape-${i}`}
+                style={{ ...baseStyles, ...additionalStyles }}
+                variants={shapeVariants}
+                initial="hidden"
+                animate="visible"
+                custom={i}
+              />
+            )
+          })}
+        </>
+      )}
+
+      {/* Диагональные линии - для всех устройств */}
+      <div className="absolute inset-0 opacity-10">
+        {shouldAnimate &&
+          Array.from({ length: Math.min(4, decorElementsCount) }).map((_, i) => (
+            <motion.div
+              key={`diagonal-${i}`}
+              className="absolute bg-white"
+              style={{
+                height: "1px",
+                width: "100%",
+                top: `${20 + i * 20}%`,
+                transform: "rotate(-35deg)",
+                transformOrigin: "left",
+              }}
+              initial={{ scaleX: 0, opacity: 0 }}
+              animate={{
+                scaleX: 1,
+                opacity: 0.2,
+                transition: { delay: i * 0.2, duration: 1.5, ease: "easeOut" },
+              }}
+            />
+          ))}
+      </div>
+
       {/* Контент */}
-      <div className="relative z-10">{children}</div>
+      {children}
     </div>
   )
 }

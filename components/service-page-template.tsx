@@ -1,29 +1,12 @@
-"use client"
-
-import { useState, useEffect, useRef, type ReactNode } from "react"
-import { motion, useAnimation, useInView } from "framer-motion"
-import Link from "next/link"
-import { CTAConsultation } from "@/components/cta-consultation"
-import { ServiceStructuredData } from "@/components/service-structured-data"
-import { FormattedList } from "@/components/formatted-list"
-import { ProcessTimeline } from "@/components/process-timeline"
-import { FAQAccordion } from "@/components/faq-accordion"
+import type React from "react"
+import Image from "next/image"
 import { Breadcrumbs } from "@/components/breadcrumbs"
-import { Scale, FileText, CheckCircle, Clock, Award, Shield, ArrowRight, Phone, Calendar } from "lucide-react"
-import { useReducedMotion } from "@/hooks/use-reduced-motion"
-import { useDevicePerformance } from "@/hooks/use-device-performance"
-import { AnimatedHeroBackground } from "@/components/animated-hero-background"
-
-interface ProcessStep {
-  title: string
-  description: string
-  icon: ReactNode
-}
-
-interface FAQ {
-  question: string
-  answer: string
-}
+import { ContactForm } from "@/components/contact-form"
+import { ScrollToTop } from "@/components/scroll-to-top"
+import { ServiceStructuredData } from "@/components/service-structured-data"
+import { LegalServiceSchema } from "@/components/legal-service-schema"
+import { BreadcrumbSchema } from "@/components/breadcrumb-schema"
+import type { ServiceType } from "@/lib/seo"
 
 interface ServicePageTemplateProps {
   title: string
@@ -31,9 +14,17 @@ interface ServicePageTemplateProps {
   imageSrc: string
   imageAlt: string
   services: string[]
-  process: ProcessStep[]
-  faqs: FAQ[]
-  serviceType?: string
+  process: {
+    title: string
+    description: string
+    icon: React.ReactNode
+  }[]
+  faqs: {
+    question: string
+    answer: string
+  }[]
+  serviceType: ServiceType
+  children?: React.ReactNode
 }
 
 export function ServicePageTemplate({
@@ -44,337 +35,145 @@ export function ServicePageTemplate({
   services,
   process,
   faqs,
-  serviceType = "LegalService",
+  serviceType,
+  children,
 }: ServicePageTemplateProps) {
-  const breadcrumbItems = [
+  // Создание breadcrumbs для SEO и навигации
+  const breadcrumbs = [
     { label: "Главная", href: "/" },
     { label: "Услуги", href: "/services" },
-    { label: title, href: "#" },
+    { label: title, href: `/services/${title.toLowerCase().replace(/\s+/g, "-")}` },
   ]
 
-  const [activeTab, setActiveTab] = useState(0)
-  const [isHovering, setIsHovering] = useState(false)
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true })
-  const controls = useAnimation()
-
-  // Определение предпочтений пользователя и производительности устройства
-  const prefersReducedMotion = useReducedMotion()
-  const devicePerformance = useDevicePerformance()
-
-  // Определяем настройки анимаций в зависимости от устройства и предпочтений
-  const shouldAnimate = !prefersReducedMotion && devicePerformance !== "low"
-  const shouldUseAutoRotation = !prefersReducedMotion && devicePerformance !== "low"
-  const animationDelay = devicePerformance === "low" ? 0 : devicePerformance === "medium" ? 0.05 : 0.1
-
-  const serviceHighlights = [
-    {
-      icon: <Scale className="h-8 w-8" />,
-      title: "Правовая защита",
-      description: "Профессиональная защита ваших прав и интересов в соответствии с законодательством",
-    },
-    {
-      icon: <FileText className="h-8 w-8" />,
-      title: "Документация",
-      description: "Тщательная подготовка всех необходимых юридических документов",
-    },
-    {
-      icon: <CheckCircle className="h-8 w-8" />,
-      title: "Гарантия результата",
-      description: "Ориентация на достижение максимально благоприятного результата",
-    },
-    {
-      icon: <Clock className="h-8 w-8" />,
-      title: "Оперативность",
-      description: "Быстрое реагирование на ваши запросы и соблюдение сроков",
-    },
+  // Формируем keywords на основе названия услуги и первых пунктов списка услуг
+  const keywords = [
+    title.toLowerCase(),
+    `${title.toLowerCase()} спб`,
+    `адвокат ${title.toLowerCase()}`,
+    ...services.slice(0, 3).map((service) => service.toLowerCase()),
+    "юрист спб",
+    "адвокат санкт-петербург",
   ]
-
-  useEffect(() => {
-    if (isInView && shouldAnimate) {
-      controls.start("visible")
-    } else if (isInView) {
-      // Если анимации отключены, просто показываем элемент без анимации
-      controls.set("visible")
-    }
-  }, [controls, isInView, shouldAnimate])
-
-  // Автоматическое переключение вкладок только если разрешено
-  useEffect(() => {
-    if (!isHovering && shouldUseAutoRotation) {
-      const interval = setInterval(() => {
-        setActiveTab((prev) => (prev + 1) % serviceHighlights.length)
-      }, 3000)
-      return () => clearInterval(interval)
-    }
-  }, [isHovering, serviceHighlights.length, shouldUseAutoRotation])
 
   return (
-    <div className="bg-white pt-20 md:pt-24">
-      <div className="bg-gradient-to-b from-gray-50 to-white">
-        <div className="container px-4 mx-auto pt-6 pb-12">
-          <Breadcrumbs items={breadcrumbItems} />
-          <ServiceStructuredData name={title} description={description} serviceType={serviceType} />
+    <main className="flex flex-col min-h-screen pt-16">
+      {/* Микроразметка для хлебных крошек */}
+      <BreadcrumbSchema items={breadcrumbs} />
 
-          {/* Hero Section с новым компонентом фона */}
-          <AnimatedHeroBackground
-            className="rounded-2xl overflow-hidden mt-8 md:mt-12"
-            variant="primary"
-            withPattern={true}
-            withLines={true}
-            withShapes={true}
-          >
-            <div className="max-w-7xl mx-auto">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-8 md:p-10">
-                {/* Content Column */}
-                <div className="lg:col-span-5 order-2 lg:order-1">
-                  <motion.div
-                    initial={shouldAnimate ? { opacity: 0, y: 20 } : { opacity: 1, y: 0 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: shouldAnimate ? 0.5 : 0 }}
-                  >
-                    <span className="inline-block px-3 py-1 text-xs font-medium bg-white/10 text-white rounded-full mb-4">
-                      Юридическая услуга
-                    </span>
-                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
-                      {title}
-                    </h1>
-                    <p className="text-lg text-white/90 mb-8 leading-relaxed">{description}</p>
+      {/* Расширенная микроразметка для юридической услуги */}
+      <LegalServiceSchema
+        name={title}
+        description={description}
+        url={`/services/${title.toLowerCase().replace(/\s+/g, "-")}`}
+        serviceType={title}
+        serviceOutput={services[0]}
+        keywords={keywords}
+        offers={{
+          price: "от 2000",
+          priceCurrency: "RUB",
+        }}
+      />
 
-                    <div className="flex flex-wrap gap-4 mt-8">
-                      <Link
-                        href="/booking"
-                        className="inline-flex items-center px-6 py-3 bg-white hover:bg-white/90 text-[#741717] font-medium rounded-lg transition-colors duration-200"
-                      >
-                        <Calendar className="mr-2 h-5 w-5" />
-                        Записаться на консультацию
-                      </Link>
-                      <Link
-                        href="/contacts"
-                        className="inline-flex items-center px-6 py-3 bg-transparent border border-white/30 hover:bg-white/10 text-white font-medium rounded-lg transition-colors duration-200"
-                      >
-                        <Phone className="mr-2 h-5 w-5" />
-                        Связаться с нами
-                      </Link>
-                    </div>
-                  </motion.div>
-                </div>
+      {/* Оригинальная микроразметка для совместимости */}
+      <ServiceStructuredData
+        name={title}
+        description={description}
+        url={`https://lawyer-website.vercel.app/services/${title.toLowerCase().replace(/\s+/g, "-")}`}
+        provider={{
+          name: "Адвокат Довбешко Светлана Юрьевна",
+          url: "https://lawyer-website.vercel.app",
+        }}
+      />
 
-                {/* Interactive Feature Card */}
-                <div className="lg:col-span-7 order-1 lg:order-2">
-                  <motion.div
-                    ref={ref}
-                    className="relative h-auto rounded-xl overflow-hidden bg-white/10 backdrop-blur-sm"
-                    initial="hidden"
-                    animate={controls}
-                    variants={{
-                      hidden: { opacity: 0, y: 50 },
-                      visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-                    }}
-                    onMouseEnter={() => setIsHovering(true)}
-                    onMouseLeave={() => setIsHovering(false)}
-                  >
-                    {/* Main Content */}
-                    <div className="relative p-8">
-                      {/* Header */}
-                      <div className="flex justify-between items-center mb-8">
-                        <motion.div
-                          className="flex items-center"
-                          initial={shouldAnimate ? { opacity: 0, x: -20 } : { opacity: 1, x: 0 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: shouldAnimate ? 0.3 : 0, duration: shouldAnimate ? 0.5 : 0 }}
-                        >
-                          <Shield className="h-6 w-6 mr-2 text-white/90" />
-                          <span className="text-white/90 font-medium">Профессиональный подход</span>
-                        </motion.div>
-                        <motion.div
-                          className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-white/90 text-sm"
-                          initial={shouldAnimate ? { opacity: 0, x: 20 } : { opacity: 1, x: 0 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: shouldAnimate ? 0.4 : 0, duration: shouldAnimate ? 0.5 : 0 }}
-                        >
-                          <Award className="h-4 w-4 inline-block mr-1" />
-                          <span>Высокое качество услуг</span>
-                        </motion.div>
-                      </div>
+      <div className="container mx-auto px-4 py-8">
+        <Breadcrumbs items={breadcrumbs} />
 
-                      {/* Central Icon */}
-                      <div className="flex justify-center mb-8">
-                        <motion.div
-                          className="relative w-24 h-24 flex items-center justify-center"
-                          initial={shouldAnimate ? { scale: 0 } : { scale: 1 }}
-                          animate={{ scale: 1 }}
-                          transition={{
-                            delay: shouldAnimate ? 0.2 : 0,
-                            duration: shouldAnimate ? 0.5 : 0,
-                            type: shouldAnimate ? "spring" : "tween",
-                          }}
-                        >
-                          <div className="absolute inset-0 border border-white/20 rounded-full" />
-                          <div className="absolute inset-2 border border-white/10 rounded-full" />
-                          <Scale className="h-12 w-12 text-white relative z-10" />
-                        </motion.div>
-                      </div>
+        <div className="mb-12 mt-6">
+          <h1 className="text-3xl md:text-4xl font-bold text-[#741717] mb-6">{title}</h1>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div className="lg:col-span-7">
+              <p className="text-lg text-gray-700 mb-6">{description}</p>
 
-                      {/* Feature Tabs */}
-                      <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 mb-6">
-                        <div className="grid grid-cols-4 gap-2 mb-6">
-                          {serviceHighlights.map((highlight, index) => (
-                            <motion.button
-                              key={index}
-                              className={`relative h-1.5 rounded-full overflow-hidden ${
-                                activeTab === index ? "bg-white/80" : "bg-white/20"
-                              }`}
-                              onClick={() => setActiveTab(index)}
-                              whileHover={shouldAnimate ? { scale: 1.05 } : {}}
-                              whileTap={shouldAnimate ? { scale: 0.95 } : {}}
-                            >
-                              {activeTab === index && shouldUseAutoRotation && (
-                                <motion.div
-                                  className="absolute top-0 left-0 h-full bg-white"
-                                  initial={{ width: "0%" }}
-                                  animate={{ width: "100%" }}
-                                  transition={{ duration: 3, ease: "linear" }}
-                                />
-                              )}
-                            </motion.button>
-                          ))}
-                        </div>
-
-                        <motion.div
-                          key={activeTab}
-                          initial={shouldAnimate ? { opacity: 0, y: 10 } : { opacity: 1, y: 0 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={shouldAnimate ? { opacity: 0, y: -10 } : { opacity: 0 }}
-                          transition={{ duration: shouldAnimate ? 0.3 : 0 }}
-                        >
-                          <div className="flex items-start">
-                            <div className="bg-white/10 p-3 rounded-lg mr-4 flex-shrink-0">
-                              {serviceHighlights[activeTab].icon}
-                            </div>
-                            <div>
-                              <h3 className="text-white font-bold text-xl mb-2">
-                                {serviceHighlights[activeTab].title}
-                              </h3>
-                              <p className="text-white/90 leading-relaxed">
-                                {serviceHighlights[activeTab].description}
-                              </p>
-                            </div>
-                          </div>
-                        </motion.div>
-                      </div>
-
-                      {/* Stats */}
-                      <div className="grid grid-cols-3 gap-4">
-                        {[
-                          { value: "98%", label: "Успешных дел" },
-                          { value: "10+", label: "Лет опыта" },
-                          { value: "24/7", label: "Поддержка" },
-                        ].map((stat, index) => (
-                          <motion.div
-                            key={index}
-                            className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center"
-                            initial={shouldAnimate ? { opacity: 0, y: 20 } : { opacity: 1, y: 0 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{
-                              delay: shouldAnimate ? 0.5 + index * animationDelay : 0,
-                              duration: shouldAnimate ? 0.4 : 0,
-                            }}
-                          >
-                            <div className="text-white font-bold text-2xl mb-1">{stat.value}</div>
-                            <div className="text-white/70 text-sm">{stat.label}</div>
-                          </motion.div>
-                        ))}
-                      </div>
-                    </div>
-                  </motion.div>
-                </div>
+              <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+                <h2 className="text-2xl font-bold text-[#741717] mb-4">Что мы предлагаем</h2>
+                <ul className="space-y-3">
+                  {services.map((service, index) => (
+                    <li key={index} className="flex items-start">
+                      <span className="flex-shrink-0 w-5 h-5 mt-1 mr-2 text-[#741717]">✓</span>
+                      <span className="text-gray-700">{service}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
-          </AnimatedHeroBackground>
+
+            <div className="lg:col-span-5">
+              <div className="relative rounded-lg overflow-hidden shadow-lg h-[300px] md:h-[400px]">
+                <Image src={imageSrc || "/placeholder.svg"} alt={imageAlt} fill className="object-cover" priority />
+              </div>
+            </div>
+          </div>
         </div>
+
+        <div className="mb-12">
+          <h2 className="text-2xl md:text-3xl font-bold text-[#741717] mb-6">Как мы работаем</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {process.map((step, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-lg shadow-md p-6 transition-transform duration-300 hover:translate-y-[-5px]"
+              >
+                <div className="flex justify-center mb-4">
+                  <div className="w-12 h-12 bg-[#741717] rounded-full flex items-center justify-center text-white">
+                    {step.icon}
+                  </div>
+                </div>
+                <h3 className="text-xl font-bold text-center mb-2">{step.title}</h3>
+                <p className="text-gray-600 text-center">{step.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="mb-12">
+          <h2 className="text-2xl md:text-3xl font-bold text-[#741717] mb-6">Часто задаваемые вопросы</h2>
+          <div className="bg-white rounded-lg shadow-md overflow-hidden">
+            {faqs.map((faq, index) => (
+              <div key={index} className="border-b border-gray-200 last:border-b-0">
+                <details className="group p-4">
+                  <summary className="list-none flex justify-between items-center cursor-pointer">
+                    <span className="text-lg font-medium text-gray-800">{faq.question}</span>
+                    <span className="transition group-open:rotate-180">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-6 h-6"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                      </svg>
+                    </span>
+                  </summary>
+                  <div className="mt-4 text-gray-600">{faq.answer}</div>
+                </details>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="mb-12">
+          <h2 className="text-2xl md:text-3xl font-bold text-[#741717] mb-6">Получить консультацию</h2>
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <ContactForm subject={`Консультация по услуге: ${title}`} />
+          </div>
+        </div>
+
+        {children}
       </div>
 
-      {/* Остальной контент остается без изменений */}
-      {/* ... */}
-
-      {/* Service Details Section */}
-      <section className="py-16 bg-white">
-        <div className="container px-4 mx-auto">
-          <div className="max-w-3xl mx-auto text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Что включает услуга</h2>
-            <p className="text-gray-600">Полный спектр юридической поддержки для решения ваших задач</p>
-          </div>
-          <div className="max-w-4xl mx-auto">
-            <FormattedList items={services} />
-          </div>
-        </div>
-      </section>
-
-      {/* Process Section - Redesigned */}
-      <section className="py-16 bg-gray-50">
-        <div className="container px-4 mx-auto">
-          <div className="max-w-3xl mx-auto text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Как мы работаем</h2>
-            <p className="text-gray-600">Прозрачный и эффективный процесс оказания юридической помощи</p>
-          </div>
-          <ProcessTimeline steps={process} />
-        </div>
-      </section>
-
-      {/* FAQ Section - Redesigned */}
-      <section className="py-16 bg-white">
-        <div className="container px-4 mx-auto">
-          <div className="max-w-3xl mx-auto text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Часто задаваемые вопросы</h2>
-            <p className="text-gray-600">Ответы на популярные вопросы о наших услугах</p>
-          </div>
-          <div className="max-w-3xl mx-auto">
-            <FAQAccordion items={faqs} />
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonial Preview */}
-      <section className="py-16 bg-gray-50">
-        <div className="container px-4 mx-auto">
-          <div className="max-w-3xl mx-auto text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Что говорят наши клиенты</h2>
-            <p className="text-gray-600">Отзывы от тех, кому мы помогли решить юридические вопросы</p>
-          </div>
-
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-white rounded-2xl shadow-lg p-8 relative">
-              <div className="absolute top-6 left-8 text-6xl text-red-100">"</div>
-              <div className="relative z-10">
-                <p className="text-gray-700 text-lg italic mb-6 pt-4">
-                  Благодаря профессиональной помощи юриста мое дело было успешно разрешено в кратчайшие сроки. Высокий
-                  уровень компетенции, внимание к деталям и индивидуальный подход — именно то, что отличает данную
-                  юридическую услугу.
-                </p>
-                <div className="flex items-center">
-                  <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center text-gray-500 mr-4">
-                    АК
-                  </div>
-                  <div>
-                    <h4 className="font-medium text-gray-900">Анна Ковалева</h4>
-                    <p className="text-gray-500 text-sm">Клиент, Москва</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="text-center mt-8">
-              <Link href="#" className="inline-flex items-center text-red-700 hover:text-red-800 font-medium">
-                Смотреть все отзывы
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <CTAConsultation />
-    </div>
+      <ScrollToTop />
+    </main>
   )
 }

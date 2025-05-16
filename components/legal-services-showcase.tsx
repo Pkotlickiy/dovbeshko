@@ -118,9 +118,9 @@ export function LegalServicesShowcase() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h1 className="text-4xl md:text-5xl font-playfair font-bold text-[#741717] mb-4">Юридические услуги</h1>
+          <h1 className="text-4xl md:text-5xl font-playfair font-bold text-[#741717] mb-4">Юридическая помощь</h1>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Предоставляю полный спектр юридических услуг для эффективного решения ваших правовых вопросов с
+            Предоставляю полный спектр юридической помощи для эффективного решения ваших правовых вопросов с
             индивидуальным подходом к каждому клиенту
           </p>
         </motion.div>

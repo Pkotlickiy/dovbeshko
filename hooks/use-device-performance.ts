@@ -8,6 +8,9 @@ export function useDevicePerformance(): PerformanceLevel {
   const [performanceLevel, setPerformanceLevel] = useState<PerformanceLevel>("medium")
 
   useEffect(() => {
+    // Используем ref для отслеживания монтирования компонента
+    let isMounted = true
+
     // Проверяем доступность API для определения производительности
     if (typeof window !== "undefined") {
       try {
@@ -23,17 +26,30 @@ export function useDevicePerformance(): PerformanceLevel {
         const hasSlowProcessor = navigator.hardwareConcurrency !== undefined && navigator.hardwareConcurrency < 4
 
         // Определение уровня производительности
+        let newPerformanceLevel: PerformanceLevel
         if (isOldBrowser || (isMobile && (hasLowMemory || hasSlowProcessor))) {
-          setPerformanceLevel("low")
+          newPerformanceLevel = "low"
         } else if (isMobile || hasLowMemory || hasSlowProcessor) {
-          setPerformanceLevel("medium")
+          newPerformanceLevel = "medium"
         } else {
-          setPerformanceLevel("high")
+          newPerformanceLevel = "high"
+        }
+
+        // Обновляем состояние только если компонент все еще смонтирован
+        if (isMounted) {
+          setPerformanceLevel(newPerformanceLevel)
         }
       } catch (error) {
         // В случае ошибки используем средний уровень производительности
-        setPerformanceLevel("medium")
+        if (isMounted) {
+          setPerformanceLevel("medium")
+        }
       }
+    }
+
+    // Очистка при размонтировании
+    return () => {
+      isMounted = false
     }
   }, [])
 

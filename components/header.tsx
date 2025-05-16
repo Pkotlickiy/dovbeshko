@@ -28,7 +28,7 @@ export function Header() {
   // Навигационные элементы
   const navItems: NavItem[] = [
     { label: "Главная", href: "/" },
-    { label: "Услуги", href: "/services" },
+    { label: "Помощь", href: "/services" },
     { label: "Практика", href: "/practice" },
     { label: "Контакты", href: "/contacts" },
     { label: "Записаться", href: "/booking" },
