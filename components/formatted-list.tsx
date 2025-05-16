@@ -5,11 +5,11 @@ import { motion } from "framer-motion"
 import { CheckCircle } from "lucide-react"
 
 interface FormattedListProps {
-  items: string[]
+  items?: string[]
   icon?: ReactNode
 }
 
-export function FormattedList({ items, icon }: FormattedListProps) {
+export function FormattedList({ items = [], icon }: FormattedListProps) {
   const container = {
     hidden: { opacity: 0 },
     show: {
@@ -33,7 +33,7 @@ export function FormattedList({ items, icon }: FormattedListProps) {
       whileInView="show"
       viewport={{ once: true, margin: "-100px" }}
     >
-      {items.map((text, index) => (
+      {(items || []).map((text, index) => (
         <motion.li
           key={index}
           className="flex items-start gap-3 bg-white p-4 rounded-lg shadow-sm border border-gray-100"
