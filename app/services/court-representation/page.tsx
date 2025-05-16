@@ -115,6 +115,7 @@ export default function CourtRepresentationPage() {
         process={process}
         faqs={faqs}
         serviceType="LegalService"
+        serviceSlug="court-representation"
       />
     </>
   )

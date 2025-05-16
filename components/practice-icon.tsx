@@ -13,6 +13,7 @@ export type PracticeArea =
   | "medical"
   | "military"
   | "unjust-enrichment"
+  | "default"
 
 interface PracticeIconProps {
   area: PracticeArea
@@ -56,6 +57,8 @@ export function PracticeIcon({ area, size = 24, className = "", delay = 0 }: Pra
         return <Shield size={size} />
       case "unjust-enrichment":
         return <Award size={size} />
+      case "default":
+        return <Scale size={size} />
       default:
         return <FileText size={size} />
     }

@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Award } from "lucide-react"
+import { Award, CheckCircle } from "lucide-react"
 
 interface CaseCardProps {
   title: string
@@ -21,7 +21,12 @@ export function CaseCard({ title, description, result, delay = 0 }: CaseCardProp
       whileHover={{ y: -5, transition: { duration: 0.2 } }}
     >
       <div className="p-6 flex-grow">
-        <h3 className="text-lg font-semibold mb-3 text-[#741717]">{title}</h3>
+        <div className="flex items-start mb-3">
+          <div className="mr-3 mt-1 text-[#741717]">
+            <CheckCircle size={20} />
+          </div>
+          <h3 className="text-lg font-semibold text-[#741717]">{title}</h3>
+        </div>
         <p className="text-gray-600 mb-4 text-sm">{description}</p>
       </div>
       <div className="bg-gray-50 p-4 border-t border-gray-100">

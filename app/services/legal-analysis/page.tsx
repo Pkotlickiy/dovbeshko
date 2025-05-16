@@ -98,6 +98,7 @@ export default function LegalAnalysisPage() {
       process={process}
       faqs={faqs}
       serviceType="LegalService"
+      serviceSlug="legal-analysis"
     />
   )
 }

@@ -115,6 +115,7 @@ export default function DocumentPreparationPage() {
         process={process}
         faqs={faqs}
         serviceType="LegalService"
+        serviceSlug="document-preparation"
       />
     </>
   )

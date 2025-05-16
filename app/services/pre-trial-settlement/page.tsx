@@ -93,6 +93,7 @@ export default function PreTrialSettlementPage() {
       process={process}
       faqs={faqs}
       serviceType="LegalService"
+      serviceSlug="pre-trial-settlement"
     />
   )
 }

@@ -94,6 +94,7 @@ export default function ConsultationsPage() {
       process={process}
       faqs={faqs}
       serviceType="LegalService"
+      serviceSlug="consultations"
     />
   )
 }

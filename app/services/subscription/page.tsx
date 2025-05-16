@@ -101,6 +101,7 @@ export default function SubscriptionPage() {
       process={process}
       faqs={faqs}
       serviceType="LegalService"
+      serviceSlug="subscription"
     />
   )
 }

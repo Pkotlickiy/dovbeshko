@@ -1,5 +1,4 @@
 import type React from "react"
-import Image from "next/image"
 import { Breadcrumbs } from "@/components/breadcrumbs"
 import { ContactForm } from "@/components/contact-form"
 import { ScrollToTop } from "@/components/scroll-to-top"
@@ -7,6 +6,7 @@ import { ServiceStructuredData } from "@/components/service-structured-data"
 import { LegalServiceSchema } from "@/components/legal-service-schema"
 import { BreadcrumbSchema } from "@/components/breadcrumb-schema"
 import type { ServiceType } from "@/lib/seo"
+import { AnimatedServiceLogo } from "@/components/animated-service-logo"
 
 // Это правильный интерфейс пропсов для ServicePageTemplate
 interface ServicePageTemplateProps {
@@ -26,6 +26,7 @@ interface ServicePageTemplateProps {
   }[]
   serviceType: ServiceType
   children?: React.ReactNode
+  serviceSlug?: string // Добавляем этот параметр
 }
 
 export function ServicePageTemplate({
@@ -38,6 +39,7 @@ export function ServicePageTemplate({
   faqs,
   serviceType,
   children,
+  serviceSlug,
 }: ServicePageTemplateProps) {
   // Создание breadcrumbs для SEO и навигации
   const breadcrumbs = [
@@ -108,10 +110,12 @@ export function ServicePageTemplate({
               </div>
             </div>
 
-            <div className="lg:col-span-5">
-              <div className="relative rounded-lg overflow-hidden shadow-lg h-[300px] md:h-[400px]">
-                <Image src={imageSrc || "/placeholder.svg"} alt={imageAlt} fill className="object-cover" priority />
-              </div>
+            <div className="lg:col-span-5 flex items-center justify-center">
+              <AnimatedServiceLogo
+                serviceType={(serviceSlug as any) || "consultations"}
+                size="lg"
+                className="mx-auto"
+              />
             </div>
           </div>
         </div>

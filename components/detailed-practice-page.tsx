@@ -1,10 +1,16 @@
+"use client"
+
 import type React from "react"
-import Image from "next/image"
 import Link from "next/link"
 import { ScrollToTop } from "@/components/scroll-to-top"
 import { Breadcrumbs } from "@/components/breadcrumbs"
 import { PracticeAreaSchema } from "@/components/practice-area-schema"
 import { BreadcrumbSchema } from "@/components/breadcrumb-schema"
+import { PracticeIcon } from "@/components/practice-icon"
+import { motion } from "framer-motion"
+import { useReducedMotion } from "@/hooks/use-reduced-motion"
+// Add this import at the top of the file
+import { CheckCircle } from "lucide-react"
 
 interface DetailedPracticePageProps {
   title: string
@@ -45,6 +51,7 @@ interface DetailedPracticePageProps {
     href: string
   }[]
   children?: React.ReactNode
+  area?: string
 }
 
 export function DetailedPracticePage({
@@ -61,7 +68,10 @@ export function DetailedPracticePage({
   cases = [],
   relatedAreas = [],
   children,
+  area,
 }: DetailedPracticePageProps) {
+  const prefersReducedMotion = useReducedMotion()
+
   // URL для страницы, извлекаем из хлебных крошек
   const url = breadcrumbs[breadcrumbs.length - 1]?.href || ""
 
@@ -88,6 +98,37 @@ export function DetailedPracticePage({
     result: caseItem.outcome,
   }))
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2,
+        when: "beforeChildren",
+      },
+    },
+  }
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { duration: 0.6, ease: "easeOut" },
+    },
+  }
+
+  const backgroundVariants = {
+    hidden: { scale: 1.1, opacity: 0 },
+    visible: {
+      scale: 1,
+      opacity: 1,
+      transition: { duration: 1.2, ease: "easeOut" },
+    },
+  }
+
   return (
     <main className="flex flex-col min-h-screen pt-16">
       {/* Микроразметка Schema.org */}
@@ -105,23 +146,110 @@ export function DetailedPracticePage({
         knowsAbout={[title, ...services.map((s) => s.title)]}
       />
 
+      <motion.div
+        className="relative w-full bg-gradient-to-r from-[#741717]/90 to-[#741717]/70 py-16 md:py-24"
+        variants={prefersReducedMotion ? {} : backgroundVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.div
+          className="absolute inset-0 bg-[url('/public/placeholder-qaedq.png')] bg-cover bg-center opacity-10 mix-blend-overlay"
+          variants={
+            prefersReducedMotion
+              ? {}
+              : {
+                  hidden: { opacity: 0 },
+                  visible: { opacity: 0.1, transition: { duration: 1.5 } },
+                }
+          }
+          initial="hidden"
+          animate="visible"
+        ></motion.div>
+
+        {/* Animated background elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          {!prefersReducedMotion &&
+            Array.from({ length: 5 }).map((_, i) => (
+              <motion.div
+                key={`line-${i}`}
+                className="absolute h-[1px] bg-white/20"
+                style={{
+                  width: "100%",
+                  top: `${20 + i * 15}%`,
+                  left: 0,
+                  transformOrigin: "left",
+                }}
+                initial={{ scaleX: 0, opacity: 0 }}
+                animate={{
+                  scaleX: 1,
+                  opacity: 0.2,
+                  transition: {
+                    delay: 0.3 + i * 0.1,
+                    duration: 1.5,
+                    ease: "easeOut",
+                  },
+                }}
+              />
+            ))}
+        </div>
+
+        <div className="container mx-auto px-4">
+          <motion.div
+            className="relative z-10 max-w-4xl mx-auto text-center"
+            variants={prefersReducedMotion ? {} : containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            <motion.div className="inline-block mb-6" variants={prefersReducedMotion ? {} : itemVariants}>
+              <div className="flex items-center justify-center w-20 h-20 rounded-full bg-white/10 backdrop-blur-sm p-4">
+                <PracticeIcon area={area || "default"} size={48} />
+              </div>
+            </motion.div>
+
+            <motion.h1
+              className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white"
+              variants={prefersReducedMotion ? {} : itemVariants}
+            >
+              {title}
+            </motion.h1>
+
+            <motion.p
+              className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto"
+              variants={prefersReducedMotion ? {} : itemVariants}
+            >
+              {description}
+            </motion.p>
+
+            <motion.div
+              className="mt-10 flex flex-wrap gap-4 justify-center"
+              variants={prefersReducedMotion ? {} : itemVariants}
+            >
+              <motion.button
+                className="px-6 py-3 bg-white text-[#741717] font-medium rounded-md hover:bg-white/90 transition-colors"
+                whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
+                whileTap={prefersReducedMotion ? {} : { scale: 0.98 }}
+              >
+                Записаться на консультацию
+              </motion.button>
+            </motion.div>
+          </motion.div>
+        </div>
+      </motion.div>
+
       <div className="container mx-auto px-4 py-8">
-        <Breadcrumbs items={breadcrumbs} />
+        {/* Добавляем хлебные крошки под hero-section */}
+        {breadcrumbs && breadcrumbs.length > 0 && (
+          <div className="mb-6">
+            <Breadcrumbs items={breadcrumbs} />
+          </div>
+        )}
 
         <div className="mb-12 mt-6">
-          <h1 className="text-3xl md:text-4xl font-bold text-[#741717] mb-6">{title}</h1>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div className="lg:col-span-7">
-              <p className="text-lg text-gray-700 mb-6">{description}</p>
+            <div className="lg:col-span-12">
               <div className="bg-white rounded-lg shadow-md p-6">
                 <h2 className="text-2xl font-bold text-[#741717] mb-4">Обзор практики</h2>
                 <p className="text-gray-700">{overview}</p>
-              </div>
-            </div>
-
-            <div className="lg:col-span-5">
-              <div className="relative rounded-lg overflow-hidden shadow-lg h-[300px] md:h-[400px]">
-                <Image src={imageSrc || "/placeholder.svg"} alt={imageAlt} fill className="object-cover" priority />
               </div>
             </div>
           </div>
@@ -219,18 +347,13 @@ export function DetailedPracticePage({
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {cases.map((caseItem, index) => (
                 <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden">
-                  {caseItem.imageSrc && (
-                    <div className="relative h-40">
-                      <Image
-                        src={caseItem.imageSrc || "/placeholder.svg"}
-                        alt={caseItem.title}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  )}
                   <div className="p-4">
-                    <h3 className="text-xl font-bold mb-2">{caseItem.title}</h3>
+                    <div className="flex items-start mb-3">
+                      <div className="mr-3 mt-1 text-[#741717]">
+                        <CheckCircle size={20} />
+                      </div>
+                      <h3 className="text-xl font-bold">{caseItem.title}</h3>
+                    </div>
                     <p className="text-gray-600 text-sm mb-3">{caseItem.description}</p>
                     <div className="bg-green-50 p-3 rounded-md">
                       <p className="text-sm font-semibold text-green-800">Результат: {caseItem.outcome}</p>
