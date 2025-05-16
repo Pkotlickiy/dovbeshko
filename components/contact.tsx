@@ -59,7 +59,7 @@ export function Contact() {
     {
       icon: <MapPin className="h-5 w-5 text-[#741717]" />,
       title: "Адрес",
-      content: <p className="text-[#603a30]">Санкт-Петербург, Московский проспект 143</p>,
+      content: <p className="text-[#603a30]">Санкт-Петербург, Московский пр-кт. 143</p>,
     },
     {
       icon: <Phone className="h-5 w-5 text-[#741717]" />,
@@ -381,7 +381,7 @@ function YandexMap({ apiKey }: YandexMapProps) {
             balloonContent: `
             <div class="p-3">
               <h3 class="font-bold text-[#741717]">Адвокат Довбешко С.Ю.</h3>
-              <p>Московский проспект 143, Санкт-Петербург</p>
+              <p>Московский пр-кт. 143, Санкт-Петербург</p>
               <p>Тел: +7 (931) 007-07-52</p>
             </div>
           `,

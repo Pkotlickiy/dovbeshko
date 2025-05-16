@@ -1,13 +1,16 @@
 "use client"
 
-import Image from "next/image"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { Breadcrumbs } from "@/components/breadcrumbs"
 import { CTAConsultation } from "@/components/cta-consultation"
 import { FAQAccordion } from "@/components/faq-accordion"
 import { PageDivider } from "@/components/page-divider"
-import type { ReactNode } from "react"
+import { useInView } from "react-intersection-observer"
+import { useState, type ReactNode } from "react"
+import { cn } from "@/lib/utils"
+import { AnimatedHeroBackground } from "@/components/animated-hero-background"
+import { useEffect } from "react"
 
 interface Service {
   title: string
@@ -61,13 +64,12 @@ interface DetailedPracticePageProps {
   faqs: FAQ[]
   cases: Case[]
   relatedAreas: RelatedArea[]
+  children?: ReactNode
 }
 
 export function DetailedPracticePage({
   title,
   description,
-  imageSrc,
-  imageAlt,
   breadcrumbs,
   overview,
   services,
@@ -76,34 +78,116 @@ export function DetailedPracticePage({
   faqs,
   cases,
   relatedAreas,
+  children,
 }: DetailedPracticePageProps) {
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  })
+
+  const [activeIndex, setActiveIndex] = useState(0)
+
+  // Автоматическое переключение анимированных элементов
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % 3)
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [])
+
   return (
-    <div className="min-h-screen bg-white">
-      {/* Hero Section */}
-      <section className="relative h-[50vh] min-h-[400px] w-full">
-        <div className="absolute inset-0">
-          <Image src={imageSrc || "/placeholder.svg"} alt={imageAlt} fill className="object-cover" priority />
-          <div className="absolute inset-0 bg-black/50" />
+    <div className="min-h-screen bg-white pt-24">
+      {/* Анимированный Hero Section с новым компонентом */}
+      <AnimatedHeroBackground className="py-20">
+        <div className="container relative z-10 mx-auto px-4">
+          <div className="mx-auto max-w-4xl text-center">
+            <motion.h1
+              className="mb-6 text-4xl font-bold text-white md:text-5xl lg:text-6xl"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7 }}
+            >
+              {title}
+            </motion.h1>
+
+            <motion.p
+              className="mb-8 text-lg text-white/90 md:text-xl"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.7, delay: 0.2 }}
+            >
+              {description}
+            </motion.p>
+
+            <motion.div
+              className="flex flex-wrap justify-center gap-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.4 }}
+            >
+              <Link
+                href="#services"
+                className="rounded-md bg-white px-6 py-3 font-medium text-[#741717] transition-all hover:bg-white/90"
+              >
+                Наши услуги
+              </Link>
+              <Link
+                href="#contact"
+                className="rounded-md border border-white bg-transparent px-6 py-3 font-medium text-white transition-all hover:bg-white/10"
+              >
+                Получить консультацию
+              </Link>
+            </motion.div>
+          </div>
+
+          {/* Анимированные индикаторы */}
+          <div className="mt-12 flex justify-center gap-2">
+            {[0, 1, 2].map((i) => (
+              <motion.button
+                key={i}
+                className={cn(
+                  "h-2 w-2 rounded-full transition-all",
+                  activeIndex === i ? "bg-white w-6" : "bg-white/50",
+                )}
+                onClick={() => setActiveIndex(i)}
+                animate={{
+                  scale: activeIndex === i ? [1, 1.2, 1] : 1,
+                }}
+                transition={{ duration: 1, repeat: activeIndex === i ? Number.POSITIVE_INFINITY : 0 }}
+              />
+            ))}
+          </div>
+
+          {/* Анимированные карточки преимуществ */}
+          <div className="mt-8 flex justify-center">
+            <motion.div
+              className="relative h-16 w-full max-w-lg overflow-hidden rounded-lg bg-white/10 backdrop-blur-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.7, delay: 0.6 }}
+            >
+              {[
+                "Профессиональная юридическая поддержка",
+                "Индивидуальный подход к каждому клиенту",
+                "Многолетний опыт успешной практики",
+              ].map((text, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute inset-0 flex items-center justify-center px-4 text-center text-white"
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    opacity: activeIndex === i ? 1 : 0,
+                    y: activeIndex === i ? 0 : 20,
+                  }}
+                  transition={{ duration: 0.5 }}
+                >
+                  {text}
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
         </div>
-        <div className="relative z-10 flex h-full flex-col items-center justify-center px-4 text-center text-white">
-          <motion.h1
-            className="mb-4 text-4xl font-bold md:text-5xl lg:text-6xl"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            {title}
-          </motion.h1>
-          <motion.p
-            className="max-w-2xl text-lg md:text-xl"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            {description}
-          </motion.p>
-        </div>
-      </section>
+      </AnimatedHeroBackground>
 
       {/* Breadcrumbs */}
       <div className="bg-gray-100 py-3">
@@ -113,7 +197,7 @@ export function DetailedPracticePage({
       </div>
 
       {/* Overview */}
-      <section className="container mx-auto px-4 py-16">
+      <section id="overview" className="container mx-auto px-4 py-16">
         <motion.div
           className="mx-auto max-w-3xl text-center"
           initial={{ opacity: 0, y: 20 }}
@@ -129,7 +213,7 @@ export function DetailedPracticePage({
       <PageDivider />
 
       {/* Services */}
-      <section className="container mx-auto px-4 py-16">
+      <section id="services" className="container mx-auto px-4 py-16">
         <motion.h2
           className="mb-12 text-center text-3xl font-bold text-[#741717]"
           initial={{ opacity: 0, y: 20 }}
@@ -143,12 +227,17 @@ export function DetailedPracticePage({
           {services.map((service, index) => (
             <motion.div
               key={index}
-              className="rounded-lg border border-gray-200 bg-white p-6 shadow-md transition-all hover:shadow-lg"
+              className="group rounded-lg border border-gray-200 bg-white p-6 shadow-md transition-all hover:shadow-lg"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              transition={{
+                duration: 0.5,
+                delay: index * 0.1,
+              }}
               viewport={{ once: true }}
+              whileHover={{ y: -5 }}
             >
+              <div className="mb-4 h-2 w-16 rounded-full bg-gradient-to-r from-[#741717] to-[#9c2a2a] transition-all group-hover:w-24" />
               <h3 className="mb-3 text-xl font-semibold text-[#741717]">{service.title}</h3>
               <p className="text-gray-600">{service.description}</p>
             </motion.div>
@@ -159,7 +248,7 @@ export function DetailedPracticePage({
       <PageDivider />
 
       {/* Process */}
-      <section className="bg-gray-50 py-16">
+      <section id="process" className="bg-gray-50 py-16">
         <div className="container mx-auto px-4">
           <motion.h2
             className="mb-12 text-center text-3xl font-bold text-[#741717]"
@@ -177,12 +266,18 @@ export function DetailedPracticePage({
                 className="mb-8 flex items-start gap-4 last:mb-0"
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                transition={{
+                  duration: 0.5,
+                  delay: index * 0.1,
+                }}
                 viewport={{ once: true }}
               >
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#741717] text-white">
+                <motion.div
+                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#741717] text-white"
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                >
                   {step.icon}
-                </div>
+                </motion.div>
                 <div>
                   <h3 className="mb-2 text-xl font-semibold">{step.title}</h3>
                   <p className="text-gray-600">{step.description}</p>
@@ -196,7 +291,7 @@ export function DetailedPracticePage({
       <PageDivider />
 
       {/* Statistics */}
-      <section className="container mx-auto px-4 py-16">
+      <section id="statistics" className="container mx-auto px-4 py-16">
         <motion.h2
           className="mb-12 text-center text-3xl font-bold text-[#741717]"
           initial={{ opacity: 0, y: 20 }}
@@ -213,11 +308,39 @@ export function DetailedPracticePage({
               className="flex flex-col items-center text-center"
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              transition={{
+                duration: 0.5,
+                delay: index * 0.1,
+              }}
               viewport={{ once: true }}
+              whileHover={{ y: -5 }}
             >
-              <div className="mb-4 rounded-full bg-[#741717]/10 p-4 text-[#741717]">{stat.icon}</div>
-              <div className="mb-1 text-3xl font-bold text-[#741717]">{stat.value}</div>
+              <motion.div
+                className="mb-4 rounded-full bg-[#741717]/10 p-4 text-[#741717]"
+                animate={{
+                  scale: [1, 1.05, 1],
+                  rotate: [0, 2, 0, -2, 0],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Number.POSITIVE_INFINITY,
+                  repeatType: "reverse",
+                }}
+              >
+                {stat.icon}
+              </motion.div>
+              <motion.div
+                className="mb-1 text-3xl font-bold text-[#741717]"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{
+                  duration: 1,
+                  delay: 0.5 + index * 0.1,
+                }}
+                viewport={{ once: true }}
+              >
+                {stat.value}
+              </motion.div>
               <div className="text-gray-600">{stat.label}</div>
             </motion.div>
           ))}
@@ -227,7 +350,7 @@ export function DetailedPracticePage({
       <PageDivider />
 
       {/* Case Examples */}
-      <section className="bg-gray-50 py-16">
+      <section id="cases" className="bg-gray-50 py-16">
         <div className="container mx-auto px-4">
           <motion.h2
             className="mb-12 text-center text-3xl font-bold text-[#741717]"
@@ -245,17 +368,57 @@ export function DetailedPracticePage({
                 className="overflow-hidden rounded-lg bg-white shadow-md"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                transition={{
+                  duration: 0.5,
+                  delay: index * 0.1,
+                }}
                 viewport={{ once: true }}
+                whileHover={{ y: -5 }}
               >
-                <div className="relative h-48 w-full">
-                  <Image
-                    src={caseItem.imageSrc || "/placeholder.svg"}
-                    alt={caseItem.title}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
+                {/* Заменяем изображение на анимированный градиентный блок */}
+                <motion.div
+                  className="relative h-48 w-full overflow-hidden bg-gradient-to-br from-[#741717] to-[#9c2a2a]"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {/* Декоративные элементы - отображаем только если разрешены фоновые эффекты */}
+
+                  {/* Анимированные линии - отображаем только если разрешены фоновые эффекты */}
+
+                  {/* Номер кейса */}
+                  <div className="absolute left-4 top-4 rounded-full bg-white/10 px-3 py-1 text-sm font-medium text-white backdrop-blur-sm">
+                    Кейс {index + 1}
+                  </div>
+
+                  {/* Иконка документа - анимируем только если разрешены автоматические анимации */}
+                  <motion.div
+                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white/80"
+                    animate={{
+                      scale: [1, 1.1, 1],
+                      rotate: [0, 5, 0, -5, 0],
+                    }}
+                    transition={{ duration: 5 }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="48"
+                      height="48"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                      <polyline points="14 2 14 8 20 8" />
+                      <line x1="16" y1="13" x2="8" y2="13" />
+                      <line x1="16" y1="17" x2="8" y2="17" />
+                      <line x1="10" y1="9" x2="8" y2="9" />
+                    </svg>
+                  </motion.div>
+                </motion.div>
+
                 <div className="p-6">
                   <h3 className="mb-3 text-xl font-semibold text-[#741717]">{caseItem.title}</h3>
                   <p className="mb-4 text-gray-600">{caseItem.description}</p>
@@ -272,7 +435,7 @@ export function DetailedPracticePage({
       <PageDivider />
 
       {/* FAQs */}
-      <section className="container mx-auto px-4 py-16">
+      <section id="faq" className="container mx-auto px-4 py-16">
         <motion.h2
           className="mb-12 text-center text-3xl font-bold text-[#741717]"
           initial={{ opacity: 0, y: 20 }}
@@ -290,7 +453,7 @@ export function DetailedPracticePage({
       <PageDivider />
 
       {/* Related Areas */}
-      <section className="bg-gray-50 py-16">
+      <section id="related" className="bg-gray-50 py-16">
         <div className="container mx-auto px-4">
           <motion.h2
             className="mb-12 text-center text-3xl font-bold text-[#741717]"
@@ -307,14 +470,24 @@ export function DetailedPracticePage({
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                transition={{
+                  duration: 0.5,
+                  delay: index * 0.1,
+                }}
                 viewport={{ once: true }}
               >
                 <Link
                   href={area.href}
-                  className="block rounded-lg border border-gray-200 bg-white p-6 text-center shadow-md transition-all hover:bg-[#741717] hover:text-white"
+                  className="group block rounded-lg border border-gray-200 bg-white p-6 text-center shadow-md transition-all hover:bg-[#741717] hover:text-white"
                 >
-                  <h3 className="text-lg font-semibold">{area.title}</h3>
+                  <motion.h3 className="text-lg font-semibold" whileHover={{ scale: 1.05 }}>
+                    {area.title}
+                  </motion.h3>
+                  <motion.div
+                    className="mx-auto mt-2 h-0.5 w-0 bg-white transition-all group-hover:w-16"
+                    initial={{ width: 0 }}
+                    whileHover={{ width: 64 }}
+                  />
                 </Link>
               </motion.div>
             ))}
@@ -323,7 +496,7 @@ export function DetailedPracticePage({
       </section>
 
       {/* CTA */}
-      <CTAConsultation />
+      <div id="contact">{children || <CTAConsultation />}</div>
     </div>
   )
 }

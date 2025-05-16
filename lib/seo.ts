@@ -78,7 +78,7 @@ export function getLocalBusinessSchema() {
     telephone: "+79310070752",
     address: {
       "@type": "PostalAddress",
-      streetAddress: "Московский проспект 143",
+      streetAddress: "Московский пр-кт. 143",
       addressLocality: "Санкт-Петербург",
       postalCode: "196084",
       addressCountry: "RU",
@@ -103,6 +103,7 @@ export function getLocalBusinessSchema() {
       },
     ],
     sameAs: ["https://www.facebook.com/example", "https://www.instagram.com/example", "https://vk.com/example"],
+    email: "S0070752@mail.ru",
   }
 }
 
@@ -116,7 +117,7 @@ export function getAttorneySchema() {
     telephone: "+79310070752",
     address: {
       "@type": "PostalAddress",
-      streetAddress: "Московский проспект 143",
+      streetAddress: "Московский пр-кт. 143",
       addressLocality: "Санкт-Петербург",
       postalCode: "196084",
       addressCountry: "RU",
@@ -144,6 +145,7 @@ export function getAttorneySchema() {
     serviceArea: "Санкт-Петербург и Ленинградская область",
     legalPracticeSetting: "https://schema.org/LegalService",
     sameAs: ["https://www.facebook.com/example", "https://www.instagram.com/example", "https://vk.com/example"],
+    email: "S0070752@mail.ru",
   }
 }
 
@@ -252,7 +254,7 @@ export const servicesData: Record<string, ServiceData> = {
       {
         question: "Что делать, если продавец отказывается принимать обратно некачественный товар?",
         answer:
-          "Если продавец отказывается принимать некачественный товар, необходимо: составить письменную претензию в двух экземплярах, вручить ее продавцу (один экземпляр с отметкой о получении оставить себе), при отказе - отправить претензию заказным письмом с уведомлением, обратиться в Роспотребнадзор �� жалобой, подать исковое заявление в суд. Для суда желательно иметь заключение независимой экспертизы о недостатках товара.",
+          "Если продавец отказывается принимать некачественный товар, необходимо: составить письменную претензию в двух экземплярах, вручить ее продавцу (один экземпляр с отметкой о получении оставить себе), при отказе - отправить претензию заказным письмом с уведомлением, обратиться в Роспотребнадзор  жалобой, подать исковое заявление в суд. Для суда желательно иметь заключение независимой экспертизы о недостатках товара.",
       },
       {
         question: "В какие сроки можно вернуть товар ненадлежащего качества?",

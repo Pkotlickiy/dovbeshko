@@ -64,13 +64,13 @@ export function Footer() {
               </li>
               <li className="flex items-center">
                 <Mail className="h-4 w-4 mr-2 text-gray-300" />
-                <a href="mailto:info@example.com" className="text-gray-300 hover:text-white transition-colors">
-                  info@example.com
+                <a href="mailto:S0070752@mail.ru" className="text-gray-300 hover:text-white transition-colors">
+                  S0070752@mail.ru
                 </a>
               </li>
               <li className="flex items-start">
                 <MapPin className="h-4 w-4 mr-2 text-gray-300 mt-1" />
-                <span className="text-gray-300">Санкт-Петербург, ул. Примерная, д. 123, офис 45</span>
+                <span className="text-gray-300">Санкт-Петербург, Московский пр-кт. 143</span>
               </li>
             </ul>
           </div>
