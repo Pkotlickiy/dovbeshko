@@ -17,8 +17,6 @@ import { cn } from "@/lib/utils"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { bookAppointment } from "@/app/actions/appointment-actions"
-import { motion } from "framer-motion"
-import { AnimatedItem } from "@/components/animated-section"
 import { toast } from "@/components/ui/use-toast"
 
 // Добавим улучшенную валидацию и обратную связь
@@ -159,7 +157,7 @@ export function BookingForm() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6" aria-label="Форма записи на консультацию">
             <div className="grid gap-6 sm:grid-cols-2">
-              <AnimatedItem delay={0.1}>
+              <div>
                 <FormField
                   control={form.control}
                   name="name"
@@ -183,20 +181,15 @@ export function BookingForm() {
                             className="border-[#c4bab3] transition-all duration-300 focus:border-[#741717] focus:ring-[#741717]"
                             autoComplete="name"
                           />
-                          <motion.div
-                            className="absolute bottom-0 left-0 h-0.5 w-0 bg-[#741717]/50"
-                            animate={field.value ? { width: "100%" } : { width: "0%" }}
-                            transition={{ duration: 0.3 }}
-                          />
                         </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              </AnimatedItem>
+              </div>
 
-              <AnimatedItem delay={0.2}>
+              <div>
                 <FormField
                   control={form.control}
                   name="phone"
@@ -220,10 +213,10 @@ export function BookingForm() {
                     </FormItem>
                   )}
                 />
-              </AnimatedItem>
+              </div>
             </div>
 
-            <AnimatedItem delay={0.3}>
+            <div>
               <FormField
                 control={form.control}
                 name="email"
@@ -247,10 +240,10 @@ export function BookingForm() {
                   </FormItem>
                 )}
               />
-            </AnimatedItem>
+            </div>
 
             <div className="grid gap-6 sm:grid-cols-2">
-              <AnimatedItem delay={0.4}>
+              <div>
                 <FormField
                   control={form.control}
                   name="date"
@@ -298,9 +291,9 @@ export function BookingForm() {
                     </FormItem>
                   )}
                 />
-              </AnimatedItem>
+              </div>
 
-              <AnimatedItem delay={0.5}>
+              <div>
                 <FormField
                   control={form.control}
                   name="time"
@@ -330,10 +323,10 @@ export function BookingForm() {
                     </FormItem>
                   )}
                 />
-              </AnimatedItem>
+              </div>
             </div>
 
-            <AnimatedItem delay={0.6}>
+            <div>
               <FormField
                 control={form.control}
                 name="service"
@@ -363,9 +356,9 @@ export function BookingForm() {
                   </FormItem>
                 )}
               />
-            </AnimatedItem>
+            </div>
 
-            <AnimatedItem delay={0.7}>
+            <div>
               <FormField
                 control={form.control}
                 name="message"
@@ -386,34 +379,28 @@ export function BookingForm() {
                   </FormItem>
                 )}
               />
-            </AnimatedItem>
+            </div>
 
-            <AnimatedItem delay={0.8}>
-              <motion.div
-                className="relative overflow-hidden rounded-md"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+            <div>
+              <Button
+                type="submit"
+                className="relative w-full bg-[#741717] text-white transition-all duration-300 hover:bg-[#603a30]"
+                disabled={isSubmitting}
+                aria-busy={isSubmitting}
               >
-                <Button
-                  type="submit"
-                  className="relative w-full bg-[#741717] text-white transition-all duration-300 hover:bg-[#603a30]"
-                  disabled={isSubmitting}
-                  aria-busy={isSubmitting}
-                >
-                  <span className="relative z-10">{isSubmitting ? "Отправка..." : "Записаться на консультацию"}</span>
-                  <span className="absolute inset-0 -z-0 bg-gradient-to-r from-[#8B0000] to-[#741717] opacity-0 transition-opacity duration-300 hover:opacity-100"></span>
-                </Button>
-              </motion.div>
-            </AnimatedItem>
+                <span className="relative z-10">{isSubmitting ? "Отправка..." : "Записаться на консультацию"}</span>
+                <span className="absolute inset-0 -z-0 bg-gradient-to-r from-[#8B0000] to-[#741717] opacity-0 transition-opacity duration-300 hover:opacity-100"></span>
+              </Button>
+            </div>
 
-            <AnimatedItem delay={0.9}>
+            <div>
               <p className="text-xs text-[#603a30]">
                 * Отправляя форму, вы соглашаетесь с{" "}
                 <a href="/privacy" className="text-[#741717] hover:underline">
                   политикой конфиденциальности
                 </a>
               </p>
-            </AnimatedItem>
+            </div>
           </form>
         </Form>
       </div>

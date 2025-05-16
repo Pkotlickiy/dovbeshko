@@ -7,7 +7,7 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/api/", "/admin/", "/_next/", "/booking/confirmation/"],
     },
-    sitemap: "https://example.com/sitemap.xml",
-    host: "https://example.com",
+    sitemap: "https://advokat-dovbeshko.ru/sitemap.xml",
+    host: "https://advokat-dovbeshko.ru",
   }
 }

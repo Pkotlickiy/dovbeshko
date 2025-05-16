@@ -2,8 +2,8 @@ export const siteConfig = {
   name: "Адвокат Довбешко С.Ю.",
   description:
     "Профессиональная юридическая помощь в Санкт-Петербурге. Адвокат Довбешко С.Ю. специализируется на уголовных, гражданских и административных делах. Консультации, представительство в суде, защита прав и интересов.",
-  url: "https://lawyer-website.vercel.app",
-  ogImage: "https://lawyer-website.vercel.app/og.jpg",
+  url: "https://advokat-dovbeshko.ru",
+  ogImage: "https://advokat-dovbeshko.ru/og.jpg",
   author: "Довбешко Светлана Юрьевна",
   keywords: [
     "адвокат",
@@ -17,7 +17,7 @@ export const siteConfig = {
     "защита в суде",
     "консультация юриста",
   ],
-  siteUrl: "https://lawyer-website.vercel.app",
+  siteUrl: "https://advokat-dovbeshko.ru",
 }
 
 export function getFaqSchema() {
@@ -73,8 +73,8 @@ export function getLocalBusinessSchema() {
     name: "Адвокат Довбешко С.Ю.",
     description:
       "Профессиональная юридическая помощь в Санкт-Петербурге. Адвокат Довбешко С.Ю. специализируется на уголовных, гражданских и административных делах. Консультации, представительство в суде, защита прав и интересов.",
-    image: "https://dovbeshko-lawyer.ru/confident-female-lawyer.png",
-    url: "https://dovbeshko-lawyer.ru",
+    image: "https://advokat-dovbeshko.ru/confident-female-lawyer.png",
+    url: "https://advokat-dovbeshko.ru",
     telephone: "+79310070752",
     address: {
       "@type": "PostalAddress",
@@ -112,8 +112,8 @@ export function getAttorneySchema() {
     "@context": "https://schema.org",
     "@type": "Attorney",
     name: "Довбешко Светлана Юрьевна",
-    image: "https://dovbeshko-lawyer.ru/confident-female-lawyer.png",
-    url: "https://dovbeshko-lawyer.ru",
+    image: "https://advokat-dovbeshko.ru/confident-female-lawyer.png",
+    url: "https://advokat-dovbeshko.ru",
     telephone: "+79310070752",
     address: {
       "@type": "PostalAddress",
@@ -306,7 +306,7 @@ export const servicesData: Record<string, ServiceData> = {
   },
 }
 
-interface ServiceSchemaProps {
+export interface ServiceSchemaProps {
   name: string
   description: string
   url: string

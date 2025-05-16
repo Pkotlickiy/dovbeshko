@@ -1,9 +1,9 @@
-// Создать компонент ConfirmationClientPage
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { motion } from "framer-motion"
 import { useSearchParams } from "next/navigation"
+import Link from "next/link"
 
 const ConfirmationClientPage = () => {
   const searchParams = useSearchParams()
@@ -16,17 +16,38 @@ const ConfirmationClientPage = () => {
     service: "",
   })
 
-  useEffect(() => {
-    // Получаем данные из URL параметров
-    const name = searchParams.get("name") || ""
-    const email = searchParams.get("email") || ""
-    const phone = searchParams.get("phone") || ""
-    const date = searchParams.get("date") || ""
-    const time = searchParams.get("time") || ""
-    const service = searchParams.get("service") || ""
+  // Use a ref to track if we've already processed the search params
+  const initializedRef = useRef(false)
 
-    setBookingDetails({ name, email, phone, date, time, service })
-  }, [searchParams])
+  useEffect(() => {
+    // Only run this effect once
+    if (!initializedRef.current) {
+      initializedRef.current = true
+
+      // Get data from URL parameters
+      const name = searchParams.get("name") || ""
+      const email = searchParams.get("email") || ""
+      const phone = searchParams.get("phone") || ""
+      const date = searchParams.get("date") || ""
+      const time = searchParams.get("time") || ""
+      const service = searchParams.get("service") || ""
+
+      setBookingDetails({ name, email, phone, date, time, service })
+    }
+  }, [searchParams]) // Keep searchParams in the dependency array for correctness
+
+  // Format service name for display
+  const getServiceName = (serviceCode: string) => {
+    const services: Record<string, string> = {
+      consultation: "Консультация",
+      document: "Подготовка документов",
+      court: "Представительство в суде",
+      analysis: "Юридический анализ",
+      settlement: "Досудебное урегулирование",
+      subscription: "Юридическое сопровождение",
+    }
+    return services[serviceCode] || serviceCode
+  }
 
   return (
     <motion.div
@@ -71,7 +92,7 @@ const ConfirmationClientPage = () => {
             </div>
             <div>
               <p className="text-sm text-gray-500">Услуга:</p>
-              <p className="font-medium">{bookingDetails.service}</p>
+              <p className="font-medium">{getServiceName(bookingDetails.service)}</p>
             </div>
             <div>
               <p className="text-sm text-gray-500">Дата:</p>
@@ -86,7 +107,18 @@ const ConfirmationClientPage = () => {
 
         <div className="text-center">
           <p className="text-gray-600 mb-4">Если у вас возникли вопросы, пожалуйста, свяжитесь с нами по телефону:</p>
-          <p className="text-xl font-semibold text-blue-600">+7 (495) 123-45-67</p>
+          <a href="tel:+74951234567" className="text-xl font-semibold text-blue-600 hover:underline">
+            +7 (495) 123-45-67
+          </a>
+
+          <div className="mt-8">
+            <Link
+              href="/"
+              className="inline-block px-6 py-3 bg-[#741717] text-white font-medium rounded-md hover:bg-[#8a1c1c] transition-colors"
+            >
+              Вернуться на главную
+            </Link>
+          </div>
         </div>
       </div>
     </motion.div>

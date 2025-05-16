@@ -125,7 +125,7 @@ export function ContactForm({ subject }: ContactFormProps) {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
-        {isSubmitting ? "Отправка..." : "Отправить"}
+        {isSubmitting ? "Отпра��ка..." : "Отправить"}
       </motion.button>
     </form>
   )

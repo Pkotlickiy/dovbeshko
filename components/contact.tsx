@@ -158,7 +158,6 @@ export function Contact() {
     }
   }
 
-  // Компонент для отображения поля формы
   const FormField = ({
     id,
     name,
@@ -192,6 +191,7 @@ export function Contact() {
             onChange={onChange}
             required={required}
             className="mt-1 min-h-[120px] border-[#c4bab3] transition-all duration-300 focus:border-[#741717] focus:ring-[#741717]"
+            autoComplete="on"
           />
         ) : (
           <Input
@@ -202,12 +202,13 @@ export function Contact() {
             onChange={onChange}
             required={required}
             className="mt-1 border-[#c4bab3] transition-all duration-300 focus:border-[#741717] focus:ring-[#741717]"
+            autoComplete="on"
           />
         )}
-        <motion.div
-          className="absolute bottom-0 left-0 h-0.5 w-0 bg-[#741717]/50"
-          animate={value ? { width: "100%" } : { width: "0%" }}
-          transition={{ duration: 0.3 }}
+        <div
+          className={`absolute bottom-0 left-0 h-0.5 bg-[#741717]/50 transition-all duration-300 ${
+            value ? "w-full" : "w-0"
+          }`}
         />
       </div>
     </div>
@@ -278,12 +279,7 @@ export function Contact() {
             </div>
 
             <AnimatedItem delay={0.3}>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                className="rounded-lg border border-[#c4bab3]/20 bg-white p-6 shadow-md"
-              >
+              <div className="rounded-lg border border-[#c4bab3]/20 bg-white p-6 shadow-md">
                 <form onSubmit={handleSubmit} className="space-y-4" aria-label="Контактная форма" ref={formRef}>
                   <FormField
                     id="name"
@@ -323,11 +319,7 @@ export function Contact() {
                     isTextarea={true}
                   />
 
-                  <motion.div
-                    className="relative overflow-hidden rounded-md"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
+                  <div className="relative overflow-hidden rounded-md">
                     <Button
                       type="submit"
                       className="relative w-full bg-[#741717] text-white transition-all duration-300 hover:bg-[#603a30]"
@@ -363,33 +355,15 @@ export function Contact() {
                           "Отправить сообщение"
                         )}
                       </span>
-                      <motion.span
-                        className="absolute inset-0 -z-0 bg-gradient-to-r from-[#8B0000] to-[#741717] opacity-0"
-                        whileHover={{ opacity: 1 }}
-                        transition={{ duration: 0.3 }}
-                      />
+                      <span className="absolute inset-0 -z-0 bg-gradient-to-r from-[#8B0000] to-[#741717] opacity-0 hover:opacity-100 transition-opacity duration-300" />
                     </Button>
-                  </motion.div>
+                  </div>
 
                   {submitSuccess !== null && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="p-3 rounded-md bg-green-50 text-green-800"
-                    >
-                      {submitSuccess}
-                    </motion.div>
+                    <div className="p-3 rounded-md bg-green-50 text-green-800">{submitSuccess}</div>
                   )}
 
-                  {formError && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="p-3 rounded-md bg-red-50 text-red-800"
-                    >
-                      {formError}
-                    </motion.div>
-                  )}
+                  {formError && <div className="p-3 rounded-md bg-red-50 text-red-800">{formError}</div>}
 
                   <p className="text-xs text-[#603a30]">
                     * Отправляя форму, вы соглашаетесь с{" "}
@@ -398,52 +372,36 @@ export function Contact() {
                     </Link>
                   </p>
                 </form>
-              </motion.div>
+              </div>
             </AnimatedItem>
           </div>
 
-          {/* Добавляем блок с Google Maps и дополнительной информацией */}
+          {/* Блок с дополнительной информацией о том, как добраться */}
           <div className="mt-16">
             <AnimatedItem>
               <div className="bg-[#f8f5f2] rounded-lg shadow-md p-6">
                 <h3 className="text-2xl font-bold text-[#741717] mb-4">Как нас найти в Санкт-Петербурге</h3>
 
-                <div className="grid md:grid-cols-2 gap-8">
+                <div className="space-y-4">
                   <div>
-                    <div className="mb-4">
-                      <h4 className="text-lg font-semibold text-[#603a30] mb-2">Адрес офиса:</h4>
-                      <p className="text-[#603a30]">Московский проспект 143, Санкт-Петербург, 196084</p>
-                      <p className="text-[#603a30] mt-1">Московский район</p>
-                    </div>
-
-                    <div className="mb-4">
-                      <h4 className="text-lg font-semibold text-[#603a30] mb-2">Как добраться:</h4>
-                      <ul className="list-disc list-inside text-[#603a30]">
-                        <li>Станция метро "Электросила" - 7 минут пешком</li>
-                        <li>Станция метро "Московские ворота" - 12 минут пешком</li>
-                        <li>Автобусы: 3, 26, 50, 62, 64, 72</li>
-                        <li>Троллейбусы: 15, 17, 44</li>
-                      </ul>
-                    </div>
-
-                    <div>
-                      <h4 className="text-lg font-semibold text-[#603a30] mb-2">Парковка:</h4>
-                      <p className="text-[#603a30]">Рядом с офисом есть бесплатная парковка для клиентов</p>
-                    </div>
+                    <h4 className="text-lg font-semibold text-[#603a30] mb-2">Адрес офиса:</h4>
+                    <p className="text-[#603a30]">Московский проспект 143, Санкт-Петербург, 196084</p>
+                    <p className="text-[#603a30] mt-1">Московский район</p>
                   </div>
 
-                  <div className="h-[300px] rounded-lg overflow-hidden">
-                    <iframe
-                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1999.2959345318453!2d30.316516!3d59.891605!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTnCsDUzJzI5LjgiTiAzMMKwMTgnNTkuNSJF!5e0!3m2!1sru!2sru!4v1621234567890!5m2!1sru!2sru"
-                      width="100%"
-                      height="100%"
-                      style={{ border: 0 }}
-                      allowFullScreen
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
-                      title="Адвокат Довбешко С.Ю. на карте Санкт-Петербурга"
-                      aria-label="Местоположение офиса адвоката Довбешко С.Ю. в Московском районе Санкт-Петербурга"
-                    ></iframe>
+                  <div>
+                    <h4 className="text-lg font-semibold text-[#603a30] mb-2">Как добраться:</h4>
+                    <ul className="list-disc list-inside text-[#603a30]">
+                      <li>Станция метро "Электросила" - 7 минут пешком</li>
+                      <li>Станция метро "Московские ворота" - 12 минут пешком</li>
+                      <li>Автобусы: 3, 26, 50, 62, 64, 72</li>
+                      <li>Троллейбусы: 15, 17, 44</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 className="text-lg font-semibold text-[#603a30] mb-2">Парковка:</h4>
+                    <p className="text-[#603a30]">Рядом с офисом есть бесплатная парковка для клиентов</p>
                   </div>
                 </div>
               </div>

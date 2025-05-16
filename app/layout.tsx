@@ -8,6 +8,7 @@ import { Montserrat, Playfair_Display, Cormorant } from "next/font/google"
 import { ScrollToTop } from "@/components/scroll-to-top"
 import { SkipToContent } from "@/components/skip-to-content"
 import { WebsiteSchema } from "@/components/website-schema"
+import { YandexMetrika } from "@/components/yandex-metrika"
 import { siteConfig } from "@/lib/seo"
 
 const montserrat = Montserrat({ subsets: ["latin", "cyrillic"], variable: "--font-montserrat" })
@@ -72,6 +73,7 @@ export default function RootLayout({
     <html lang="ru" className={`${montserrat.variable} ${playfair.variable} ${cormorant.variable}`}>
       <head>
         <link rel="preload" href="/images/hero-bg.webp" as="image" />
+        <YandexMetrika counterId="101596523" />
       </head>
       <body className="bg-white font-montserrat">
         <Providers>

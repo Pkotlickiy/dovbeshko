@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { siteConfig } from "./seo"
+import { siteConfig } from "@/lib/seo"
 
 // Базовые метаданные для всех страниц
 export const baseMetadata: Metadata = {
