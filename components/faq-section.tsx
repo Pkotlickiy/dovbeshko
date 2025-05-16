@@ -89,16 +89,8 @@ export function FaqSection() {
                         {faq.question}
                       </AccordionTrigger>
                     </motion.div>
-                    <AccordionContent className="text-[#603a30]">
-                      <motion.div
-                        className="rounded-lg bg-[#f8f5f2]/50 p-4"
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        {/* Используем компонент FormattedList вместо простого параграфа */}
-                        <FormattedList content={faq.answer} firstLetterStyle={true} markerColor="#741717" />
-                      </motion.div>
+                    <AccordionContent className="pt-2 pb-4">
+                      <FormattedList items={faq.answer} />
                     </AccordionContent>
                   </AccordionItem>
                 </motion.div>

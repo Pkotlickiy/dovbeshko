@@ -5,7 +5,7 @@ import { motion } from "framer-motion"
 import { CheckCircle } from "lucide-react"
 
 interface FormattedListProps {
-  items?: string[]
+  items?: string[] | string
   icon?: ReactNode
 }
 
@@ -25,6 +25,25 @@ export function FormattedList({ items = [], icon }: FormattedListProps) {
     show: { opacity: 1, y: 0 },
   }
 
+  // Обработка случая, когда items - это строка
+  if (typeof items === "string") {
+    return (
+      <motion.div
+        className="text-gray-700"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        {items}
+      </motion.div>
+    )
+  }
+
+  // Проверка на пустой массив
+  if (!items || items.length === 0) {
+    return null
+  }
+
   return (
     <motion.ul
       className="grid grid-cols-1 md:grid-cols-2 gap-4"
@@ -33,7 +52,7 @@ export function FormattedList({ items = [], icon }: FormattedListProps) {
       whileInView="show"
       viewport={{ once: true, margin: "-100px" }}
     >
-      {(items || []).map((text, index) => (
+      {items.map((text, index) => (
         <motion.li
           key={index}
           className="flex items-start gap-3 bg-white p-4 rounded-lg shadow-sm border border-gray-100"
