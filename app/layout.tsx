@@ -11,6 +11,8 @@ import { WebsiteSchema } from "@/components/website-schema"
 import { YandexMetrika } from "@/components/yandex-metrika"
 import { YandexSpecificSchema } from "@/components/yandex-specific-schema"
 import { YandexAttorneySchema } from "@/components/yandex-attorney-schema"
+// Добавить импорт ErrorBoundary
+import ErrorBoundary from "@/components/error-boundary"
 
 const inter = Inter({ subsets: ["latin", "cyrillic"], variable: "--font-sans" })
 const playfair = Playfair_Display({
@@ -58,6 +60,7 @@ export const metadata: Metadata = {
     generator: 'v0.dev'
 }
 
+// Обновить функцию RootLayout, добавив ErrorBoundary
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -73,9 +76,11 @@ export default function RootLayout({
           <YandexAttorneySchema />
           <YandexMetrika yandexCounterId="101596523" />
           <Header />
-          <main id="main" className="pt-16">
-            {children}
-          </main>
+          <ErrorBoundary>
+            <main id="main" className="pt-16">
+              {children}
+            </main>
+          </ErrorBoundary>
           <Footer />
           <ScrollToTop />
         </Providers>

@@ -10,12 +10,35 @@ interface ContactFormProps {
   subject?: string
 }
 
+interface FormState {
+  name: string
+  email: string
+  phone: string
+  message: string
+}
+
 export function ContactForm({ subject }: ContactFormProps) {
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [phone, setPhone] = useState("")
-  const [message, setMessage] = useState("")
+  const [formState, setFormState] = useState<FormState>({
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+  })
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    setFormState((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const resetForm = () => {
+    setFormState({
+      name: "",
+      email: "",
+      phone: "",
+      message: "",
+    })
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -23,10 +46,10 @@ export function ContactForm({ subject }: ContactFormProps) {
 
     try {
       const formData = new FormData()
-      formData.append("name", name)
-      formData.append("email", email)
-      formData.append("phone", phone)
-      formData.append("message", message)
+      formData.append("name", formState.name)
+      formData.append("email", formState.email)
+      formData.append("phone", formState.phone)
+      formData.append("message", formState.message)
       if (subject) formData.append("subject", subject)
 
       const result = await submitContactForm(formData)
@@ -37,10 +60,7 @@ export function ContactForm({ subject }: ContactFormProps) {
           description: "Спасибо за ваше сообщение! Мы свяжемся с вами в ближайшее время.",
         })
         // Очистить форму после успешной отправки
-        setName("")
-        setEmail("")
-        setPhone("")
-        setMessage("")
+        resetForm()
       } else {
         toast({
           title: "Ошибка отправки",
@@ -70,8 +90,8 @@ export function ContactForm({ subject }: ContactFormProps) {
           type="text"
           id="name"
           name="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          value={formState.name}
+          onChange={handleChange}
           required
           className="mt-1 block w-full rounded-md border-[#c4bab3] shadow-sm focus:border-[#741717] focus:ring-[#741717] sm:text-sm"
         />
@@ -84,8 +104,8 @@ export function ContactForm({ subject }: ContactFormProps) {
           type="email"
           id="email"
           name="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={formState.email}
+          onChange={handleChange}
           required
           className="mt-1 block w-full rounded-md border-[#c4bab3] shadow-sm focus:border-[#741717] focus:ring-[#741717] sm:text-sm"
         />
@@ -98,8 +118,8 @@ export function ContactForm({ subject }: ContactFormProps) {
           type="tel"
           id="phone"
           name="phone"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
+          value={formState.phone}
+          onChange={handleChange}
           required
           className="mt-1 block w-full rounded-md border-[#c4bab3] shadow-sm focus:border-[#741717] focus:ring-[#741717] sm:text-sm"
         />
@@ -111,8 +131,8 @@ export function ContactForm({ subject }: ContactFormProps) {
         <textarea
           id="message"
           name="message"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
+          value={formState.message}
+          onChange={handleChange}
           rows={4}
           required
           className="mt-1 block w-full rounded-md border-[#c4bab3] shadow-sm focus:border-[#741717] focus:ring-[#741717] sm:text-sm"
@@ -125,7 +145,7 @@ export function ContactForm({ subject }: ContactFormProps) {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
-        {isSubmitting ? "Отпра��ка..." : "Отправить"}
+        {isSubmitting ? "Отправка..." : "Отправить"}
       </motion.button>
     </form>
   )

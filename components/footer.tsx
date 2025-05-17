@@ -2,7 +2,10 @@
 
 import Link from "next/link"
 import { MapPin, Phone, Mail, Clock } from "lucide-react"
+// Добавить импорт констант
+import { CONTACT_INFO } from "@/lib/constants"
 
+// Обновить компонент Footer для использования констант
 export function Footer() {
   const currentYear = new Date().getFullYear()
 
@@ -58,19 +61,22 @@ export function Footer() {
             <ul className="space-y-3">
               <li className="flex items-center">
                 <Phone className="h-4 w-4 mr-2 text-gray-300" />
-                <a href="tel:+79310070752" className="text-gray-300 hover:text-white transition-colors">
-                  +7 (931) 007-07-52
+                <a
+                  href={`tel:${CONTACT_INFO.phone.replace(/\D/g, "")}`}
+                  className="text-gray-300 hover:text-white transition-colors"
+                >
+                  {CONTACT_INFO.phone}
                 </a>
               </li>
               <li className="flex items-center">
                 <Mail className="h-4 w-4 mr-2 text-gray-300" />
-                <a href="mailto:S0070752@mail.ru" className="text-gray-300 hover:text-white transition-colors">
-                  S0070752@mail.ru
+                <a href={`mailto:${CONTACT_INFO.email}`} className="text-gray-300 hover:text-white transition-colors">
+                  {CONTACT_INFO.email}
                 </a>
               </li>
               <li className="flex items-start">
                 <MapPin className="h-4 w-4 mr-2 text-gray-300 mt-1" />
-                <span className="text-gray-300">Санкт-Петербург, Московский пр-кт. 143</span>
+                <span className="text-gray-300">{CONTACT_INFO.address}</span>
               </li>
             </ul>
           </div>
@@ -81,15 +87,15 @@ export function Footer() {
             <ul className="space-y-2">
               <li className="flex items-center">
                 <Clock className="h-4 w-4 mr-2 text-gray-300" />
-                <span className="text-gray-300">Пн-Пт: 9:00 - 18:00</span>
+                <span className="text-gray-300">{CONTACT_INFO.workHours.weekdays}</span>
               </li>
               <li className="flex items-center">
                 <Clock className="h-4 w-4 mr-2 text-gray-300" />
-                <span className="text-gray-300">Сб: 10:00 - 15:00</span>
+                <span className="text-gray-300">{CONTACT_INFO.workHours.saturday}</span>
               </li>
               <li className="flex items-center">
                 <Clock className="h-4 w-4 mr-2 text-gray-300" />
-                <span className="text-gray-300">Вс: Выходной</span>
+                <span className="text-gray-300">{CONTACT_INFO.workHours.sunday}</span>
               </li>
             </ul>
             <Link href="/privacy" className="text-gray-300 hover:text-white mt-4 transition-colors text-sm">

@@ -1,6 +1,6 @@
 "use server"
 
-import { sendTelegramNotification } from "@/lib/telegram-notification"
+import { sendContactNotification } from "@/lib/telegram-notification"
 import { z } from "zod"
 
 // Схема валидации для контактной формы
@@ -12,7 +12,12 @@ const contactSchema = z.object({
   subject: z.string().optional(),
 })
 
-export async function submitContactForm(formData: FormData) {
+export type ContactFormResult = {
+  success: boolean
+  message: string
+}
+
+export async function submitContactForm(formData: FormData): Promise<ContactFormResult> {
   try {
     const rawData = {
       name: formData.get("name") as string,
@@ -34,20 +39,8 @@ export async function submitContactForm(formData: FormData) {
 
     const data = validationResult.data
 
-    // Форматирование сообщения для Telegram
-    const telegramMessage = `
-📬 *Новое сообщение с сайта!*
-
-👤 *Имя:* ${data.name}
-📧 *Email:* ${data.email}
-📱 *Телефон:* ${data.phone}
-${data.subject ? `📋 *Тема:* ${data.subject}\n` : ""}
-💬 *Сообщение:* 
-${data.message}
-    `
-
     // Отправка уведомления в Telegram
-    const sent = await sendTelegramNotification(telegramMessage)
+    const sent = await sendContactNotification(data)
 
     if (!sent) {
       console.error("Failed to send Telegram notification")

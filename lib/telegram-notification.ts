@@ -1,13 +1,33 @@
+// Оптимизируем типизацию и структуру
+
 /**
  * Модуль для отправки уведомлений в Telegram
  */
+
+export interface AppointmentData {
+  name: string
+  email: string
+  phone: string
+  date: string
+  time: string
+  service: string
+  message?: string
+}
+
+export interface ContactFormData {
+  name: string
+  email: string
+  phone: string
+  message: string
+  subject?: string
+}
 
 /**
  * Отправляет уведомление в Telegram
  * @param message Текст сообщения
  * @returns Promise с результатом отправки
  */
-export async function sendTelegramNotification(message: string) {
+export async function sendTelegramNotification(message: string): Promise<boolean> {
   try {
     const botToken = process.env.TELEGRAM_BOT_TOKEN
     const chatId = process.env.TELEGRAM_CHAT_ID
@@ -44,27 +64,6 @@ export async function sendTelegramNotification(message: string) {
 }
 
 /**
- * Форматирует данные заявки в читаемое сообщение для Telegram
- * @param data Данные заявки
- * @returns Отформатированное сообщение
- */
-export function formatAppointmentMessage(data: any): string {
-  const serviceName = getServiceName(data.service)
-
-  return `
-📅 *Новая заявка на консультацию*
-
-👤 *Клиент:* ${data.name}
-📧 *Email:* ${data.email}
-📞 *Телефон:* ${data.phone}
-📆 *Дата:* ${new Date(data.date).toLocaleDateString("ru-RU")}
-🕒 *Время:* ${data.time}
-🔍 *Услуга:* ${serviceName}
-${data.message ? `💬 *Сообщение:* ${data.message}` : ""}
-  `
-}
-
-/**
  * Получает название услуги по коду
  * @param serviceCode Код услуги
  * @returns Название услуги
@@ -87,11 +86,60 @@ export function getServiceName(serviceCode: string): string {
 }
 
 /**
+ * Форматирует данные заявки в читаемое сообщение для Telegram
+ * @param data Данные заявки
+ * @returns Отформатированное сообщение
+ */
+export function formatAppointmentMessage(data: AppointmentData): string {
+  const serviceName = getServiceName(data.service)
+
+  return `
+📅 *Новая заявка на консультацию*
+
+👤 *Клиент:* ${data.name}
+📧 *Email:* ${data.email}
+📞 *Телефон:* ${data.phone}
+📆 *Дата:* ${new Date(data.date).toLocaleDateString("ru-RU")}
+🕒 *Время:* ${data.time}
+🔍 *Услуга:* ${serviceName}
+${data.message ? `💬 *Сообщение:* ${data.message}` : ""}
+  `
+}
+
+/**
+ * Форматирует данные контактной формы в читаемое сообщение для Telegram
+ * @param data Данные контактной формы
+ * @returns Отформатированное сообщение
+ */
+export function formatContactMessage(data: ContactFormData): string {
+  return `
+📬 *Новое сообщение с сайта!*
+
+👤 *Имя:* ${data.name}
+📧 *Email:* ${data.email}
+📱 *Телефон:* ${data.phone}
+${data.subject ? `📋 *Тема:* ${data.subject}\n` : ""}
+💬 *Сообщение:* 
+${data.message}
+  `
+}
+
+/**
  * Отправляет уведомление о новой заявке в Telegram
  * @param data Данные заявки
  * @returns Promise с результатом отправки
  */
-export async function sendAppointmentNotification(data: any): Promise<boolean> {
+export async function sendAppointmentNotification(data: AppointmentData): Promise<boolean> {
   const message = formatAppointmentMessage(data)
+  return await sendTelegramNotification(message)
+}
+
+/**
+ * Отправляет уведомление о новом сообщении с контактной формы в Telegram
+ * @param data Данные контактной формы
+ * @returns Promise с результатом отправки
+ */
+export async function sendContactNotification(data: ContactFormData): Promise<boolean> {
+  const message = formatContactMessage(data)
   return await sendTelegramNotification(message)
 }

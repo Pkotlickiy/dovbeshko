@@ -25,6 +25,9 @@ export function Header() {
   const isMobile = useMobile()
   const isHomePage = pathname === "/"
 
+  // Используем контекст только для чтения состояний
+  // const { isScrolled, isLoaded } = useAppContext()
+
   // Навигационные элементы
   const navItems: NavItem[] = [
     { label: "Главная", href: "/" },
