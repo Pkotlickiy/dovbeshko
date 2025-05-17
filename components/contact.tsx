@@ -20,6 +20,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { MapPin, Phone, Mail, Clock } from "lucide-react"
 // Удалите неиспользуемые импорты
 import { StructuredData } from "@/components/structured-data"
+import { submitContactForm } from "@/app/actions/contact-actions"
 
 // Типы для контактной информации
 interface ContactInfo {
@@ -80,16 +81,6 @@ const localBusinessData = {
   priceRange: "От 2000 ₽",
 }
 
-// Mock function for submitContactForm (replace with your actual implementation)
-async function submitContactForm(formData: FormData) {
-  // Simulate a successful submission
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({ success: true, message: "Сообщение успешно отправлено!" })
-    }, 1000)
-  })
-}
-
 export function Contact() {
   const [formData, setFormData] = useState<FormData>({
     name: "",
@@ -144,7 +135,7 @@ export function Contact() {
 
     try {
       const formData = new FormData(e.currentTarget)
-      const result = await submitContactForm(formData as any)
+      const result = await submitContactForm(formData)
 
       if (result.success) {
         setSubmitSuccess(result.message)
@@ -156,7 +147,7 @@ export function Contact() {
           message: "",
         })
       } else {
-        setFormError(result.message)
+        setFormError(result.message || "Произошла ошибка при отправке формы")
       }
     } catch (error) {
       setFormError("Произошла ошибка при отправке формы. Пожалуйста, попробуйте позже.")
@@ -185,35 +176,33 @@ export function Contact() {
     type?: string
     isTextarea?: boolean
   }) => (
-    <div>
-      <label htmlFor={id} className="block text-sm font-medium text-[#603a30]">
+    <div className="mb-4">
+      <label htmlFor={id} className="block text-sm font-medium text-[#603a30] mb-1">
         {label} {required && <span aria-hidden="true">*</span>}
         {required && <span className="sr-only">(обязательное поле)</span>}
       </label>
-      <div className="mt-1">
-        {isTextarea ? (
-          <Textarea
-            id={id}
-            name={name}
-            value={value}
-            onChange={onChange}
-            required={required}
-            className="min-h-[120px] w-full border-[#c4bab3] focus:border-[#741717] focus:ring-[#741717]"
-            autoComplete="on"
-          />
-        ) : (
-          <Input
-            id={id}
-            name={name}
-            type={type}
-            value={value}
-            onChange={onChange}
-            required={required}
-            className="w-full border-[#c4bab3] focus:border-[#741717] focus:ring-[#741717]"
-            autoComplete="on"
-          />
-        )}
-      </div>
+      {isTextarea ? (
+        <Textarea
+          id={id}
+          name={name}
+          value={value}
+          onChange={onChange}
+          required={required}
+          className="w-full min-h-[120px] border-[#c4bab3] focus:border-[#741717] focus:ring-[#741717]"
+          autoComplete="on"
+        />
+      ) : (
+        <Input
+          id={id}
+          name={name}
+          type={type}
+          value={value}
+          onChange={onChange}
+          required={required}
+          className="w-full border-[#c4bab3] focus:border-[#741717] focus:ring-[#741717]"
+          autoComplete="on"
+        />
+      )}
     </div>
   )
 
