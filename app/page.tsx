@@ -9,6 +9,8 @@ import { FaqSection } from "@/components/faq-section"
 import { Contact } from "@/components/contact"
 import { ScrollToTop } from "@/components/scroll-to-top"
 import { StructuredData } from "@/components/structured-data"
+// Убедимся, что импорт соответствует экспорту
+import { CtaConsultation } from "@/components/cta-consultation"
 
 export const metadata: Metadata = {
   title: "Адвокат в СПб | Юридические услуги Довбешко С.Ю. | Консультация",
@@ -36,6 +38,7 @@ export default function Home() {
         <CaseTimeline />
         <FaqSection />
         <Contact />
+        <CtaConsultation />
       </main>
       <ScrollToTop />
       <StructuredData
@@ -45,21 +48,21 @@ export default function Home() {
           name: "Адвокат Довбешко Светлана Юрьевна",
           description:
             "Профессиональная юридическая помощь в Санкт-Петербурге. Защита ваших прав и интересов в уголовных, военных и гражданских делах.",
-          url: "https://example.com",
+          url: "https://advokat-dovbeshko.ru",
           telephone: "+79310070752",
           email: "S0070752@mail.ru",
           address: {
             "@type": "PostalAddress",
             streetAddress: "Московский проспект 143",
             addressLocality: "Санкт-Петербург",
-            postalCode: "196084",
+            postalCode: "196105",
             addressCountry: "RU",
             addressRegion: "Московский район",
           },
           geo: {
             "@type": "GeoCoordinates",
-            latitude: "59.891605",
-            longitude: "30.318705",
+            latitude: "59.88969",
+            longitude: "30.32128",
           },
           openingHours: "Mo,Tu,We,Th,Fr 09:00-18:00 Sa 10:00-15:00",
           priceRange: "От 2000 ₽",
@@ -67,8 +70,8 @@ export default function Home() {
             "@type": "GeoCircle",
             geoMidpoint: {
               "@type": "GeoCoordinates",
-              latitude: "59.891605",
-              longitude: "30.318705",
+              latitude: "59.88969",
+              longitude: "30.32128",
             },
             geoRadius: "50000",
           },
@@ -81,7 +84,7 @@ export default function Home() {
                 itemOffered: {
                   "@type": "Service",
                   name: "Представительство в суде",
-                  url: "https://example.com/services/court-representation",
+                  url: "https://advokat-dovbeshko.ru/services/court-representation",
                 },
               },
               {
@@ -89,7 +92,7 @@ export default function Home() {
                 itemOffered: {
                   "@type": "Service",
                   name: "Составление юридических документов",
-                  url: "https://example.com/services/document-preparation",
+                  url: "https://advokat-dovbeshko.ru/services/document-preparation",
                 },
               },
               {
@@ -97,13 +100,13 @@ export default function Home() {
                 itemOffered: {
                   "@type": "Service",
                   name: "Консультации",
-                  url: "https://example.com/services/consultations",
+                  url: "https://advokat-dovbeshko.ru/services/consultations",
                 },
               },
             ],
           },
           areaServed: "Санкт-Петербург и Ленинградская область",
-          sameAs: ["https://vk.com/example", "https://t.me/example"],
+          sameAs: [],
         }}
       />
     </>

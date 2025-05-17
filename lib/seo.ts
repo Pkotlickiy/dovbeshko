@@ -105,20 +105,20 @@ export function getLocalBusinessSchema() {
     name: "Адвокат Довбешко С.Ю.",
     description:
       "Профессиональная юридическая помощь в Санкт-Петербурге. Адвокат Довбешко С.Ю. специализируется на уголовных, гражданских и административных делах. Консультации, представительство в суде, защита прав и интересов.",
-    image: "https://advokat-dovbeshko.ru/confident-female-lawyer.png",
-    url: "https://advokat-dovbeshko.ru",
+    image: `${siteConfig.url}/confident-female-lawyer.png`,
+    url: siteConfig.url,
     telephone: "+79310070752",
     address: {
       "@type": "PostalAddress",
       streetAddress: "Московский пр-кт. 143",
       addressLocality: "Санкт-Петербург",
-      postalCode: "196084",
+      postalCode: "196105",
       addressCountry: "RU",
     },
     geo: {
       "@type": "GeoCoordinates",
-      latitude: 59.891605,
-      longitude: 30.318705,
+      latitude: 59.88969,
+      longitude: 30.32128,
     },
     openingHoursSpecification: [
       {
@@ -134,7 +134,7 @@ export function getLocalBusinessSchema() {
         closes: "15:00",
       },
     ],
-    sameAs: ["https://www.facebook.com/example", "https://www.instagram.com/example", "https://vk.com/example"],
+    sameAs: [],
     email: "S0070752@mail.ru",
   }
 }
@@ -144,20 +144,20 @@ export function getAttorneySchema() {
     "@context": "https://schema.org",
     "@type": "Attorney",
     name: "Довбешко Светлана Юрьевна",
-    image: "https://advokat-dovbeshko.ru/confident-female-lawyer.png",
-    url: "https://advokat-dovbeshko.ru",
+    image: `${siteConfig.url}/confident-female-lawyer.png`,
+    url: siteConfig.url,
     telephone: "+79310070752",
     address: {
       "@type": "PostalAddress",
       streetAddress: "Московский пр-кт. 143",
       addressLocality: "Санкт-Петербург",
-      postalCode: "196084",
+      postalCode: "196105",
       addressCountry: "RU",
     },
     geo: {
       "@type": "GeoCoordinates",
-      latitude: 59.891605,
-      longitude: 30.318705,
+      latitude: 59.88969,
+      longitude: 30.32128,
     },
     openingHoursSpecification: [
       {
@@ -176,7 +176,7 @@ export function getAttorneySchema() {
     priceRange: "По договоренности",
     serviceArea: "Санкт-Петербург и Ленинградская область",
     legalPracticeSetting: "https://schema.org/LegalService",
-    sameAs: ["https://www.facebook.com/example", "https://www.instagram.com/example", "https://vk.com/example"],
+    sameAs: [],
     email: "S0070752@mail.ru",
   }
 }

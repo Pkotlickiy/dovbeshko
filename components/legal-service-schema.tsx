@@ -43,14 +43,14 @@ export const LegalServiceSchema = ({
   serviceType,
   provider = {
     name: "Адвокат Довбешко Светлана Юрьевна",
-    image: "https://lawyer-website.vercel.app/confident-female-lawyer.png",
-    url: "https://lawyer-website.vercel.app",
+    image: `${siteConfig.url}/confident-female-lawyer.png`,
+    url: siteConfig.url,
     telephone: "+79310070752",
     email: "S0070752@mail.ru",
     address: {
       streetAddress: "Московский пр-кт. 143",
       addressLocality: "Санкт-Петербург",
-      postalCode: "196084",
+      postalCode: "196105",
       addressCountry: "RU",
     },
   },
@@ -82,8 +82,8 @@ export const LegalServiceSchema = ({
       "@type": "GeoCircle",
       geoMidpoint: {
         "@type": "GeoCoordinates",
-        latitude: 59.939095,
-        longitude: 30.315868,
+        latitude: 59.88969,
+        longitude: 30.32128,
       },
       geoRadius: "50000",
       name: areaServed,

@@ -19,6 +19,8 @@ import { MapPin, Phone, Mail, Clock } from "lucide-react"
 // Удалите неиспользуемые импорты
 import { StructuredData } from "@/components/structured-data"
 import { submitContactForm } from "@/app/actions/contact-actions"
+import { siteConfig } from "@/lib/seo"
+import { YandexFaqSchema } from "@/components/yandex-faq-schema"
 
 // Типы для контактной информации
 interface ContactInfo {
@@ -43,24 +45,24 @@ interface YandexMapProps {
 const localBusinessData = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
-  "@id": "https://example.com/#localbusiness",
+  "@id": `${siteConfig.url}/#localbusiness`,
   name: "Адвокат Довбешко Светлана Юрьевна",
-  image: "https://example.com/lawyer-courtroom.png",
+  image: `${siteConfig.url}/confident-female-lawyer.png`,
   telephone: "+79310070752",
   email: "S0070752@mail.ru",
-  url: "https://example.com",
+  url: siteConfig.url,
   address: {
     "@type": "PostalAddress",
     streetAddress: "Московский проспект 143",
     addressLocality: "Санкт-Петербург",
-    postalCode: "196084",
+    postalCode: "196105",
     addressCountry: "RU",
     addressRegion: "Московский район",
   },
   geo: {
     "@type": "GeoCoordinates",
-    latitude: 59.891605,
-    longitude: 30.318705,
+    latitude: 59.88969,
+    longitude: 30.32128,
   },
   openingHoursSpecification: [
     {
@@ -78,6 +80,25 @@ const localBusinessData = {
   ],
   priceRange: "От 2000 ₽",
 }
+
+// FAQ для страницы контактов
+const contactFaqs = [
+  {
+    question: "Как записаться на консультацию?",
+    answer:
+      "Вы можете записаться на консультацию, позвонив по телефону +7 (931) 007-07-52, отправив сообщение на email S0070752@mail.ru или заполнив форму обратной связи на сайте. Мы свяжемся с вами для подтверждения даты и времени встречи.",
+  },
+  {
+    question: "Какие документы нужно принести на консультацию?",
+    answer:
+      "Рекомендуется взять с собой все документы, связанные с вашим вопросом: договоры, переписку, судебные акты, претензии и квитанции. Чем больше информации будет в моем распоряжении, тем точнее я смогу оценить ситуацию и предложить оптимальное решение.",
+  },
+  {
+    question: "Как добраться до офиса?",
+    answer:
+      "Офис расположен по адресу: Московский проспект 143, Санкт-Петербург, 196105. Ближайшая станция метро - 'Парк Победы' (5 минут пешком). Также можно доехать на автобусах 3, 11, 26, 50, 63, 72, 150 или троллейбусах 17, 26, 29, 35.",
+  },
+]
 
 // Оптимизированный компонент FormField с использованием React.memo
 const FormField = React.memo(
@@ -152,17 +173,29 @@ export function Contact() {
       {
         icon: <MapPin className="h-5 w-5 text-[#741717]" />,
         title: "Адрес",
-        content: <p className="text-[#603a30]">Санкт-Петербург, Московский пр-кт. 143</p>,
+        content: <p className="text-[#603a30]">Санкт-Петербург, Московский пр-кт. 143, 196105</p>,
       },
       {
         icon: <Phone className="h-5 w-5 text-[#741717]" />,
         title: "Телефон",
-        content: <p className="text-[#603a30]">+7 (931) 007-07-52</p>,
+        content: (
+          <p className="text-[#603a30]">
+            <a href="tel:+79310070752" className="hover:underline">
+              +7 (931) 007-07-52
+            </a>
+          </p>
+        ),
       },
       {
         icon: <Mail className="h-5 w-5 text-[#741717]" />,
         title: "Email",
-        content: <p className="text-[#603a30]">S0070752@mail.ru</p>,
+        content: (
+          <p className="text-[#603a30]">
+            <a href="mailto:S0070752@mail.ru" className="hover:underline">
+              S0070752@mail.ru
+            </a>
+          </p>
+        ),
       },
       {
         icon: <Clock className="h-5 w-5 text-[#741717]" />,
@@ -217,6 +250,7 @@ export function Contact() {
   return (
     <>
       <StructuredData data={localBusinessData} />
+      <YandexFaqSchema faqs={contactFaqs} />
 
       <section id="contact" className="relative bg-white py-16 md:py-24">
         <div className="absolute inset-0 overflow-hidden">
@@ -366,17 +400,18 @@ export function Contact() {
                 <div className="space-y-4">
                   <div>
                     <h4 className="text-lg font-semibold text-[#603a30] mb-2">Адрес офиса:</h4>
-                    <p className="text-[#603a30]">Московский проспект 143, Санкт-Петербург, 196084</p>
+                    <p className="text-[#603a30]">Московский проспект 143, Санкт-Петербург, 196105</p>
                     <p className="text-[#603a30] mt-1">Московский район</p>
                   </div>
 
                   <div>
                     <h4 className="text-lg font-semibold text-[#603a30] mb-2">Как добраться:</h4>
                     <ul className="list-disc list-inside text-[#603a30]">
-                      <li>Станция метро "Электросила" - 7 минут пешком</li>
-                      <li>Станция метро "Московские ворота" - 12 минут пешком</li>
-                      <li>Автобусы: 3, 26, 50, 62, 64, 72</li>
-                      <li>Троллейбусы: 15, 17, 44</li>
+                      <li>Станция метро "Парк Победы" - 5 минут пешком</li>
+                      <li>Станция метро "Московская" - 15 минут пешком или 5 минут на транспорте</li>
+                      <li>Автобусы: 3, 11, 26, 50, 63, 72, 150</li>
+                      <li>Троллейбусы: 17, 26, 29, 35</li>
+                      <li>Маршрутные такси: К-3, К-213, К-252, К-286</li>
                     </ul>
                   </div>
 
@@ -394,7 +429,7 @@ export function Contact() {
   )
 }
 
-// Компонент Яндекс Карты - оставляем без изменений
+// Компонент Яндекс Карты - обновляем координаты
 function YandexMap({ apiKey }: YandexMapProps) {
   const [mapLoaded, setMapLoaded] = useState<boolean>(false)
 
@@ -402,19 +437,20 @@ function YandexMap({ apiKey }: YandexMapProps) {
     if (mapLoaded && window.ymaps) {
       window.ymaps.ready(() => {
         const map = new window.ymaps.Map("yandex-map", {
-          center: [59.891605, 30.318705],
+          center: [59.88969, 30.32128],
           zoom: 16,
           controls: ["zoomControl", "fullscreenControl"],
         })
 
         const placemark = new window.ymaps.Placemark(
-          [59.891605, 30.318705],
+          [59.88969, 30.32128],
           {
             balloonContent: `
             <div class="p-3">
               <h3 class="font-bold text-[#741717]">Адвокат Довбешко С.Ю.</h3>
-              <p>Московский пр-кт. 143, Санкт-Петербург</p>
-              <p>Тел: +7 (931) 007-07-52</p>
+              <p>Московский пр-кт. 143, Санкт-Петербург, 196105</p>
+              <p>Тел: <a href="tel:+79310070752">+7 (931) 007-07-52</a></p>
+              <p><a href="https://yandex.ru/maps/?ll=30.32128,59.88969&z=16&pt=30.32128,59.88969" target="_blank">Построить маршрут</a></p>
             </div>
           `,
           },

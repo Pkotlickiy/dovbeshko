@@ -38,7 +38,7 @@ export function WebsiteSchema() {
           "@type": "PostalAddress",
           streetAddress: "Московский пр-кт. 143",
           addressLocality: "Санкт-Петербург",
-          postalCode: "196084",
+          postalCode: "196105",
           addressCountry: "RU",
         },
         contactPoint: {
@@ -48,7 +48,7 @@ export function WebsiteSchema() {
           email: "S0070752@mail.ru",
           availableLanguage: "Russian",
         },
-        sameAs: ["https://vk.com/yourprofile", "https://www.instagram.com/yourprofile"],
+        sameAs: [],
       },
       {
         "@type": "Attorney",
@@ -63,21 +63,21 @@ export function WebsiteSchema() {
           "@type": "PostalAddress",
           streetAddress: "Московский пр-кт. 143",
           addressLocality: "Санкт-Петербург",
-          postalCode: "196084",
+          postalCode: "196105",
           addressCountry: "RU",
         },
         geo: {
           "@type": "GeoCoordinates",
-          latitude: 59.891605,
-          longitude: 30.318705,
+          latitude: 59.88969,
+          longitude: 30.32128,
         },
         priceRange: "От 2000 ₽",
         areaServed: {
           "@type": "GeoCircle",
           geoMidpoint: {
             "@type": "GeoCoordinates",
-            latitude: 59.939095,
-            longitude: 30.315868,
+            latitude: 59.88969,
+            longitude: 30.32128,
           },
           geoRadius: "50000",
         },
@@ -108,7 +108,7 @@ export function WebsiteSchema() {
             },
           ],
         },
-        sameAs: ["https://vk.com/yourprofile", "https://www.instagram.com/yourprofile"],
+        sameAs: [],
       },
     ],
   }

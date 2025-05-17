@@ -1,4 +1,6 @@
-import Script from "next/script"
+"use client"
+
+import { StructuredData } from "@/components/structured-data"
 
 interface ServiceStructuredDataProps {
   name: string
@@ -7,43 +9,28 @@ interface ServiceStructuredDataProps {
 }
 
 export function ServiceStructuredData({ name, description, url }: ServiceStructuredDataProps) {
-  const structuredData = {
+  const serviceData = {
     "@context": "https://schema.org",
     "@type": "Service",
-    name,
-    description,
+    name: name,
+    description: description,
+    url: url,
     provider: {
       "@type": "LegalService",
-      name: "Адвокат Довбешко С.Ю.",
-      image: "https://lawyer-website.vercel.app/confident-female-lawyer.png",
+      name: "Адвокат Довбешко Светлана Юрьевна",
       address: {
         "@type": "PostalAddress",
-        streetAddress: "Московский пр-кт. 143",
+        streetAddress: "Московский проспект 143",
         addressLocality: "Санкт-Петербург",
-        postalCode: "196084",
+        postalCode: "196105",
         addressCountry: "RU",
+        addressRegion: "Московский район",
       },
       telephone: "+79310070752",
       email: "S0070752@mail.ru",
+      url: "https://advokat-dovbeshko.ru",
     },
-    areaServed: {
-      "@type": "GeoCircle",
-      geoMidpoint: {
-        "@type": "GeoCoordinates",
-        latitude: 59.891605,
-        longitude: 30.318705,
-      },
-      geoRadius: "50000",
-    },
-    serviceType: "Юридическая помощь",
-    termsOfService: "https://lawyer-website.vercel.app/privacy",
   }
 
-  return (
-    <Script
-      id="service-structured-data"
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-    />
-  )
+  return <StructuredData data={serviceData} />
 }

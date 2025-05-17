@@ -1,67 +1,27 @@
-"use client"
-import { getBreadcrumbSchema, getLocalBusinessSchema, getAttorneySchema, getFaqSchema } from "@/lib/seo"
-import Script from "next/script"
+import Head from "next/head"
 
-interface SEOHeadProps {
-  title?: string
-  description?: string
+interface SeoHeadProps {
+  title: string
+  description: string
+  canonicalUrl: string
   keywords?: string[]
-  ogImage?: string
-  breadcrumbs?: { name: string; item: string }[]
-  includeFaq?: boolean
-  includeAttorney?: boolean
-  includeLocalBusiness?: boolean
 }
 
-export function SEOHead({
-  title,
-  description,
-  keywords,
-  ogImage,
-  breadcrumbs,
-  includeFaq = false,
-  includeAttorney = false,
-  includeLocalBusiness = false,
-}: SEOHeadProps) {
-  // Схемы для структурированных данных
-  const breadcrumbsSchema = breadcrumbs ? getBreadcrumbSchema(breadcrumbs) : null
-  const faqSchema = includeFaq ? getFaqSchema() : null
-  const attorneySchema = includeAttorney ? getAttorneySchema() : null
-  const localBusinessSchema = includeLocalBusiness ? getLocalBusinessSchema() : null
+export function SeoHead({ title, description, canonicalUrl, keywords = [] }: SeoHeadProps) {
+  const fullCanonicalUrl = `https://advokat-dovbeshko.ru${canonicalUrl}`
 
   return (
-    <>
-      {breadcrumbsSchema && (
-        <Script
-          id="breadcrumbs-schema"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbsSchema) }}
-        />
-      )}
-
-      {faqSchema && (
-        <Script
-          id="faq-schema"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-        />
-      )}
-
-      {attorneySchema && (
-        <Script
-          id="attorney-schema"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(attorneySchema) }}
-        />
-      )}
-
-      {localBusinessSchema && (
-        <Script
-          id="local-business-schema"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
-        />
-      )}
-    </>
+    <Head>
+      <title>{title}</title>
+      <meta name="description" content={description} />
+      {keywords.length > 0 && <meta name="keywords" content={keywords.join(", ")} />}
+      <link rel="canonical" href={fullCanonicalUrl} />
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={description} />
+      <meta property="og:url" content={fullCanonicalUrl} />
+      <meta property="og:type" content="website" />
+      <meta property="og:locale" content="ru_RU" />
+      <meta property="og:site_name" content="Адвокат Довбешко С.Ю." />
+    </Head>
   )
 }

@@ -1,86 +1,81 @@
 import type React from "react"
-import "@/app/globals.css"
 import type { Metadata } from "next"
-import { Providers } from "./providers"
+import { Inter, Playfair_Display } from "next/font/google"
+import "./globals.css"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { Montserrat, Playfair_Display, Cormorant } from "next/font/google"
+import { Providers } from "@/app/providers"
 import { ScrollToTop } from "@/components/scroll-to-top"
 import { SkipToContent } from "@/components/skip-to-content"
 import { WebsiteSchema } from "@/components/website-schema"
 import { YandexMetrika } from "@/components/yandex-metrika"
-import { siteConfig } from "@/lib/seo"
+import { YandexSpecificSchema } from "@/components/yandex-specific-schema"
+import { YandexAttorneySchema } from "@/components/yandex-attorney-schema"
 
-const montserrat = Montserrat({ subsets: ["latin", "cyrillic"], variable: "--font-montserrat" })
-const playfair = Playfair_Display({ subsets: ["latin", "cyrillic"], variable: "--font-playfair" })
-const cormorant = Cormorant({
+const inter = Inter({ subsets: ["latin", "cyrillic"], variable: "--font-sans" })
+const playfair = Playfair_Display({
   subsets: ["latin", "cyrillic"],
-  variable: "--font-cormorant",
-  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-playfair",
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteConfig.url),
   title: {
-    default: siteConfig.name,
-    template: `%s | ${siteConfig.name}`,
+    template: "%s | Адвокат Довбешко С.Ю.",
+    default: "Адвокат Довбешко С.Ю. | Юридические услуги в Санкт-Петербурге",
   },
-  description: siteConfig.description,
-  keywords: siteConfig.keywords,
-  authors: [
-    {
-      name: siteConfig.author,
-      url: siteConfig.url,
-    },
+  description:
+    "Профессиональная юридическая помощь адвоката Довбешко С.Ю. в Санкт-Петербурге. Консультации, представительство в суде, защита прав и интересов.",
+  keywords: [
+    "адвокат",
+    "юрист",
+    "юридические услуги",
+    "Санкт-Петербург",
+    "консультация юриста",
+    "представительство в суде",
+    "защита прав",
   ],
-  creator: siteConfig.author,
+  authors: [{ name: "Довбешко Светлана Юрьевна" }],
+  creator: "Довбешко Светлана Юрьевна",
+  publisher: "Довбешко Светлана Юрьевна",
+  formatDetection: {
+    email: true,
+    address: true,
+    telephone: true,
+  },
+  metadataBase: new URL("https://advokat-dovbeshko.ru"),
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
-    type: "website",
+    title: "Адвокат Довбешко С.Ю. | Юридические услуги в Санкт-Петербурге",
+    description:
+      "Профессиональная юридическая помощь адвоката Довбешко С.Ю. в Санкт-Петербурге. Консультации, представительство в суде, защита прав и интересов.",
+    url: "https://advokat-dovbeshko.ru",
+    siteName: "Адвокат Довбешко С.Ю.",
     locale: "ru_RU",
-    url: siteConfig.url,
-    title: siteConfig.name,
-    description: siteConfig.description,
-    siteName: siteConfig.name,
-    images: [
-      {
-        url: siteConfig.ogImage,
-        width: 1200,
-        height: 630,
-        alt: siteConfig.name,
-      },
-    ],
+    type: "website",
   },
-  twitter: {
-    card: "summary_large_image",
-    title: siteConfig.name,
-    description: siteConfig.description,
-    images: [siteConfig.ogImage],
-    creator: "@lawyer",
-  },
-  icons: {
-    icon: "/favicon.ico",
-  },
-  manifest: `${siteConfig.url}/site.webmanifest`,
     generator: 'v0.dev'
 }
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode
-}) {
+}>) {
   return (
-    <html lang="ru" className={`${montserrat.variable} ${playfair.variable} ${cormorant.variable}`}>
-      <head>
-        <link rel="preload" href="/images/hero-bg.webp" as="image" />
-        <YandexMetrika counterId="101596523" />
-      </head>
-      <body className="bg-white font-montserrat">
+    <html lang="ru" className={`${inter.variable} ${playfair.variable}`}>
+      <body className="min-h-screen bg-white font-sans antialiased">
         <Providers>
           <SkipToContent />
           <WebsiteSchema />
+          <YandexSpecificSchema />
+          <YandexAttorneySchema />
+          <YandexMetrika yandexCounterId="101596523" />
           <Header />
-          {children}
+          <main id="main" className="pt-16">
+            {children}
+          </main>
           <Footer />
           <ScrollToTop />
         </Providers>

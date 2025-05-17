@@ -3,17 +3,19 @@
 import Link from "next/link"
 import { motion } from "framer-motion"
 
-interface CTAConsultationProps {
+// Обновляем имя интерфейса для согласованности
+interface CtaConsultationProps {
   title?: string
   description?: string
   buttonText?: string
 }
 
-export function CTAConsultation({
+// Основная функция компонента
+export function CtaConsultation({
   title = "Нужна консультация специалиста?",
   description = "Запишитесь на бесплатную консультацию и получите профессиональную оценку вашей ситуации",
   buttonText = "Записаться на консультацию",
-}: CTAConsultationProps) {
+}: CtaConsultationProps) {
   return (
     <section className="py-16 px-4 bg-[#741717] text-white">
       <div className="max-w-5xl mx-auto">
@@ -62,3 +64,7 @@ export function CTAConsultation({
     </section>
   )
 }
+
+// Добавляем дополнительный экспорт для обратной совместимости
+// Это позволит использовать как CTAConsultation, так и CtaConsultation
+export const CTAConsultation = CtaConsultation
