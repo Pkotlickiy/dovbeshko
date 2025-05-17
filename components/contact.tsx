@@ -1,8 +1,8 @@
 "use client"
 
-import type React from "react"
+import React from "react"
 
-import { useState, useRef, type FormEvent, useEffect } from "react"
+import { useState, useRef, useCallback, useMemo, type FormEvent, useEffect } from "react"
 import type { ChangeEvent } from "react"
 import Script from "next/script"
 import Link from "next/link"
@@ -15,8 +15,6 @@ declare global {
 }
 
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { MapPin, Phone, Mail, Clock } from "lucide-react"
 // Удалите неиспользуемые импорты
 import { StructuredData } from "@/components/structured-data"
@@ -81,6 +79,60 @@ const localBusinessData = {
   priceRange: "От 2000 ₽",
 }
 
+// Оптимизированный компонент FormField с использованием React.memo
+const FormField = React.memo(
+  ({
+    id,
+    name,
+    label,
+    value,
+    onChange,
+    required = false,
+    type = "text",
+    isTextarea = false,
+  }: {
+    id: string
+    name: string
+    label: string
+    value: string
+    onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
+    required?: boolean
+    type?: string
+    isTextarea?: boolean
+  }) => (
+    <div className="mb-4">
+      <label htmlFor={id} className="block text-sm font-medium text-[#603a30] mb-1">
+        {label} {required && <span aria-hidden="true">*</span>}
+        {required && <span className="sr-only">(обязательное поле)</span>}
+      </label>
+      {isTextarea ? (
+        <textarea
+          id={id}
+          name={name}
+          value={value}
+          onChange={onChange}
+          required={required}
+          className="w-full min-h-[120px] rounded-md border border-[#c4bab3] px-3 py-2 focus:border-[#741717] focus:outline-none focus:ring-1 focus:ring-[#741717]"
+          autoComplete="on"
+        />
+      ) : (
+        <input
+          id={id}
+          name={name}
+          type={type}
+          value={value}
+          onChange={onChange}
+          required={required}
+          className="w-full rounded-md border border-[#c4bab3] px-3 py-2 focus:border-[#741717] focus:outline-none focus:ring-1 focus:ring-[#741717]"
+          autoComplete="on"
+        />
+      )}
+    </div>
+  ),
+)
+
+FormField.displayName = "FormField"
+
 export function Contact() {
   const [formData, setFormData] = useState<FormData>({
     name: "",
@@ -95,40 +147,45 @@ export function Contact() {
   const formRef = useRef<HTMLFormElement>(null)
 
   // Контактная информация - вынесена для устранения дублирования
-  const contactInfoItems: ContactInfo[] = [
-    {
-      icon: <MapPin className="h-5 w-5 text-[#741717]" />,
-      title: "Адрес",
-      content: <p className="text-[#603a30]">Санкт-Петербург, Московский пр-кт. 143</p>,
-    },
-    {
-      icon: <Phone className="h-5 w-5 text-[#741717]" />,
-      title: "Телефон",
-      content: <p className="text-[#603a30]">+7 (931) 007-07-52</p>,
-    },
-    {
-      icon: <Mail className="h-5 w-5 text-[#741717]" />,
-      title: "Email",
-      content: <p className="text-[#603a30]">S0070752@mail.ru</p>,
-    },
-    {
-      icon: <Clock className="h-5 w-5 text-[#741717]" />,
-      title: "Часы работы",
-      content: (
-        <>
-          <p className="text-[#603a30]">Пн-Пт: 9:00 - 18:00</p>
-          <p className="text-[#603a30]">Сб: 10:00 - 15:00 (по предварительной записи)</p>
-        </>
-      ),
-    },
-  ]
+  const contactInfoItems: ContactInfo[] = useMemo(
+    () => [
+      {
+        icon: <MapPin className="h-5 w-5 text-[#741717]" />,
+        title: "Адрес",
+        content: <p className="text-[#603a30]">Санкт-Петербург, Московский пр-кт. 143</p>,
+      },
+      {
+        icon: <Phone className="h-5 w-5 text-[#741717]" />,
+        title: "Телефон",
+        content: <p className="text-[#603a30]">+7 (931) 007-07-52</p>,
+      },
+      {
+        icon: <Mail className="h-5 w-5 text-[#741717]" />,
+        title: "Email",
+        content: <p className="text-[#603a30]">S0070752@mail.ru</p>,
+      },
+      {
+        icon: <Clock className="h-5 w-5 text-[#741717]" />,
+        title: "Часы работы",
+        content: (
+          <>
+            <p className="text-[#603a30]">Пн-Пт: 9:00 - 18:00</p>
+            <p className="text-[#603a30]">Сб: 10:00 - 15:00 (по предварительной записи)</p>
+          </>
+        ),
+      },
+    ],
+    [],
+  )
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  // Оптимизация с помощью useCallback
+  const handleChange = useCallback((e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+  }, [])
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  // Оптимизация с помощью useCallback
+  const handleSubmit = useCallback(async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsSubmitting(true)
     setFormError("")
@@ -155,56 +212,7 @@ export function Contact() {
     } finally {
       setIsSubmitting(false)
     }
-  }
-
-  const FormField = ({
-    id,
-    name,
-    label,
-    value,
-    onChange,
-    required = false,
-    type = "text",
-    isTextarea = false,
-  }: {
-    id: string
-    name: string
-    label: string
-    value: string
-    onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
-    required?: boolean
-    type?: string
-    isTextarea?: boolean
-  }) => (
-    <div className="mb-4">
-      <label htmlFor={id} className="block text-sm font-medium text-[#603a30] mb-1">
-        {label} {required && <span aria-hidden="true">*</span>}
-        {required && <span className="sr-only">(обязательное поле)</span>}
-      </label>
-      {isTextarea ? (
-        <Textarea
-          id={id}
-          name={name}
-          value={value}
-          onChange={onChange}
-          required={required}
-          className="w-full min-h-[120px] border-[#c4bab3] focus:border-[#741717] focus:ring-[#741717]"
-          autoComplete="on"
-        />
-      ) : (
-        <Input
-          id={id}
-          name={name}
-          type={type}
-          value={value}
-          onChange={onChange}
-          required={required}
-          className="w-full border-[#c4bab3] focus:border-[#741717] focus:ring-[#741717]"
-          autoComplete="on"
-        />
-      )}
-    </div>
-  )
+  }, [])
 
   return (
     <>
@@ -228,7 +236,7 @@ export function Contact() {
                 Контактная информация
               </h2>
             </div>
-            <div delay={0.1}>
+            <div>
               <p className="max-w-[700px] text-[#603a30] md:text-xl/relaxed">
                 Свяжитесь со мной для получения юридической консультации
               </p>
