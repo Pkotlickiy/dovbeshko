@@ -4,7 +4,6 @@ import { GraduationCap, Award, BookOpen } from "lucide-react"
 import { motion } from "framer-motion"
 import { AnimatedSection, AnimatedItem } from "@/components/animated-section"
 import { PageDivider } from "@/components/page-divider"
-import { formatNumberedList } from "@/lib/utils"
 
 export function About() {
   return (
@@ -32,11 +31,11 @@ export function About() {
             </AnimatedItem>
 
             <AnimatedItem delay={0.2}>
-              <p className="text-[#603a30] first-letter:float-left first-letter:mr-2 first-letter:font-playfair first-letter:text-4xl first-letter:font-bold first-letter:text-[#741717] md:text-lg/relaxed whitespace-pre-line">
-                {formatNumberedList(`Довбешко Светлана Юрьевна — адвокат с обширным опытом успешной практики в различных отраслях права. Моя
+              <p className="text-[#603a30] text-justify whitespace-normal leading-relaxed first-letter:float-left first-letter:mr-2 first-letter:font-playfair first-letter:text-4xl first-letter:font-bold first-letter:text-[#741717] md:text-lg">
+                Довбешко Светлана Юрьевна — адвокат с обширным опытом успешной практики в различных отраслях права. Моя
                 профессиональная философия строится на трех принципах: глубокое погружение в каждое дело, индивидуальный
                 подход к каждому клиенту и безупречная репутация, основанная на реальных результатах. Я не просто решаю
-                юридические проблемы — я защищаю ваши интересы с максимальной эффективностью и преданностью делу.`)}
+                юридические проблемы — я защищаю ваши интересы с максимальной эффективностью и преданностью делу.
               </p>
             </AnimatedItem>
 
