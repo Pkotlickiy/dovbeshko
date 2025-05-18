@@ -9,7 +9,6 @@ import { BreadcrumbSchema } from "@/components/breadcrumb-schema"
 import { PracticeIcon } from "@/components/practice-icon"
 import { motion } from "framer-motion"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
-// Add this import at the top of the file
 import { CheckCircle } from "lucide-react"
 
 interface DetailedPracticePageProps {
@@ -129,6 +128,15 @@ export function DetailedPracticePage({
     },
   }
 
+  // Фильтруем смежные области, исключая те, которыми адвокат не занимается
+  const filteredRelatedAreas = relatedAreas.filter(
+    (area) =>
+      !area.href.includes("/administrative") &&
+      !area.href.includes("/family") &&
+      !area.href.includes("/insurance") &&
+      !area.href.includes("/personal-injury"),
+  )
+
   return (
     <main className="flex flex-col min-h-screen pt-16">
       {/* Микроразметка Schema.org */}
@@ -224,13 +232,17 @@ export function DetailedPracticePage({
               className="mt-10 flex flex-wrap gap-4 justify-center"
               variants={prefersReducedMotion ? {} : itemVariants}
             >
-              <motion.button
-                className="px-6 py-3 bg-white text-[#741717] font-medium rounded-md hover:bg-white/90 transition-colors"
+              <motion.div
                 whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
                 whileTap={prefersReducedMotion ? {} : { scale: 0.98 }}
               >
-                Записаться на консультацию
-              </motion.button>
+                <Link
+                  href="/booking"
+                  className="inline-block px-6 py-3 bg-white text-[#741717] font-medium rounded-md hover:bg-white/90 transition-colors"
+                >
+                  Записаться на консультацию
+                </Link>
+              </motion.div>
             </motion.div>
           </motion.div>
         </div>
@@ -256,7 +268,8 @@ export function DetailedPracticePage({
         </div>
 
         <div className="mb-12">
-          <h2 className="text-2xl md:text-3xl font-bold text-[#741717] mb-6">Наши услуги</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-[#741717] mb-6">Мои услуги</h2>
+          {/* Мои услуги */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {services.map((service, index) => (
               <div
@@ -271,7 +284,7 @@ export function DetailedPracticePage({
         </div>
 
         <div className="mb-12">
-          <h2 className="text-2xl md:text-3xl font-bold text-[#741717] mb-6">Как мы работаем</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-[#741717] mb-6">Как я работаю</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {process.map((step, index) => (
               <div key={index} className="bg-white rounded-lg shadow-md p-6 flex items-start">
@@ -291,7 +304,8 @@ export function DetailedPracticePage({
 
         {statistics && statistics.length > 0 && (
           <div className="mb-12 bg-[#f8f5f2] py-8 px-4 rounded-lg">
-            <h2 className="text-2xl md:text-3xl font-bold text-[#741717] mb-6 text-center">Наша статистика</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-[#741717] mb-6 text-center">Моя статистика</h2>
+            {/* Моя статистика */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {statistics.map((stat, index) => (
                 <div
@@ -343,7 +357,7 @@ export function DetailedPracticePage({
 
         {cases && cases.length > 0 && (
           <div className="mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold text-[#741717] mb-6">Примеры успешных дел</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-[#741717] mb-6">Примеры моих успешных дел</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {cases.map((caseItem, index) => (
                 <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden">
@@ -365,11 +379,11 @@ export function DetailedPracticePage({
           </div>
         )}
 
-        {relatedAreas && relatedAreas.length > 0 && (
+        {filteredRelatedAreas && filteredRelatedAreas.length > 0 && (
           <div className="mb-12">
             <h2 className="text-2xl md:text-3xl font-bold text-[#741717] mb-6">Смежные области практики</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {relatedAreas.map((area, index) => (
+              {filteredRelatedAreas.map((area, index) => (
                 <Link
                   key={index}
                   href={area.href}

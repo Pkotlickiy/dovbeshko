@@ -178,12 +178,12 @@ export function HeroSection() {
 
             <div className="absolute inset-0 bg-gradient-to-br from-[#f0e9e4]/60 to-transparent"></div>
             <Image
-              src="/lawyer-courtroom.png"
-              alt="Адвокат Довбешко С.Ю. в зале суда Санкт-Петербурга - профессиональная юридическая помощь"
+              src="/lawyer-portrait.png"
+              alt="Адвокат Довбешко Светлана Юрьевна - профессиональная юридическая помощь в Санкт-Петербурге"
               width={1200}
-              height={800}
+              height={1200}
               priority
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover object-top"
             />
             <motion.div className="absolute inset-0 bg-gradient-to-t from-[#741717]/20 to-transparent opacity-0 transition-opacity duration-300 hover:opacity-100" />
           </div>

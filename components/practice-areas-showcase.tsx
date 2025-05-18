@@ -68,7 +68,7 @@ const practiceAreas: PracticeAreaItem[] = [
     description: "Возврат неправомерно полученных средств",
     href: "/practice/unjust-enrichment",
   },
-]
+].filter((area) => area.href !== "/practice/insurance" && area.href !== "/practice/personal-injury")
 
 export function PracticeAreasShowcase() {
   const [activeArea, setActiveArea] = useState<PracticeArea | null>(null)

@@ -4,10 +4,11 @@ import { ServicePageTemplate } from "@/components/service-page-template"
 import { LegalServiceSchema } from "@/components/legal-service-schema"
 import { BreadcrumbSchema } from "@/components/breadcrumb-schema"
 
+// Обновить метаданные для страницы "Составление документов"
 export const metadata: Metadata = {
-  title: "Составление исковых заявлений СПб | Юридические документы",
+  title: "Составление юридических документов СПб | Иски от 2000₽",
   description:
-    "Грамотное составление исков, договоров, претензий и жалоб. Опытный юрист в СПб. Срочная подготовка документов от 2000 руб.",
+    "Грамотное составление исков, договоров, претензий в СПб. Срочная подготовка за 24 часа. Опытный юрист с 12-летним стажем. Гарантия качества.",
   keywords: [
     "составление исковых заявлений",
     "юрист составление документов спб",

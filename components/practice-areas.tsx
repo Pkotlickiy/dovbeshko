@@ -57,7 +57,7 @@ export function PracticeAreas() {
       icon: <ShieldCheck className="h-10 w-10" />,
       href: "/practice/consumer",
     },
-  ]
+  ].filter((area) => area.href !== "/practice/insurance" && area.href !== "/practice/personal-injury")
 
   return (
     <AnimatedSection className="py-16 md:py-24" id="practice-areas">

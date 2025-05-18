@@ -4,10 +4,11 @@ import { ServicePageTemplate } from "@/components/service-page-template"
 import { LegalServiceSchema } from "@/components/legal-service-schema"
 import { BreadcrumbSchema } from "@/components/breadcrumb-schema"
 
+// Обновить метаданные для страницы "Представительство в суде"
 export const metadata: Metadata = {
-  title: "Представительство в суде СПб | Адвокат | Все инстанции",
+  title: "Адвокат в суд СПб | Защита интересов | 95% выигранных дел",
   description:
-    "Профессиональное представительство в судах СПб. Подготовка документов, участие в заседаниях, обжалование решений. От 15000 руб.",
+    "Профессиональное представительство в судах СПб. Подготовка документов, участие в заседаниях, обжалование решений. Фиксированные цены от 15000₽.",
   keywords: [
     "представительство в суде спб",
     "услуги представителя в суде",
