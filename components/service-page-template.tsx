@@ -98,7 +98,7 @@ export function ServicePageTemplate({
               <p className="text-lg text-gray-700 mb-6">{description}</p>
 
               <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-                <h2 className="text-2xl font-bold text-[#741717] mb-4">Что мы предлагаем</h2>
+                <h2 className="text-2xl font-bold text-[#741717] mb-4">Что я предлагаю</h2>
                 <ul className="space-y-3">
                   {services.map((service, index) => (
                     <li key={index} className="flex items-start">

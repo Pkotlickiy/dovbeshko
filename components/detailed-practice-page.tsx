@@ -300,22 +300,6 @@ export function DetailedPracticePage({
         </div>
 
         <div className="mb-12">
-          <h2 className="text-2xl md:text-3xl font-bold text-[#741717] mb-6">Мои услуги</h2>
-          {/* Мои услуги */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {services.map((service, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-lg shadow-md p-6 transition-transform duration-300 hover:translate-y-[-5px]"
-              >
-                <h3 className="text-xl font-bold mb-3">{service.title}</h3>
-                <p className="text-gray-600">{service.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="mb-12">
           <h2 className="text-2xl md:text-3xl font-bold text-[#741717] mb-6">Как я работаю</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {process.map((step, index) => (
