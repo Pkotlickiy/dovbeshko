@@ -1,6 +1,5 @@
 "use client"
 
-import Image from "next/image"
 import { GraduationCap, Award, BookOpen } from "lucide-react"
 import { motion } from "framer-motion"
 import { AnimatedSection, AnimatedItem } from "@/components/animated-section"
@@ -102,11 +101,10 @@ export function About() {
                 />
 
                 <div className="absolute inset-0 bg-gradient-to-br from-[#741717]/10 to-transparent"></div>
-                <Image
-                  src="/female-lawyer-courtroom.png"
-                  alt="Адвокат Довбешко Светлана Юрьевна"
-                  fill
-                  className="object-cover transition-transform duration-700 hover:scale-105"
+                <img
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1.jpg-Udp0wDLViImbt83yDgLrMUnmlwPOrn.jpeg"
+                  alt="Адвокат Довбешко Светлана Юрьевна в профессиональной обстановке"
+                  className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-700 hover:scale-105"
                 />
                 <motion.div className="absolute inset-0 bg-gradient-to-t from-[#741717]/30 to-transparent opacity-0 transition-opacity duration-300 hover:opacity-100" />
 
