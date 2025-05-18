@@ -33,7 +33,7 @@ export const SERVICES = {
 export const CONTACT_INFO = {
   phone: "+7 (931) 007-07-52",
   email: "S0070752@mail.ru",
-  address: "Санкт-Петербург, Московский пр-кт. 143",
+  address: "196105, Санкт-Петербург, Московский пр-кт. 143",
   workHours: {
     weekdays: "Пн-Пт: 9:00 - 20:00",
     saturday: "Сб: 10:00 - 15:00",

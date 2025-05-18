@@ -20,9 +20,9 @@ export function YandexAttorneySchema() {
     url: siteConfig.url,
     address: {
       "@type": "PostalAddress",
-      streetAddress: "Московский проспект 143",
-      addressLocality: "Санкт-Петербург",
       postalCode: "196105",
+      addressLocality: "Санкт-Петербург",
+      streetAddress: "Московский проспект 143",
       addressCountry: "RU",
       addressRegion: "Московский район",
     },
