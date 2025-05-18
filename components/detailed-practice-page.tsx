@@ -62,7 +62,7 @@ export function DetailedPracticePage({
   overview,
   services,
   process,
-  statistics,
+  statistics, // Оставляем параметр, но не используем его
   faqs = [],
   cases = [],
   relatedAreas = [],
@@ -134,8 +134,25 @@ export function DetailedPracticePage({
       !area.href.includes("/administrative") &&
       !area.href.includes("/family") &&
       !area.href.includes("/insurance") &&
-      !area.href.includes("/personal-injury"),
+      !area.href.includes("/personal-injury") &&
+      !area.href.includes("/labor"),
   )
+
+  // Обновленный список практик для проверки соответствия
+  const validPracticeAreas = [
+    "/practice/criminal",
+    "/practice/military",
+    "/practice/realestate",
+    "/practice/land",
+    "/practice/inheritance",
+    "/practice/consumer",
+    "/practice/arbitration",
+    "/practice/medical",
+    "/practice/unjust-enrichment",
+  ]
+
+  // Дополнительно фильтруем, чтобы оставить только валидные практики
+  const finalRelatedAreas = filteredRelatedAreas.filter((area) => validPracticeAreas.includes(area.href))
 
   return (
     <main className="flex flex-col min-h-screen pt-16">
@@ -256,6 +273,21 @@ export function DetailedPracticePage({
           </div>
         )}
 
+        {overview && (
+          <div className="mb-8">
+            <p className="text-lg text-gray-700">{overview}</p>
+            <div className="mt-4 p-4 bg-amber-50 border-l-4 border-amber-500 text-amber-700">
+              <p className="font-medium">Важное примечание:</p>
+              <p className="mt-1">
+                Я прилагаю все возможные профессиональные усилия для достижения желаемого результата в каждом деле.
+                Однако, в соответствии с Кодексом профессиональной этики адвоката, я не могу гарантировать конкретный
+                исход дела, так как это зависит от множества факторов, включая обстоятельства дела, доказательственную
+                базу и решения суда.
+              </p>
+            </div>
+          </div>
+        )}
+
         <div className="mb-12 mt-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <div className="lg:col-span-12">
@@ -302,28 +334,7 @@ export function DetailedPracticePage({
           </div>
         </div>
 
-        {statistics && statistics.length > 0 && (
-          <div className="mb-12 bg-[#f8f5f2] py-8 px-4 rounded-lg">
-            <h2 className="text-2xl md:text-3xl font-bold text-[#741717] mb-6 text-center">Моя статистика</h2>
-            {/* Моя статистика */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {statistics.map((stat, index) => (
-                <div
-                  key={index}
-                  className="bg-white rounded-lg shadow-md p-6 text-center transition-transform duration-300 hover:translate-y-[-5px]"
-                >
-                  <div className="flex justify-center mb-3">
-                    <div className="w-14 h-14 bg-[#741717] rounded-full flex items-center justify-center text-white">
-                      {stat.icon}
-                    </div>
-                  </div>
-                  <div className="text-2xl md:text-3xl font-bold">{stat.value}</div>
-                  <div className="text-gray-600">{stat.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        {/* Блок "Моя статистика" удален */}
 
         {faqs && faqs.length > 0 && (
           <div className="mb-12">
@@ -379,11 +390,11 @@ export function DetailedPracticePage({
           </div>
         )}
 
-        {filteredRelatedAreas && filteredRelatedAreas.length > 0 && (
+        {finalRelatedAreas && finalRelatedAreas.length > 0 && (
           <div className="mb-12">
             <h2 className="text-2xl md:text-3xl font-bold text-[#741717] mb-6">Смежные области практики</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {filteredRelatedAreas.map((area, index) => (
+              {finalRelatedAreas.map((area, index) => (
                 <Link
                   key={index}
                   href={area.href}

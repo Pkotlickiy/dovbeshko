@@ -21,6 +21,12 @@ const practiceAreas: PracticeAreaItem[] = [
     href: "/practice/criminal",
   },
   {
+    id: "military",
+    title: "Военное право",
+    description: "Юридическая помощь военнослужащим и призывникам",
+    href: "/practice/military",
+  },
+  {
     id: "realestate",
     title: "Недвижимость",
     description: "Сопровождение сделок с недвижимостью и защита прав собственников",
@@ -31,6 +37,12 @@ const practiceAreas: PracticeAreaItem[] = [
     title: "Земельное право",
     description: "Решение споров, связанных с земельными участками",
     href: "/practice/land",
+  },
+  {
+    id: "inheritance",
+    title: "Наследственное право",
+    description: "Помощь в оформлении и разделе наследства",
+    href: "/practice/inheritance",
   },
   {
     id: "consumer",
@@ -45,22 +57,10 @@ const practiceAreas: PracticeAreaItem[] = [
     href: "/practice/arbitration",
   },
   {
-    id: "inheritance",
-    title: "Наследственные дела",
-    description: "Помощь в оформлении и разделе наследства",
-    href: "/practice/inheritance",
-  },
-  {
     id: "medical",
     title: "Медицинское право",
     description: "Защита прав пациентов и медицинских работников",
     href: "/practice/medical",
-  },
-  {
-    id: "military",
-    title: "Военное право",
-    description: "Защита прав военнослужащих и призывников",
-    href: "/practice/military",
   },
   {
     id: "unjust-enrichment",
@@ -68,7 +68,7 @@ const practiceAreas: PracticeAreaItem[] = [
     description: "Возврат неправомерно полученных средств",
     href: "/practice/unjust-enrichment",
   },
-].filter((area) => area.href !== "/practice/insurance" && area.href !== "/practice/personal-injury")
+]
 
 export function PracticeAreasShowcase() {
   const [activeArea, setActiveArea] = useState<PracticeArea | null>(null)

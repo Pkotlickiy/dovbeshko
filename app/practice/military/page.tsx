@@ -1,4 +1,4 @@
-import { Award, FileText, Scale, Users } from "lucide-react"
+import { FileText, Scale, Users } from "lucide-react"
 import type { Metadata } from "next"
 import { DetailedPracticePage } from "@/components/detailed-practice-page"
 
@@ -99,28 +99,6 @@ export default function MilitaryLawPage() {
           icon: <FileText className="h-6 w-6" />,
         },
       ]}
-      statistics={[
-        {
-          value: "94%",
-          label: "Успешных дел",
-          icon: <Award className="h-8 w-8" />,
-        },
-        {
-          value: "200+",
-          label: "Довольных клиентов",
-          icon: <Users className="h-8 w-8" />,
-        },
-        {
-          value: "8+",
-          label: "Лет опыта",
-          icon: <FileText className="h-8 w-8" />,
-        },
-        {
-          value: "75%",
-          label: "Досудебных решений",
-          icon: <Scale className="h-8 w-8" />,
-        },
-      ]}
       faqs={[
         {
           question: "Какие основания для отсрочки от призыва существуют?",
@@ -166,19 +144,20 @@ export default function MilitaryLawPage() {
           imageSrc: "/placeholder-pfhxa.png",
         },
         {
-          title: "Восстановление на военной службе",
+          title: "Признание фактическим воспитателем погибшего на СВО",
           description:
-            "Клиент был незаконно уволен с военной службы по контракту под предлогом несоответствия занимаемой должности.",
+            "Доверитель фактически воспитывал военнослужащего, погибшего при выполнении задач в ходе специальной военной операции, но не был официально признан воспитателем, что препятствовало получению положенных компенсаций.",
           outcome:
-            "Мы подготовили и подали иск в военный суд о восстановлении на службе. Суд признал увольнение незаконным, клиент был восстановлен на службе с выплатой денежного довольствия за весь период вынужденного прогула.",
+            "Мы собрали необходимые доказательства, подготовили и подали исковое заявление в суд. В результате суд признал доверителя фактическим воспитателем погибшего военнослужащего, что позволило получить все положенные компенсации и выплаты в полном объеме.",
           imageSrc: "/placeholder-2cbx7.png",
         },
       ]}
       relatedAreas={[
-        { title: "Административное право", href: "/practice/administrative" },
-        { title: "Жилищное право", href: "/practice/housing" },
-        { title: "Трудовое право", href: "/practice/labor" },
+        { title: "Недвижимость", href: "/practice/realestate" },
+        { title: "Арбитражные споры", href: "/practice/arbitration" },
+        { title: "Уголовное право", href: "/practice/criminal" },
       ]}
+      area="military"
     />
   )
 }

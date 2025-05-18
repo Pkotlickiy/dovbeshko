@@ -35,7 +35,7 @@ export const CONTACT_INFO = {
   email: "S0070752@mail.ru",
   address: "Санкт-Петербург, Московский пр-кт. 143",
   workHours: {
-    weekdays: "Пн-Пт: 9:00 - 18:00",
+    weekdays: "Пн-Пт: 9:00 - 20:00",
     saturday: "Сб: 10:00 - 15:00",
     sunday: "Вс: Выходной",
   },

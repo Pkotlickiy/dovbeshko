@@ -8,7 +8,7 @@ import { motion } from "framer-motion"
 import { ChevronRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { AnimatedSection } from "./animated-section"
-import { Home, Map, Scroll, Shield, ShieldCheck, Stethoscope } from "lucide-react"
+import { Home, Map, Scroll, Shield, ShieldCheck, Stethoscope, Scale } from "lucide-react"
 
 type PracticeArea = {
   title: string
@@ -28,10 +28,10 @@ export function PracticeAreas() {
       href: "/practice/criminal",
     },
     {
-      title: "Земельное право",
-      description: "Решение земельных споров и оформление прав на землю в СПб",
-      icon: <Map className="h-10 w-10" />,
-      href: "/practice/land",
+      title: "Военное право",
+      description: "Юридическая помощь военнослужащим и призывникам в СПб",
+      icon: <ShieldCheck className="h-10 w-10" />,
+      href: "/practice/military",
     },
     {
       title: "Недвижимость",
@@ -40,10 +40,22 @@ export function PracticeAreas() {
       href: "/practice/realestate",
     },
     {
+      title: "Земельное право",
+      description: "Решение земельных споров и оформление прав на землю в СПб",
+      icon: <Map className="h-10 w-10" />,
+      href: "/practice/land",
+    },
+    {
       title: "Наследственное право",
       description: "Оформление наследства и решение наследственных споров",
       icon: <Scroll className="h-10 w-10" />,
       href: "/practice/inheritance",
+    },
+    {
+      title: "Неосновательное обогащение",
+      description: "Возврат неосновательно полученных средств и имущества",
+      icon: <Scale className="h-10 w-10" />,
+      href: "/practice/unjust-enrichment",
     },
     {
       title: "Медицинское право",
@@ -57,7 +69,13 @@ export function PracticeAreas() {
       icon: <ShieldCheck className="h-10 w-10" />,
       href: "/practice/consumer",
     },
-  ].filter((area) => area.href !== "/practice/insurance" && area.href !== "/practice/personal-injury")
+    {
+      title: "Арбитраж",
+      description: "Представительство в арбитражных судах Санкт-Петербурга",
+      icon: <Scale className="h-10 w-10" />,
+      href: "/practice/arbitration",
+    },
+  ]
 
   return (
     <AnimatedSection className="py-16 md:py-24" id="practice-areas">
