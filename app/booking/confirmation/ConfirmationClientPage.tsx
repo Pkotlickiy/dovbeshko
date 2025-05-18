@@ -5,6 +5,21 @@ import { motion } from "framer-motion"
 import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 
+// Функция для форматирования даты
+const formatDate = (dateString: string) => {
+  if (!dateString) return ""
+  try {
+    const date = new Date(dateString)
+    return new Intl.DateTimeFormat("ru-RU", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    }).format(date)
+  } catch (e) {
+    return dateString
+  }
+}
+
 const ConfirmationClientPage = () => {
   const searchParams = useSearchParams()
   const [bookingDetails, setBookingDetails] = useState({
@@ -36,7 +51,7 @@ const ConfirmationClientPage = () => {
     }
   }, [searchParams]) // Keep searchParams in the dependency array for correctness
 
-  // Format service name for display
+  // Форматирование названия услуги для отображения
   const getServiceName = (serviceCode: string) => {
     const services: Record<string, string> = {
       consultation: "Консультация",
@@ -45,6 +60,15 @@ const ConfirmationClientPage = () => {
       analysis: "Юридический анализ",
       settlement: "Досудебное урегулирование",
       subscription: "Юридическое сопровождение",
+      criminal: "Уголовное право",
+      military: "Военное право",
+      land: "Земельное право",
+      consumer: "Защита прав потребителей",
+      realestate: "Сделки с недвижимостью",
+      arbitration: "Арбитражное право",
+      inheritance: "Наследство",
+      unjust_enrichment: "Неосновательное обогащение",
+      medical: "Медицинское право",
     }
     return services[serviceCode] || serviceCode
   }
@@ -73,6 +97,9 @@ const ConfirmationClientPage = () => {
           <p className="text-gray-600 mt-2">
             Спасибо за запись на консультацию. Детали вашей записи отправлены на указанный email.
           </p>
+          <p className="text-gray-600 mt-2">
+            Адвокат Довбешко С.Ю. свяжется с вами в ближайшее время для подтверждения записи.
+          </p>
         </div>
 
         <div className="border-t border-b border-gray-200 py-6 mb-6">
@@ -96,7 +123,7 @@ const ConfirmationClientPage = () => {
             </div>
             <div>
               <p className="text-sm text-gray-500">Дата:</p>
-              <p className="font-medium">{bookingDetails.date}</p>
+              <p className="font-medium">{formatDate(bookingDetails.date)}</p>
             </div>
             <div>
               <p className="text-sm text-gray-500">Время:</p>
@@ -107,8 +134,8 @@ const ConfirmationClientPage = () => {
 
         <div className="text-center">
           <p className="text-gray-600 mb-4">Если у вас возникли вопросы, пожалуйста, свяжитесь с нами по телефону:</p>
-          <a href="tel:+74951234567" className="text-xl font-semibold text-blue-600 hover:underline">
-            +7 (495) 123-45-67
+          <a href="tel:+79310070752" className="text-xl font-semibold text-blue-600 hover:underline">
+            + 7 931 007 07 52
           </a>
 
           <div className="mt-8">

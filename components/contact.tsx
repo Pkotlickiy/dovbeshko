@@ -15,7 +15,7 @@ declare global {
 }
 
 import { Button } from "@/components/ui/button"
-import { MapPin, Phone, Mail, Clock } from "lucide-react"
+import { MapPin, Phone, Mail, Clock, AlertCircle, CheckCircle2 } from "lucide-react"
 // Удалите неиспользуемые импорты
 import { StructuredData } from "@/components/structured-data"
 import { submitContactForm } from "@/app/actions/contact-actions"
@@ -29,16 +29,13 @@ interface ContactInfo {
   content: React.ReactNode
 }
 
-// Типы для формы
+// 1. Обновить интерфейс FormData, добавив поле subject как строку
 interface FormData {
   name: string
   email: string
   phone: string
   message: string
-}
-
-interface YandexMapProps {
-  apiKey: string
+  subject: string // Изменено с опционального на обязательное
 }
 
 // Данные для микроразметки LocalBusiness
@@ -96,8 +93,28 @@ const contactFaqs = [
   {
     question: "Как добраться до офиса?",
     answer:
-      "Офис расположен по адресу: Московский проспект 143, Санкт-Петербург, 196105. Ближайшая станция метро - 'Электросила' (3 минуты пешком). Также можно доехать на автобусах 3, 26, 50, 62, 63, 72 или троллейбусах 17, 24, 26.",
+      "Офис расположен по адресу: Московский проспект 143, Санкт-Петербург, 196105. Ближайшая станция метро - 'Электросила' (30 секунд пешком). Также можно доехать на автобусах 3, 26, 50, 62, 63, 72 или троллейбусах 17, 24, 26.",
   },
+]
+
+// 2. Добавить массив тем обращения после объявления contactFaqs
+const serviceTopics = [
+  { value: "", label: "Выберите тему обращения" },
+  { value: "Консультация", label: "Консультация" },
+  { value: "Представительство в суде", label: "Представительство в суде" },
+  { value: "Подготовка документов", label: "Подготовка документов" },
+  { value: "Юридический анализ", label: "Юридический анализ" },
+  { value: "Досудебное урегулирование", label: "Досудебное урегулирование" },
+  { value: "Наследственные дела", label: "Наследственные дела" },
+  { value: "Земельные споры", label: "Земельные споры" },
+  { value: "Недвижимость", label: "Недвижимость" },
+  { value: "Медицинское право", label: "Медицинское право" },
+  { value: "Защита прав потребителей", label: "Защита прав потребителей" },
+  { value: "Неосновательное обогащение", label: "Неосновательное обогащение" },
+  { value: "Арбитраж", label: "Арбитраж" },
+  { value: "Военное право", label: "Военное право" },
+  { value: "Уголовное право", label: "Уголовное право" },
+  { value: "Другое", label: "Другое" },
 ]
 
 // Оптимизированный компонент FormField с использованием React.memo
@@ -111,6 +128,9 @@ const FormField = React.memo(
     required = false,
     type = "text",
     isTextarea = false,
+    placeholder = "",
+    isValid = true,
+    errorMessage = "",
   }: {
     id: string
     name: string
@@ -120,6 +140,9 @@ const FormField = React.memo(
     required?: boolean
     type?: string
     isTextarea?: boolean
+    placeholder?: string
+    isValid?: boolean
+    errorMessage?: string
   }) => (
     <div className="mb-4">
       <label htmlFor={id} className="block text-sm font-medium text-[#603a30] mb-1">
@@ -133,7 +156,10 @@ const FormField = React.memo(
           value={value}
           onChange={onChange}
           required={required}
-          className="w-full min-h-[120px] rounded-md border border-[#c4bab3] px-3 py-2 focus:border-[#741717] focus:outline-none focus:ring-1 focus:ring-[#741717]"
+          placeholder={placeholder}
+          className={`w-full min-h-[120px] rounded-md border ${
+            isValid ? "border-[#c4bab3]" : "border-red-500"
+          } px-3 py-2 focus:border-[#741717] focus:outline-none focus:ring-1 focus:ring-[#741717]`}
           autoComplete="on"
         />
       ) : (
@@ -144,10 +170,14 @@ const FormField = React.memo(
           value={value}
           onChange={onChange}
           required={required}
-          className="w-full rounded-md border border-[#c4bab3] px-3 py-2 focus:border-[#741717] focus:outline-none focus:ring-1 focus:ring-[#741717]"
+          placeholder={placeholder}
+          className={`w-full rounded-md border ${
+            isValid ? "border-[#c4bab3]" : "border-red-500"
+          } px-3 py-2 focus:border-[#741717] focus:outline-none focus:ring-1 focus:ring-[#741717]`}
           autoComplete="on"
         />
       )}
+      {!isValid && errorMessage && <p className="mt-1 text-xs text-red-600">{errorMessage}</p>}
     </div>
   ),
 )
@@ -155,11 +185,22 @@ const FormField = React.memo(
 FormField.displayName = "FormField"
 
 export function Contact() {
+  // 4. Изменить инициализацию состояния formData, чтобы subject был пустой строкой
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
     phone: "",
     message: "",
+    subject: "",
+  })
+
+  // 5. Обновить fieldErrors, добавив subject
+  const [fieldErrors, setFieldErrors] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+    subject: "",
   })
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
@@ -211,41 +252,104 @@ export function Contact() {
     [],
   )
 
-  // Оптимизация с помощью useCallback
-  const handleChange = useCallback((e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }, [])
-
-  // Оптимизация с помощью useCallback
-  const handleSubmit = useCallback(async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-    setFormError("")
-
-    try {
-      const formData = new FormData(e.currentTarget)
-      const result = await submitContactForm(formData)
-
-      if (result.success) {
-        setSubmitSuccess(result.message)
-        formRef.current?.reset()
-        setFormData({
-          name: "",
-          email: "",
-          phone: "",
-          message: "",
-        })
-      } else {
-        setFormError(result.message || "Произошла ошибка при отправке формы")
-      }
-    } catch (error) {
-      setFormError("Произошла ошибка при отправке формы. Пожалуйста, попробуйте позже.")
-      console.error("Contact form submission error:", error)
-    } finally {
-      setIsSubmitting(false)
+  // 6. Обновить функцию validateField, добавив проверку для subject
+  const validateField = useCallback((name: string, value: string): string => {
+    switch (name) {
+      case "name":
+        return value.length < 2 ? "Имя должно содержать не менее 2 символов" : ""
+      case "email":
+        return !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? "Введите корректный email адрес" : ""
+      case "phone":
+        return value.length < 6 ? "Введите корректный номер телефона" : ""
+      case "subject":
+        return value === "" ? "Пожалуйста, выберите тему обращения" : ""
+      case "message":
+        return value.length < 10 ? "Сообщение должно содержать не менее 10 символов" : ""
+      default:
+        return ""
     }
   }, [])
+
+  // Оптимизация с помощью useCallback
+  const handleChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const { name, value } = e.target
+      setFormData((prev) => ({ ...prev, [name]: value }))
+
+      // Валидация поля при изменении
+      const error = validateField(name, value)
+      setFieldErrors((prev) => ({ ...prev, [name]: error }))
+    },
+    [validateField],
+  )
+
+  // Оптимизация с помощью useCallback
+  const handleSubmit = useCallback(
+    async (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
+      setIsSubmitting(true)
+      setFormError("")
+      setSubmitSuccess(null)
+
+      // Проверяем валидность всех полей перед отправкой
+      const errors = {
+        name: validateField("name", formData.name),
+        email: validateField("email", formData.email),
+        phone: validateField("phone", formData.phone),
+        message: validateField("message", formData.message),
+        subject: validateField("subject", formData.subject || ""),
+      }
+
+      setFieldErrors(errors)
+
+      // Если есть ошибки, прерываем отправку
+      if (Object.values(errors).some((error) => error !== "")) {
+        setFormError("Пожалуйста, исправьте ошибки в форме перед отправкой")
+        setIsSubmitting(false)
+        return
+      }
+
+      try {
+        const formDataToSend = new FormData(e.currentTarget)
+
+        // Добавляем пустую строку для subject, если оно не заполнено
+        if (!formDataToSend.get("subject")) {
+          formDataToSend.set("subject", "")
+        }
+
+        // Логируем данные перед отправкой для отладки
+        console.log("Sending form data:", {
+          name: formDataToSend.get("name"),
+          email: formDataToSend.get("email"),
+          phone: formDataToSend.get("phone"),
+          message: formDataToSend.get("message"),
+          subject: formDataToSend.get("subject"),
+        })
+
+        const result = await submitContactForm(formDataToSend)
+
+        if (result.success) {
+          setSubmitSuccess(result.message)
+          formRef.current?.reset()
+          setFormData({
+            name: "",
+            email: "",
+            phone: "",
+            message: "",
+            subject: "",
+          })
+        } else {
+          setFormError(result.message || "Произошла ошибка при отправке формы")
+        }
+      } catch (error) {
+        console.error("Contact form submission error:", error)
+        setFormError("Произошла ошибка при отправке формы. Пожалуйста, попробуйте позже.")
+      } finally {
+        setIsSubmitting(false)
+      }
+    },
+    [formData, validateField],
+  )
 
   return (
     <>
@@ -300,6 +404,25 @@ export function Contact() {
 
             <div>
               <div className="rounded-lg border border-[#c4bab3]/20 bg-white p-6 shadow-md">
+                {/* 3. Изменить блок с формой, добавив выпадающий список с темами */}
+                {/* Найти место после информационного блока и перед кнопкой тестирования соединения */}
+                {/* и заменить его следующим кодом: */}
+                <div className="mb-4 p-3 rounded-md bg-[#f8f5f2] border-l-4 border-[#741717] text-[#603a30] text-sm">
+                  <div className="flex items-start gap-2">
+                    <AlertCircle className="h-5 w-5 text-[#741717] mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="font-medium">Важная информация:</p>
+                      <ul className="list-disc list-inside mt-1 ml-1">
+                        <li>Имя: не менее 2 символов</li>
+                        <li>Email: корректный формат электронной почты</li>
+                        <li>Телефон: не менее 6 символов</li>
+                        <li>Тема: выберите тему обращения</li>
+                        <li>Сообщение: не менее 10 символов</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
                 <form onSubmit={handleSubmit} className="space-y-4" aria-label="Контактная форма" ref={formRef}>
                   <FormField
                     id="name"
@@ -308,6 +431,9 @@ export function Contact() {
                     value={formData.name}
                     onChange={handleChange}
                     required={true}
+                    placeholder="Введите ваше имя"
+                    isValid={!fieldErrors.name}
+                    errorMessage={fieldErrors.name}
                   />
 
                   <FormField
@@ -318,6 +444,9 @@ export function Contact() {
                     onChange={handleChange}
                     required={true}
                     type="email"
+                    placeholder="example@domain.com"
+                    isValid={!fieldErrors.email}
+                    errorMessage={fieldErrors.email}
                   />
 
                   <FormField
@@ -327,7 +456,37 @@ export function Contact() {
                     value={formData.phone}
                     onChange={handleChange}
                     required={true}
+                    placeholder="+7 (XXX) XXX-XX-XX"
+                    isValid={!fieldErrors.phone}
+                    errorMessage={fieldErrors.phone}
                   />
+
+                  {/* 7. Добавить поле выбора темы в форму после поля телефона и перед полем сообщения */}
+                  {/* Найти место в форме после FormField для телефона и перед FormField для сообщения */}
+                  {/* и добавить следующий код: */}
+                  <div className="mb-4">
+                    <label htmlFor="subject" className="block text-sm font-medium text-[#603a30] mb-1">
+                      Тема обращения <span aria-hidden="true">*</span>
+                      <span className="sr-only">(обязательное поле)</span>
+                    </label>
+                    <select
+                      id="subject"
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleChange}
+                      required
+                      className={`w-full rounded-md border ${
+                        !fieldErrors.subject ? "border-[#c4bab3]" : "border-red-500"
+                      } px-3 py-2 focus:border-[#741717] focus:outline-none focus:ring-1 focus:ring-[#741717]`}
+                    >
+                      {serviceTopics.map((topic) => (
+                        <option key={topic.value} value={topic.value}>
+                          {topic.label}
+                        </option>
+                      ))}
+                    </select>
+                    {fieldErrors.subject && <p className="mt-1 text-xs text-red-600">{fieldErrors.subject}</p>}
+                  </div>
 
                   <FormField
                     id="message"
@@ -337,6 +496,9 @@ export function Contact() {
                     onChange={handleChange}
                     required={true}
                     isTextarea={true}
+                    placeholder="Опишите ваш вопрос..."
+                    isValid={!fieldErrors.message}
+                    errorMessage={fieldErrors.message}
                   />
 
                   <Button
@@ -375,10 +537,26 @@ export function Contact() {
                   </Button>
 
                   {submitSuccess !== null && (
-                    <div className="p-3 rounded-md bg-green-50 text-green-800">{submitSuccess}</div>
+                    <div className="p-3 rounded-md bg-green-50 text-green-800 flex items-start gap-2">
+                      <CheckCircle2 className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                      <p>{submitSuccess}</p>
+                    </div>
                   )}
 
-                  {formError && <div className="p-3 rounded-md bg-red-50 text-red-800">{formError}</div>}
+                  {formError && (
+                    <div className="p-3 rounded-md bg-red-50 text-red-800 flex items-start gap-2">
+                      <AlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="font-medium">{formError}</p>
+                        <p className="text-sm mt-1">
+                          Если проблема повторяется, свяжитесь с нами по телефону{" "}
+                          <a href="tel:+79310070752" className="underline">
+                            +7 (931) 007-07-52
+                          </a>
+                        </p>
+                      </div>
+                    </div>
+                  )}
 
                   <p className="text-xs text-[#603a30]">
                     * Отправляя форму, вы соглашаетесь с{" "}
@@ -427,6 +605,11 @@ export function Contact() {
       </section>
     </>
   )
+}
+
+// Определяем интерфейс YandexMapProps
+interface YandexMapProps {
+  apiKey: string
 }
 
 // Компонент Яндекс Карты - обновляем координаты

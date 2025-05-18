@@ -10,6 +10,7 @@ import { PageDivider } from "@/components/page-divider"
 import { FormattedList } from "@/components/formatted-list"
 import { CaseCard } from "@/components/case-card"
 import { PracticeIcon } from "@/components/practice-icon"
+import { Contact as ContactForm } from "@/components/contact"
 import {
   FileText,
   Shield,
@@ -309,6 +310,19 @@ export function PracticePageTemplate({
           </div>
         </AnimatedSection>
       )}
+
+      {/* Форма обратной связи */}
+      <AnimatedSection className="py-16 px-4 bg-white">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-playfair font-bold mb-12 text-center text-[#741717]">
+            Получить консультацию
+          </h2>
+
+          <div className="bg-white rounded-lg shadow-md p-6 border border-gray-100">
+            <ContactForm subject={`Консультация по практике: ${title}`} />
+          </div>
+        </div>
+      </AnimatedSection>
 
       {/* CTA */}
       <CTAConsultation />

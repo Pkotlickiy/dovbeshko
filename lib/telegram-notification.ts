@@ -1,43 +1,25 @@
-// Оптимизируем типизацию и структуру
-
 /**
- * Модуль для отправки уведомлений в Telegram
+ * Утилита для отправки уведомлений в Telegram
  */
 
-export interface AppointmentData {
-  name: string
-  email: string
-  phone: string
-  date: string
-  time: string
-  service: string
-  message?: string
-}
-
-export interface ContactFormData {
-  name: string
-  email: string
-  phone: string
-  message: string
-  subject?: string
-}
-
-/**
- * Отправляет уведомление в Telegram
- * @param message Текст сообщения
- * @returns Promise с результатом отправки
- */
+// Функция для отправки уведомления в Telegram
 export async function sendTelegramNotification(message: string): Promise<boolean> {
   try {
-    const botToken = process.env.TELEGRAM_BOT_TOKEN
+    // Получаем токен и chat_id из переменных окружения
+    const token = process.env.TELEGRAM_BOT_TOKEN
     const chatId = process.env.TELEGRAM_CHAT_ID
 
-    if (!botToken || !chatId) {
-      console.error("Telegram bot token or chat ID not configured")
+    // Проверяем наличие необходимых переменных окружения
+    if (!token || !chatId) {
+      console.error("Missing TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID environment variables")
       return false
     }
 
-    const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+    // Формируем URL для API Telegram
+    const url = `https://api.telegram.org/bot${token}/sendMessage`
+
+    // Отправляем запрос к API Telegram
+    const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -49,70 +31,59 @@ export async function sendTelegramNotification(message: string): Promise<boolean
       }),
     })
 
-    const data = await response.json()
-
-    if (!data.ok) {
-      console.error("Telegram API error:", data.description)
+    // Проверяем успешность запроса
+    if (!response.ok) {
+      const errorData = await response.json()
+      console.error("Telegram API error:", errorData)
       return false
     }
 
-    return data.ok
+    // Получаем и возвращаем результат
+    const result = await response.json()
+    console.log("Telegram notification sent successfully:", result)
+    return true
   } catch (error) {
     console.error("Error sending Telegram notification:", error)
     return false
   }
 }
 
-/**
- * Получает название услуги по коду
- * @param serviceCode Код услуги
- * @returns Название услуги
- */
-export function getServiceName(serviceCode: string): string {
-  const serviceMap: Record<string, string> = {
-    criminal: "Уголовное право",
-    military: "Военное право",
-    land: "Земельное право",
-    consumer: "Защита прав потребителей",
-    realestate: "Сделки с недвижимостью",
-    arbitration: "Арбитражное право",
-    inheritance: "Наследство",
-    unjust_enrichment: "Неосновательное обогащение",
-    medical: "Медицинское право",
-    consultation: "Общая консультация",
-  }
+// Функция для отправки уведомления о новой записи на консультацию
+export async function sendAppointmentNotification(data: {
+  name: string
+  email: string
+  phone: string
+  date: string
+  time: string
+  service: string
+  message?: string
+}): Promise<boolean> {
+  // Форматирование сообщения для Telegram
+  const telegramMessage = `
+📅 *Новая запись на консультацию!*
 
-  return serviceMap[serviceCode] || serviceCode
-}
-
-/**
- * Форматирует данные заявки в читаемое сообщение для Telegram
- * @param data Данные заявки
- * @returns Отформатированное сообщение
- */
-export function formatAppointmentMessage(data: AppointmentData): string {
-  const serviceName = getServiceName(data.service)
-
-  return `
-📅 *Новая заявка на консультацию*
-
-👤 *Клиент:* ${data.name}
+👤 *Имя:* ${data.name}
 📧 *Email:* ${data.email}
-📞 *Телефон:* ${data.phone}
-📆 *Дата:* ${new Date(data.date).toLocaleDateString("ru-RU")}
-🕒 *Время:* ${data.time}
-🔍 *Услуга:* ${serviceName}
-${data.message ? `💬 *Сообщение:* ${data.message}` : ""}
+📱 *Телефон:* ${data.phone}
+🗓️ *Дата:* ${data.date}
+⏰ *Время:* ${data.time}
+💼 *Услуга:* ${data.service}
+${data.message ? `💬 *Сообщение:* ${data.message}\n` : ""}
   `
+
+  return sendTelegramNotification(telegramMessage)
 }
 
-/**
- * Форматирует данные контактной формы в читаемое сообщение для Telegram
- * @param data Данные контактной формы
- * @returns Отформатированное сообщение
- */
-export function formatContactMessage(data: ContactFormData): string {
-  return `
+// Функция для отправки уведомления о контактной форме
+export async function sendContactNotification(data: {
+  name: string
+  email: string
+  phone: string
+  message: string
+  subject?: string
+}): Promise<boolean> {
+  // Форматирование сообщения для Telegram
+  const telegramMessage = `
 📬 *Новое сообщение с сайта!*
 
 👤 *Имя:* ${data.name}
@@ -122,24 +93,34 @@ ${data.subject ? `📋 *Тема:* ${data.subject}\n` : ""}
 💬 *Сообщение:* 
 ${data.message}
   `
+
+  return sendTelegramNotification(telegramMessage)
 }
 
-/**
- * Отправляет уведомление о новой заявке в Telegram
- * @param data Данные заявки
- * @returns Promise с результатом отправки
- */
-export async function sendAppointmentNotification(data: AppointmentData): Promise<boolean> {
-  const message = formatAppointmentMessage(data)
-  return await sendTelegramNotification(message)
-}
+// Функция для тестирования соединения с Telegram
+export async function testTelegramConnection(): Promise<{
+  success: boolean
+  message: string
+}> {
+  try {
+    const sent = await sendTelegramNotification("🧪 *Тестовое сообщение* 🧪\nПроверка соединения с Telegram API")
 
-/**
- * Отправляет уведомление о новом сообщении с контактной формы в Telegram
- * @param data Данные контактной формы
- * @returns Promise с результатом отправки
- */
-export async function sendContactNotification(data: ContactFormData): Promise<boolean> {
-  const message = formatContactMessage(data)
-  return await sendTelegramNotification(message)
+    if (sent) {
+      return {
+        success: true,
+        message: "Тестовое сообщение успешно отправлено в Telegram",
+      }
+    } else {
+      return {
+        success: false,
+        message: "Не удалось отправить тестовое сообщение в Telegram",
+      }
+    }
+  } catch (error) {
+    console.error("Test Telegram connection error:", error)
+    return {
+      success: false,
+      message: `Ошибка при тестировании соединения с Telegram: ${error}`,
+    }
+  }
 }
