@@ -98,7 +98,7 @@ export default function Home() {
 
   return (
     <>
-      <main className="section-padding">
+      <main className="section-padding pt-16 mt-0">
         <HeroSection />
         <PracticeAreas />
         <Services />
