@@ -193,29 +193,127 @@ export function DetailedPracticePage({
 
         {/* Animated background elements */}
         <div className="absolute inset-0 overflow-hidden">
-          {!prefersReducedMotion &&
-            Array.from({ length: 5 }).map((_, i) => (
+          {!prefersReducedMotion && (
+            <>
+              {/* Горизонтальные линии */}
+              {Array.from({ length: 5 }).map((_, i) => (
+                <motion.div
+                  key={`h-line-${i}`}
+                  className="absolute h-[1px] bg-white/20"
+                  style={{
+                    width: "100%",
+                    top: `${20 + i * 15}%`,
+                    left: 0,
+                    transformOrigin: "left",
+                  }}
+                  initial={{ scaleX: 0, opacity: 0 }}
+                  animate={{
+                    scaleX: 1,
+                    opacity: 0.2,
+                    transition: {
+                      delay: 0.3 + i * 0.1,
+                      duration: 1.5,
+                      ease: "easeOut",
+                    },
+                  }}
+                />
+              ))}
+
+              {/* Вертикальные линии */}
+              {Array.from({ length: 3 }).map((_, i) => (
+                <motion.div
+                  key={`v-line-${i}`}
+                  className="absolute w-[1px] bg-white/15"
+                  style={{
+                    height: "100%",
+                    left: `${25 + i * 25}%`,
+                    top: 0,
+                    transformOrigin: "top",
+                  }}
+                  initial={{ scaleY: 0, opacity: 0 }}
+                  animate={{
+                    scaleY: 1,
+                    opacity: 0.15,
+                    transition: {
+                      delay: 0.7 + i * 0.2,
+                      duration: 1.8,
+                      ease: "easeOut",
+                    },
+                  }}
+                />
+              ))}
+
+              {/* Плавающие частицы */}
+              {Array.from({ length: 8 }).map((_, i) => (
+                <motion.div
+                  key={`particle-${i}`}
+                  className="absolute rounded-full bg-white/10"
+                  style={{
+                    width: `${6 + Math.random() * 8}px`,
+                    height: `${6 + Math.random() * 8}px`,
+                    left: `${10 + Math.random() * 80}%`,
+                    top: `${10 + Math.random() * 80}%`,
+                  }}
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    y: [0, -15, 0, 15, 0],
+                    x: [0, 10, 0, -10, 0],
+                    opacity: [0, 0.3, 0.5, 0.3, 0],
+                    scale: [0.8, 1, 1.2, 1, 0.8],
+                    transition: {
+                      duration: 5 + Math.random() * 5,
+                      repeat: Number.POSITIVE_INFINITY,
+                      repeatType: "loop",
+                      ease: "easeInOut",
+                      delay: i * 0.3,
+                    },
+                  }}
+                />
+              ))}
+
+              {/* Диагональная линия */}
               <motion.div
-                key={`line-${i}`}
-                className="absolute h-[1px] bg-white/20"
+                className="absolute h-[1px] bg-white/10 origin-bottom-left"
                 style={{
-                  width: "100%",
-                  top: `${20 + i * 15}%`,
-                  left: 0,
-                  transformOrigin: "left",
+                  width: "150%",
+                  top: "20%",
+                  left: "0%",
+                  transform: "rotate(25deg)",
                 }}
                 initial={{ scaleX: 0, opacity: 0 }}
                 animate={{
                   scaleX: 1,
-                  opacity: 0.2,
+                  opacity: 0.1,
                   transition: {
-                    delay: 0.3 + i * 0.1,
-                    duration: 1.5,
+                    delay: 1.2,
+                    duration: 2,
                     ease: "easeOut",
                   },
                 }}
               />
-            ))}
+
+              {/* Градиентный круг */}
+              <motion.div
+                className="absolute rounded-full bg-gradient-to-r from-white/5 to-transparent blur-2xl"
+                style={{
+                  width: "300px",
+                  height: "300px",
+                  right: "-50px",
+                  bottom: "-50px",
+                }}
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{
+                  opacity: 0.2,
+                  scale: 1,
+                  transition: {
+                    delay: 0.5,
+                    duration: 2,
+                    ease: "easeOut",
+                  },
+                }}
+              />
+            </>
+          )}
         </div>
 
         <div className="container mx-auto px-4">

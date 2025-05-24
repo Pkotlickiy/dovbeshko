@@ -1,67 +1,53 @@
 "use client"
 
-import type { ReactNode } from "react"
-import { motion, type Variants } from "framer-motion"
-import { fadeUpVariants, staggerContainer } from "@/lib/motion"
+import { motion } from "framer-motion"
+import { useReducedMotion } from "@/hooks/use-reduced-motion"
+import { useInView } from "framer-motion"
+import { useRef, type ReactNode } from "react"
 import { cn } from "@/lib/utils"
 
 interface AnimatedSectionProps {
   children: ReactNode
   className?: string
   delay?: number
-  duration?: number
-  variants?: Variants
-  staggerChildren?: boolean
-  viewportMargin?: string
 }
 
-export function AnimatedSection({
-  children,
-  className = "",
-  delay = 0,
-  duration = 0.5,
-  variants = fadeUpVariants,
-  staggerChildren = false,
-  viewportMargin = "-100px",
-}: AnimatedSectionProps) {
-  const containerVariants = staggerChildren ? staggerContainer : variants
+export function AnimatedSection({ children, className, delay = 0 }: AnimatedSectionProps) {
+  const ref = useRef(null)
+  const isInView = useInView(ref, { once: true, amount: 0.2 })
+  const prefersReducedMotion = useReducedMotion()
 
   return (
-    <motion.div
-      className={cn(className)}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: viewportMargin }}
-      variants={containerVariants}
-      transition={{
-        delay,
-        duration,
-        staggerChildren: staggerChildren ? 0.1 : 0,
-      }}
-    >
+    <section ref={ref} className={cn("relative", className)}>
       {children}
-    </motion.div>
+    </section>
   )
 }
 
 interface AnimatedItemProps {
   children: ReactNode
+  className?: string
   delay?: number
 }
 
-export function AnimatedItem({ children, delay = 0 }: AnimatedItemProps) {
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        delay,
-        duration: 0.5,
-        ease: "easeOut",
-      },
-    },
-  }
+export function AnimatedItem({ children, className, delay = 0 }: AnimatedItemProps) {
+  const ref = useRef(null)
+  const isInView = useInView(ref, { once: true, amount: 0.2 })
+  const prefersReducedMotion = useReducedMotion()
 
-  return <motion.div variants={itemVariants}>{children}</motion.div>
+  return (
+    <motion.div
+      ref={ref}
+      className={className}
+      initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
+      animate={isInView || prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+      transition={{
+        duration: 0.5,
+        delay: prefersReducedMotion ? 0 : delay,
+        ease: [0.21, 0.45, 0.46, 1],
+      }}
+    >
+      {children}
+    </motion.div>
+  )
 }

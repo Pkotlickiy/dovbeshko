@@ -16,7 +16,7 @@ import { CtaConsultation } from "@/components/cta-consultation"
 export const metadata: Metadata = {
   title: "Адвокат в СПб | Довбешко С.Ю. | Бесплатная первая консультация",
   description:
-    "Опытный адвокат в Санкт-Петербурге с 12-летним стажем. Уголовные, гражданские, семейные дела. Защита в суде от 15000₽. Звоните: +7 (931) 007-07-52!",
+    "Опытный адвокат в Санкт-Петербурге с 10+ летним стажем. Уголовные, гражданские, семейные дела. Защита в суде от 15000₽. Звоните: +7 (931) 007-07-52!",
   keywords: [
     "адвокат спб",
     "юрист санкт-петербург",
@@ -28,6 +28,74 @@ export const metadata: Metadata = {
 }
 
 export default function Home() {
+  // Определим структурированные данные с гарантированно инициализированными массивами
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "LegalService",
+    name: "Адвокат Довбешко Светлана Юрьевна",
+    description:
+      "Профессиональная юридическая помощь в Санкт-Петербурге. Защита ваших прав и интересов в уголовных, военных и гражданских делах.",
+    url: "https://advokat-dovbeshko.ru",
+    telephone: "+79310070752",
+    email: "S0070752@mail.ru",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Московский проспект 143",
+      addressLocality: "Санкт-Петербург",
+      postalCode: "196105",
+      addressCountry: "RU",
+      addressRegion: "Московский район",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: "59.88969",
+      longitude: "30.32128",
+    },
+    openingHours: "Mo,Tu,We,Th,Fr 09:00-18:00 Sa 10:00-15:00",
+    priceRange: "От 2000 ₽",
+    serviceArea: {
+      "@type": "GeoCircle",
+      geoMidpoint: {
+        "@type": "GeoCoordinates",
+        latitude: "59.88969",
+        longitude: "30.32128",
+      },
+      geoRadius: "50000",
+    },
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "Юридическая помощь",
+      itemListElement: [
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Представительство в суде",
+            url: "https://advokat-dovbeshko.ru/services/court-representation",
+          },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Составление юридических документов",
+            url: "https://advokat-dovbeshko.ru/services/document-preparation",
+          },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Консультации",
+            url: "https://advokat-dovbeshko.ru/services/consultations",
+          },
+        },
+      ],
+    },
+    areaServed: "Санкт-Петербург и Ленинградская область",
+    sameAs: [], // Гарантированно инициализируем как пустой массив
+  }
+
   return (
     <>
       <main className="section-padding">
@@ -42,74 +110,7 @@ export default function Home() {
         <CtaConsultation />
       </main>
       <ScrollToTop />
-      <StructuredData
-        data={{
-          "@context": "https://schema.org",
-          "@type": "LegalService",
-          name: "Адвокат Довбешко Светлана Юрьевна",
-          description:
-            "Профессиональная юридическая помощь в Санкт-Петербурге. Защита ваших прав и интересов в уголовных, военных и гражданских делах.",
-          url: "https://advokat-dovbeshko.ru",
-          telephone: "+79310070752",
-          email: "S0070752@mail.ru",
-          address: {
-            "@type": "PostalAddress",
-            streetAddress: "Московский проспект 143",
-            addressLocality: "Санкт-Петербург",
-            postalCode: "196105",
-            addressCountry: "RU",
-            addressRegion: "Московский район",
-          },
-          geo: {
-            "@type": "GeoCoordinates",
-            latitude: "59.88969",
-            longitude: "30.32128",
-          },
-          openingHours: "Mo,Tu,We,Th,Fr 09:00-18:00 Sa 10:00-15:00",
-          priceRange: "От 2000 ₽",
-          serviceArea: {
-            "@type": "GeoCircle",
-            geoMidpoint: {
-              "@type": "GeoCoordinates",
-              latitude: "59.88969",
-              longitude: "30.32128",
-            },
-            geoRadius: "50000",
-          },
-          hasOfferCatalog: {
-            "@type": "OfferCatalog",
-            name: "Юридическая помощь",
-            itemListElement: [
-              {
-                "@type": "Offer",
-                itemOffered: {
-                  "@type": "Service",
-                  name: "Представительство в суде",
-                  url: "https://advokat-dovbeshko.ru/services/court-representation",
-                },
-              },
-              {
-                "@type": "Offer",
-                itemOffered: {
-                  "@type": "Service",
-                  name: "Составление юридических документов",
-                  url: "https://advokat-dovbeshko.ru/services/document-preparation",
-                },
-              },
-              {
-                "@type": "Offer",
-                itemOffered: {
-                  "@type": "Service",
-                  name: "Консультации",
-                  url: "https://advokat-dovbeshko.ru/services/consultations",
-                },
-              },
-            ],
-          },
-          areaServed: "Санкт-Петербург и Ленинградская область",
-          sameAs: [],
-        }}
-      />
+      <StructuredData data={structuredData} />
     </>
   )
 }

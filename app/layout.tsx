@@ -74,7 +74,7 @@ export default function RootLayout({
           <WebsiteSchema />
           <YandexSpecificSchema />
           <YandexAttorneySchema />
-          <YandexMetrika yandexCounterId="101596523" />
+          <YandexMetrika counterId="101596523" />
           <Header />
           <ErrorBoundary>
             <main id="main" className="pt-16">

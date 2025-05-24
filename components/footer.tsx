@@ -1,113 +1,127 @@
-"use client"
-
 import Link from "next/link"
-import { MapPin, Phone, Mail, Clock } from "lucide-react"
-// Добавить импорт констант
-import { CONTACT_INFO } from "@/lib/constants"
+import { Phone, Mail, MapPin, Clock } from "lucide-react"
 
-// Обновить компонент Footer для использования констант
 export function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="bg-[#741717] text-white py-12">
-      <div className="container mx-auto px-5">
+    <footer className="bg-[#1c1917] text-white">
+      <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Колонка 1: О компании */}
-          <div className="flex flex-col">
-            <h3 className="text-lg font-semibold mb-4 text-white">Адвокат Довбешко С.Ю.</h3>
-            <p className="text-gray-300 mb-4">
-              Профессиональная юридическая помощь в СПб. Предоставляю со своей командой полный спектр юридических услуг.
-              Защита ваших прав и интересов - моя главная задача.
+          <div>
+            <h3 className="text-xl font-bold mb-4">Адвокат Довбешко С.Ю.</h3>
+            <p className="mb-4 text-gray-300">
+              Профессиональная юридическая помощь с опытом более 10+ лет в Санкт-Петербурге. Защита ваших прав и
+              интересов в уголовных, военных и гражданских делах.
             </p>
-            <p className="text-gray-300 mb-2">Индивидуальный подход к каждому доверителю.</p>
-            <p className="text-sm text-gray-300">Рег. номер в реестре адвокатов: 78/8409</p>
+            <p className="text-sm text-gray-400">Рег. номер 78/8409</p>
           </div>
 
-          {/* Колонка 2: Навигация */}
-          <div className="flex flex-col">
-            <h3 className="text-lg font-semibold mb-4 text-white">Навигация</h3>
+          <div>
+            <h3 className="text-xl font-bold mb-4">Контакты</h3>
+            <ul className="space-y-3">
+              <li className="flex items-start">
+                <Phone className="w-5 h-5 mr-2 mt-0.5 text-[#741717]" />
+                <a href="tel:+79310070752" className="text-gray-300 hover:text-white transition-colors">
+                  +7 (931) 007-07-52
+                </a>
+              </li>
+              <li className="flex items-start">
+                <Mail className="w-5 h-5 mr-2 mt-0.5 text-[#741717]" />
+                <a href="mailto:S0070752@mail.ru" className="text-gray-300 hover:text-white transition-colors">
+                  S0070752@mail.ru
+                </a>
+              </li>
+              <li className="flex items-start">
+                <MapPin className="w-5 h-5 mr-2 mt-0.5 text-[#741717]" />
+                <span className="text-gray-300">Московский проспект 143, Санкт-Петербург</span>
+              </li>
+              <li className="flex items-start">
+                <Clock className="w-5 h-5 mr-2 mt-0.5 text-[#741717]" />
+                <span className="text-gray-300">Пн-Пт: 9:00-18:00, Сб: 10:00-15:00</span>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-xl font-bold mb-4">Услуги</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/" className="text-gray-300 hover:text-white transition-colors">
-                  Главная
+                <Link href="/services/consultations" className="text-gray-300 hover:text-white transition-colors">
+                  Консультации
                 </Link>
               </li>
               <li>
-                <Link href="/services" className="text-gray-300 hover:text-white transition-colors">
-                  Помощь
+                <Link
+                  href="/services/court-representation"
+                  className="text-gray-300 hover:text-white transition-colors"
+                >
+                  Представительство в суде
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/services/document-preparation"
+                  className="text-gray-300 hover:text-white transition-colors"
+                >
+                  Составление документов
+                </Link>
+              </li>
+              <li>
+                <Link href="/services/legal-analysis" className="text-gray-300 hover:text-white transition-colors">
+                  Правовой анализ
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/services/pre-trial-settlement"
+                  className="text-gray-300 hover:text-white transition-colors"
+                >
+                  Досудебное урегулирование
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-xl font-bold mb-4">Области практики</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/practice/criminal" className="text-gray-300 hover:text-white transition-colors">
+                  Уголовные дела
+                </Link>
+              </li>
+              <li>
+                <Link href="/practice/military" className="text-gray-300 hover:text-white transition-colors">
+                  Военное право
+                </Link>
+              </li>
+              <li>
+                <Link href="/practice/realestate" className="text-gray-300 hover:text-white transition-colors">
+                  Недвижимость
+                </Link>
+              </li>
+              <li>
+                <Link href="/practice/inheritance" className="text-gray-300 hover:text-white transition-colors">
+                  Наследственные споры
                 </Link>
               </li>
               <li>
                 <Link href="/practice" className="text-gray-300 hover:text-white transition-colors">
-                  Практика
-                </Link>
-              </li>
-              <li>
-                <Link href="/contacts" className="text-gray-300 hover:text-white transition-colors">
-                  Контакты
-                </Link>
-              </li>
-              <li>
-                <Link href="/booking" className="text-gray-300 hover:text-white transition-colors">
-                  Записаться
+                  Все области практики →
                 </Link>
               </li>
             </ul>
-          </div>
-
-          {/* Колонка 3: Контакты */}
-          <div className="flex flex-col">
-            <h3 className="text-lg font-semibold mb-4 text-white">Контакты</h3>
-            <ul className="space-y-3">
-              <li className="flex items-center">
-                <Phone className="h-4 w-4 mr-2 text-gray-300" />
-                <a
-                  href={`tel:${CONTACT_INFO.phone.replace(/\D/g, "")}`}
-                  className="text-gray-300 hover:text-white transition-colors"
-                >
-                  {CONTACT_INFO.phone}
-                </a>
-              </li>
-              <li className="flex items-center">
-                <Mail className="h-4 w-4 mr-2 text-gray-300" />
-                <a href={`mailto:${CONTACT_INFO.email}`} className="text-gray-300 hover:text-white transition-colors">
-                  {CONTACT_INFO.email}
-                </a>
-              </li>
-              <li className="flex items-start">
-                <MapPin className="h-4 w-4 mr-2 text-gray-300 mt-1" />
-                <span className="text-gray-300">{CONTACT_INFO.address}</span>
-              </li>
-            </ul>
-          </div>
-
-          {/* Колонка 4: Часы работы */}
-          <div className="flex flex-col">
-            <h3 className="text-lg font-semibold mb-4 text-white">Часы работы</h3>
-            <ul className="space-y-2">
-              <li className="flex items-center">
-                <Clock className="h-4 w-4 mr-2 text-gray-300" />
-                <span className="text-gray-300">{CONTACT_INFO.workHours.weekdays}</span>
-              </li>
-              <li className="flex items-center">
-                <Clock className="h-4 w-4 mr-2 text-gray-300" />
-                <span className="text-gray-300">{CONTACT_INFO.workHours.saturday}</span>
-              </li>
-              <li className="flex items-center">
-                <Clock className="h-4 w-4 mr-2 text-gray-300" />
-                <span className="text-gray-300">{CONTACT_INFO.workHours.sunday}</span>
-              </li>
-            </ul>
-            <Link href="/privacy" className="text-gray-300 hover:text-white mt-4 transition-colors text-sm">
-              Политика конфиденциальности
-            </Link>
           </div>
         </div>
 
-        {/* Нижняя часть футера с копирайтом */}
-        <div className="border-t border-gray-700 mt-8 pt-6 text-center md:text-left">
-          <p className="text-sm text-gray-300">© {currentYear} Адвокат Довбешко С.Ю. Все права защищены.</p>
+        <div className="mt-12 pt-6 border-t border-gray-800 text-center text-gray-400 text-sm">
+          <p>© {currentYear} Адвокат Довбешко С.Ю. Все права защищены.</p>
+          <p className="mt-2">
+            <Link href="/privacy" className="hover:text-white transition-colors">
+              Политика конфиденциальности
+            </Link>
+          </p>
         </div>
       </div>
     </footer>

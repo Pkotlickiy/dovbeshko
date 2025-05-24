@@ -85,15 +85,19 @@ export function getFaqSchema() {
   }
 }
 
+// Безопасная функция для работы с массивами
 export function getBreadcrumbSchema(items: { name: string; item: string }[]) {
+  // Проверяем, что items - это массив
+  const safeItems = Array.isArray(items) ? items : []
+
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    itemListElement: items.map((item, index) => ({
+    itemListElement: safeItems.map((item, index) => ({
       "@type": "ListItem",
       position: index + 1,
-      name: item.name,
-      item: `${siteConfig.siteUrl}${item.item}`,
+      name: item.name || "",
+      item: `${siteConfig.siteUrl}${item.item || ""}`,
     })),
   }
 }
@@ -134,7 +138,7 @@ export function getLocalBusinessSchema() {
         closes: "15:00",
       },
     ],
-    sameAs: [],
+    sameAs: [], // Гарантированно инициализируем как пустой массив
     email: "S0070752@mail.ru",
   }
 }
@@ -176,7 +180,7 @@ export function getAttorneySchema() {
     priceRange: "По договоренности",
     serviceArea: "Санкт-Петербург и Ленинградская область",
     legalPracticeSetting: "https://schema.org/LegalService",
-    sameAs: [],
+    sameAs: [], // Гарантированно инициализируем как пустой массив
     email: "S0070752@mail.ru",
   }
 }
@@ -286,7 +290,7 @@ export const servicesData: Record<string, ServiceData> = {
       {
         question: "Что делать, если продавец отказывается принимать обратно некачественный товар?",
         answer:
-          "Если продавец отказывается принимать некачественный товар, необходимо: составить письменную претензию в двух экземплярах, вручить ее продавцу (один экземпляр с отметкой о получении оставить себе), при отказе - отправить претензию заказным письмом с уведомлением, обратиться в Роспотребнадзор  жалобой, подать исковое заявление в суд. Для суда желательно иметь заключение независимой экспертизы о недостатках товара.",
+          "Если продавец отказывается принимать некачественный товар, необходимо: составить письменную претензию в двух экземплярах, вручить ее продавцу (один экземпляр с отметкой о получении оставить себе), при отказе - отправить претензию заказным письмом с уведомлением, обратиться в Роспотребнадзор с жалобой, подать исковое заявление в суд. Для суда желательно иметь заключение независимой экспертизы о недостатках товара.",
       },
       {
         question: "В какие сроки можно вернуть товар ненадлежащего качества?",
@@ -351,6 +355,9 @@ export interface ServiceSchemaProps {
 }
 
 export function getServiceSchema({ name, description, url, serviceType, serviceOutput, faqs }: ServiceSchemaProps) {
+  // Проверяем, что faqs - это массив
+  const safeFaqs = Array.isArray(faqs) ? faqs : []
+
   return {
     "@context": "https://schema.org",
     "@type": serviceType,
@@ -368,14 +375,14 @@ export function getServiceSchema({ name, description, url, serviceType, serviceO
         },
       ],
     },
-    ...(faqs && faqs.length > 0
+    ...(safeFaqs.length > 0
       ? {
-          mainEntity: faqs.map((faq) => ({
+          mainEntity: safeFaqs.map((faq) => ({
             "@type": "Question",
-            name: faq.question,
+            name: faq.question || "",
             acceptedAnswer: {
               "@type": "Answer",
-              text: faq.answer,
+              text: faq.answer || "",
             },
           })),
         }

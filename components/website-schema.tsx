@@ -1,117 +1,32 @@
-import { siteConfig } from "@/lib/seo"
+"use client"
+
+import { StructuredData } from "@/components/structured-data"
 
 export function WebsiteSchema() {
-  const schemaData = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
+  return (
+    <StructuredData
+      data={{
+        "@context": "https://schema.org",
         "@type": "WebSite",
-        "@id": `${siteConfig.url}/#website`,
-        url: siteConfig.url,
-        name: siteConfig.name,
-        description: siteConfig.description,
+        name: "Адвокат Довбешко С.Ю.",
+        url: "https://advokat-dovbeshko.ru",
+        description:
+          "Профессиональная юридическая помощь в Санкт-Петербурге. Адвокат Довбешко С.Ю. специализируется на уголовных, гражданских и административных делах.",
         publisher: {
           "@type": "Organization",
-          "@id": `${siteConfig.url}/#organization`,
-          name: siteConfig.name,
+          name: "Адвокат Довбешко С.Ю.",
           logo: {
             "@type": "ImageObject",
-            url: `${siteConfig.url}/confident-female-lawyer.png`,
-            width: 600,
-            height: 60,
+            url: "https://advokat-dovbeshko.ru/logo.png",
           },
         },
-        inLanguage: "ru-RU",
-      },
-      {
-        "@type": "Organization",
-        "@id": `${siteConfig.url}/#organization`,
-        name: siteConfig.name,
-        url: siteConfig.url,
-        logo: {
-          "@type": "ImageObject",
-          url: `${siteConfig.url}/confident-female-lawyer.png`,
-          width: 600,
-          height: 400,
+        potentialAction: {
+          "@type": "SearchAction",
+          target: "https://advokat-dovbeshko.ru/search?q={search_term_string}",
+          "query-input": "required name=search_term_string",
         },
-        address: {
-          "@type": "PostalAddress",
-          streetAddress: "Московский пр-кт. 143",
-          addressLocality: "Санкт-Петербург",
-          postalCode: "196105",
-          addressCountry: "RU",
-        },
-        contactPoint: {
-          "@type": "ContactPoint",
-          telephone: "+79310070752",
-          contactType: "customer service",
-          email: "S0070752@mail.ru",
-          availableLanguage: "Russian",
-        },
-        sameAs: [],
-      },
-      {
-        "@type": "Attorney",
-        "@id": `${siteConfig.url}/#attorney`,
-        name: "Довбешко Светлана Юрьевна",
-        url: siteConfig.url,
-        image: `${siteConfig.url}/confident-female-lawyer.png`,
-        description: "Адвокат по гражданским, уголовным и административным делам в Санкт-Петербурге",
-        telephone: "+79310070752",
-        email: "S0070752@mail.ru",
-        address: {
-          "@type": "PostalAddress",
-          streetAddress: "Московский пр-кт. 143",
-          addressLocality: "Санкт-Петербург",
-          postalCode: "196105",
-          addressCountry: "RU",
-        },
-        geo: {
-          "@type": "GeoCoordinates",
-          latitude: 59.88969,
-          longitude: 30.32128,
-        },
-        priceRange: "От 2000 ₽",
-        areaServed: {
-          "@type": "GeoCircle",
-          geoMidpoint: {
-            "@type": "GeoCoordinates",
-            latitude: 59.88969,
-            longitude: 30.32128,
-          },
-          geoRadius: "50000",
-        },
-        hasOfferCatalog: {
-          "@type": "OfferCatalog",
-          name: "Юридические услуги",
-          itemListElement: [
-            {
-              "@type": "Offer",
-              itemOffered: {
-                "@type": "Service",
-                name: "Консультации по юридическим вопросам",
-              },
-            },
-            {
-              "@type": "Offer",
-              itemOffered: {
-                "@type": "Service",
-                name: "Представительство в суде",
-              },
-            },
-            {
-              "@type": "Offer",
-              itemOffered: {
-                "@type": "Service",
-                name: "Составление юридических документов",
-              },
-            },
-          ],
-        },
-        sameAs: [],
-      },
-    ],
-  }
-
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }} />
+        sameAs: [], // Гарантированно инициализируем как пустой массив
+      }}
+    />
+  )
 }

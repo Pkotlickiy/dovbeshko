@@ -3,68 +3,43 @@
 import Link from "next/link"
 import { motion } from "framer-motion"
 
-// Обновляем имя интерфейса для согласованности
-interface CtaConsultationProps {
-  title?: string
-  description?: string
-  buttonText?: string
-}
-
-// Основная функция компонента
-export function CtaConsultation({
-  title = "Нужна консультация специалиста?",
-  description = "Запишитесь на бесплатную консультацию и получите профессиональную оценку вашей ситуации",
-  buttonText = "Записаться на консультацию",
-}: CtaConsultationProps) {
+export function CtaConsultation() {
   return (
-    <section className="py-16 px-4 bg-[#741717] text-white">
-      <div className="max-w-5xl mx-auto">
-        <motion.div
-          className="text-center"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-          viewport={{ once: true, amount: 0.3 }}
+    <section className="bg-[#741717] py-16 md:py-24">
+      <div className="container mx-auto px-4 text-center">
+        <motion.h2
+          className="text-3xl md:text-4xl font-bold text-white mb-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
         >
-          <motion.h2
-            className="text-3xl font-bold mb-6 text-white"
-            initial={{ opacity: 0, y: -20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            viewport={{ once: true }}
+          Нужна консультация?
+        </motion.h2>
+        <motion.p
+          className="text-xl text-white/90 mb-8 max-w-3xl mx-auto"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          Запишитесь на консультацию и получите профессиональную помощь в решении вашей юридической проблемы.
+        </motion.p>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <Link
+            href="/booking"
+            className="inline-block px-8 py-4 bg-white text-[#741717] font-medium rounded-md hover:bg-gray-100 transition-colors text-lg"
           >
-            {title}
-          </motion.h2>
-          <motion.p
-            className="text-lg mb-8 max-w-2xl mx-auto text-white"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            viewport={{ once: true }}
-          >
-            {description}
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
-            viewport={{ once: true }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Link
-              href="/booking"
-              className="inline-block bg-white hover:bg-gray-100 text-[#741717] px-6 py-3 rounded-md font-medium transition-colors"
-            >
-              {buttonText}
-            </Link>
-          </motion.div>
+            Записаться на консультацию
+          </Link>
         </motion.div>
       </div>
     </section>
   )
 }
 
-// Добавляем дополнительный экспорт для обратной совместимости
-// Это позволит использовать как CTAConsultation, так и CtaConsultation
-export const CTAConsultation = CtaConsultation
+export { CtaConsultation as CTAConsultation }
