@@ -2,11 +2,9 @@ import { FileText, Scale, Users } from "lucide-react"
 import type { Metadata } from "next"
 import { DetailedPracticePage } from "@/components/detailed-practice-page"
 
-// Обновить метаданные для страницы "Земельное право"
 export const metadata: Metadata = {
   title: "Земельный юрист СПб | Споры о границах | Оформление участков",
-  description:
-    "Решение земельных споров в СПб. Оформление прав собственности, изменение ВРИ, кадастровые вопросы.",
+  description: "Решение земельных споров в СПб. Оформление прав собственности, изменение ВРИ, кадастровые вопросы.",
   keywords: [
     "юрист по земельным вопросам",
     "земельный адвокат спб",
@@ -19,6 +17,7 @@ export const metadata: Metadata = {
 export default function LandLawPage() {
   return (
     <DetailedPracticePage
+      area="land"
       title="Земельное право"
       description="Юридическая помощь по вопросам земельного права, оформление прав на земельные участки, разрешение земельных споров."
       imageSrc="/placeholder-izctf.png"
@@ -157,7 +156,6 @@ export default function LandLawPage() {
         { title: "Наследственное право", href: "/practice/inheritance" },
         { title: "Арбитражные споры", href: "/practice/arbitration" },
       ]}
-      area="land"
     />
   )
 }

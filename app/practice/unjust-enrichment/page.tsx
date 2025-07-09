@@ -2,11 +2,10 @@ import type { Metadata } from "next"
 import { Award, FileText, Scale, Users, DollarSign } from "lucide-react"
 import { DetailedPracticePage } from "@/components/detailed-practice-page"
 
-// Обновить метаданные для страницы "Неосновательное обогащение"
 export const metadata: Metadata = {
   title: "Взыскание неосновательного обогащения СПб | Возврат средств",
   description:
-    "Взыскание неосновательного обогащения, неотработанного аванса в СПб. Опыт 15+ лет. Успешно взыскано более 200 млн рублей. Консультация от 2000₽.",
+    "Взыскание неосновательного обогащения, неотработанного аванса в СПб. Опыт 10+ лет. Успешно взыскано более 200 млн рублей.",
   keywords: [
     "взыскание неосновательного обогащения",
     "неотработанный аванс",
@@ -19,6 +18,7 @@ export const metadata: Metadata = {
 export default function UnjustEnrichmentPage() {
   return (
     <DetailedPracticePage
+      area="unjust-enrichment"
       title="Неосновательное обогащение"
       description="Взыскание неосновательно полученного или сбереженного имущества"
       imageSrc="/lawyer-unjust-enrichment-court.png"
@@ -151,7 +151,6 @@ export default function UnjustEnrichmentPage() {
         { title: "Недвижимость", href: "/practice/realestate" },
         { title: "Медицинское право", href: "/practice/medical" },
       ]}
-      area="unjust-enrichment"
     />
   )
 }

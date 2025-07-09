@@ -2,7 +2,6 @@ import { FileText, Scale, Users } from "lucide-react"
 import type { Metadata } from "next"
 import { DetailedPracticePage } from "@/components/detailed-practice-page"
 
-// Обновить метаданные для страницы "Военное право"
 export const metadata: Metadata = {
   title: "Военный юрист СПб | Призыв | Жилищное обеспечение | Увольнение",
   description:
@@ -20,6 +19,7 @@ export const metadata: Metadata = {
 export default function MilitaryLawPage() {
   return (
     <DetailedPracticePage
+      area="military"
       title="Военное право"
       description="Юридическая помощь военнослужащим и призывникам. Защита прав и интересов в сфере военного права."
       imageSrc="/placeholder-68xso.png"
@@ -157,7 +157,6 @@ export default function MilitaryLawPage() {
         { title: "Арбитражные споры", href: "/practice/arbitration" },
         { title: "Уголовное право", href: "/practice/criminal" },
       ]}
-      area="military"
     />
   )
 }

@@ -1,152 +1,144 @@
 "use client"
 
-import type React from "react"
-import { useState } from "react"
+import { useActionState } from "react"
 import { motion } from "framer-motion"
-import { submitContactForm } from "@/app/actions/contact-actions"
-import { toast } from "@/components/ui/use-toast"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { submitContact } from "@/app/actions/contact-actions"
+import { FormStatus } from "@/components/form-status"
 
 interface ContactFormProps {
   subject?: string
+  title?: string
+  description?: string
 }
 
-interface FormState {
-  name: string
-  email: string
-  phone: string
-  message: string
-}
+export function ContactForm({
+  subject = "",
+  title = "Связаться с нами",
+  description = "Заполните форму, и мы свяжемся с вами в ближайшее время",
+}: ContactFormProps) {
+  const [state, formAction, isPending] = useActionState(submitContact, null)
 
-export function ContactForm({ subject }: ContactFormProps) {
-  const [formState, setFormState] = useState<FormState>({
-    name: "",
-    email: "",
-    phone: "",
-    message: "",
-  })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormState((prev) => ({ ...prev, [name]: value }))
+  const containerVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        staggerChildren: 0.1,
+      },
+    },
   }
 
-  const resetForm = () => {
-    setFormState({
-      name: "",
-      email: "",
-      phone: "",
-      message: "",
-    })
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-
-    try {
-      const formData = new FormData()
-      formData.append("name", formState.name)
-      formData.append("email", formState.email)
-      formData.append("phone", formState.phone)
-      formData.append("message", formState.message)
-      if (subject) formData.append("subject", subject)
-
-      const result = await submitContactForm(formData)
-
-      if (result.success) {
-        toast({
-          title: "Сообщение отправлено",
-          description: "Спасибо за ваше сообщение! Мы свяжемся с вами в ближайшее время.",
-        })
-        // Очистить форму после успешной отправки
-        resetForm()
-      } else {
-        toast({
-          title: "Ошибка отправки",
-          description: result.message || "Произошла ошибка при отправке формы. Пожалуйста, попробуйте позже.",
-          variant: "destructive",
-        })
-      }
-    } catch (error) {
-      console.error("Error submitting form:", error)
-      toast({
-        title: "Ошибка сервера",
-        description: "Произошла ошибка при отправке формы. Пожалуйста, попробуйте позже.",
-        variant: "destructive",
-      })
-    } finally {
-      setIsSubmitting(false)
-    }
+  const itemVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.4 },
+    },
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label htmlFor="name" className="block text-sm font-medium text-[#603a30]">
-          Имя:
-        </label>
-        <input
-          type="text"
-          id="name"
-          name="name"
-          value={formState.name}
-          onChange={handleChange}
-          required
-          className="mt-1 block w-full rounded-md border-[#c4bab3] shadow-sm focus:border-[#741717] focus:ring-[#741717] sm:text-sm"
-        />
-      </div>
-      <div>
-        <label htmlFor="email" className="block text-sm font-medium text-[#603a30]">
-          Email:
-        </label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          value={formState.email}
-          onChange={handleChange}
-          required
-          className="mt-1 block w-full rounded-md border-[#c4bab3] shadow-sm focus:border-[#741717] focus:ring-[#741717] sm:text-sm"
-        />
-      </div>
-      <div>
-        <label htmlFor="phone" className="block text-sm font-medium text-[#603a30]">
-          Телефон:
-        </label>
-        <input
-          type="tel"
-          id="phone"
-          name="phone"
-          value={formState.phone}
-          onChange={handleChange}
-          required
-          className="mt-1 block w-full rounded-md border-[#c4bab3] shadow-sm focus:border-[#741717] focus:ring-[#741717] sm:text-sm"
-        />
-      </div>
-      <div>
-        <label htmlFor="message" className="block text-sm font-medium text-[#603a30]">
-          Сообщение:
-        </label>
-        <textarea
-          id="message"
-          name="message"
-          value={formState.message}
-          onChange={handleChange}
-          rows={4}
-          required
-          className="mt-1 block w-full rounded-md border-[#c4bab3] shadow-sm focus:border-[#741717] focus:ring-[#741717] sm:text-sm"
-        />
-      </div>
-      <motion.button
-        type="submit"
-        disabled={isSubmitting}
-        className="relative inline-flex items-center justify-center rounded-md bg-[#741717] px-6 py-3 text-sm font-medium text-white transition-all duration-300 hover:bg-[#603a30] disabled:opacity-70"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        {isSubmitting ? "Отправка..." : "Отправить"}
-      </motion.button>
-    </form>
+    <motion.div variants={containerVariants} initial="hidden" animate="visible">
+      <Card className="border-[#c4bab3]/20">
+        <CardHeader>
+          <CardTitle className="text-[#603a30]">{title}</CardTitle>
+          <CardDescription>{description}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form action={formAction} className="space-y-6">
+            <motion.div variants={itemVariants} className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="name">Имя *</Label>
+                <Input
+                  id="name"
+                  name="name"
+                  placeholder="Ваше имя"
+                  required
+                  className="border-[#c4bab3]/30 focus:border-[#741717]"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="phone">Телефон *</Label>
+                <Input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  placeholder="+7 (___) ___-__-__"
+                  required
+                  className="border-[#c4bab3]/30 focus:border-[#741717]"
+                />
+              </div>
+            </motion.div>
+
+            <motion.div variants={itemVariants} className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="your@email.com"
+                className="border-[#c4bab3]/30 focus:border-[#741717]"
+              />
+            </motion.div>
+
+            <motion.div variants={itemVariants} className="space-y-2">
+              <Label htmlFor="subject">Тема обращения</Label>
+              <Select name="subject" defaultValue={subject}>
+                <SelectTrigger className="border-[#c4bab3]/30 focus:border-[#741717]">
+                  <SelectValue placeholder="Выберите тему" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="consultation">Консультация</SelectItem>
+                  <SelectItem value="criminal">Уголовное право</SelectItem>
+                  <SelectItem value="military">Военное право</SelectItem>
+                  <SelectItem value="realestate">Недвижимость</SelectItem>
+                  <SelectItem value="inheritance">Наследственное право</SelectItem>
+                  <SelectItem value="land">Земельное право</SelectItem>
+                  <SelectItem value="consumer">Защита прав потребителей</SelectItem>
+                  <SelectItem value="arbitration">Арбитражные споры</SelectItem>
+                  <SelectItem value="medical">Медицинское право</SelectItem>
+                  <SelectItem value="other">Другое</SelectItem>
+                </SelectContent>
+              </Select>
+            </motion.div>
+
+            <motion.div variants={itemVariants} className="space-y-2">
+              <Label htmlFor="message">Сообщение *</Label>
+              <Textarea
+                id="message"
+                name="message"
+                placeholder="Опишите вашу ситуацию или вопрос..."
+                rows={5}
+                required
+                className="border-[#c4bab3]/30 focus:border-[#741717]"
+              />
+            </motion.div>
+
+            <FormStatus state={state} />
+
+            <motion.div variants={itemVariants}>
+              <Button type="submit" disabled={isPending} className="w-full bg-[#741717] hover:bg-[#8B0000] text-white">
+                {isPending ? "Отправка..." : "Отправить сообщение"}
+              </Button>
+            </motion.div>
+
+            <motion.p variants={itemVariants} className="text-sm text-gray-600">
+              * Обязательные поля. Нажимая кнопку, вы соглашаетесь с{" "}
+              <a href="/privacy" className="text-[#741717] hover:underline">
+                политикой конфиденциальности
+              </a>
+            </motion.p>
+          </form>
+        </CardContent>
+      </Card>
+    </motion.div>
   )
 }

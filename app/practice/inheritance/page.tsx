@@ -2,7 +2,6 @@ import type { Metadata } from "next"
 import { Award, FileText, Scale, Users, BookOpen } from "lucide-react"
 import { DetailedPracticePage } from "@/components/detailed-practice-page"
 
-// Обновить метаданные для страницы "Наследственное право"
 export const metadata: Metadata = {
   title: "Наследственный юрист СПб | Оспаривание завещаний | Довбешко С.Ю.",
   description:
@@ -20,6 +19,7 @@ export const metadata: Metadata = {
 export default function InheritancePage() {
   return (
     <DetailedPracticePage
+      area="inheritance"
       title="Наследственное право"
       description="Комплексная юридическая помощь в вопросах наследования"
       imageSrc="/inheritance-lawyer-consultation.png"
@@ -148,7 +148,6 @@ export default function InheritancePage() {
         { title: "Земельное право", href: "/practice/land" },
         { title: "Арбитражные споры", href: "/practice/arbitration" },
       ]}
-      area="inheritance"
     />
   )
 }

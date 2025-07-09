@@ -1,408 +1,250 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { z } from "zod"
-import { format } from "date-fns"
-import { ru } from "date-fns/locale"
-import { CalendarIcon, Clock, FileText, Mail, Phone, User } from "lucide-react"
+import { useActionState } from "react"
+import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { CalendarIcon, Clock, Phone, Mail, MapPin } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { bookAppointment } from "@/app/actions/appointment-actions"
-import { toast } from "@/components/ui/use-toast"
+import { format } from "date-fns"
+import { ru } from "date-fns/locale"
+import { submitAppointment } from "@/app/actions/appointment-actions"
+import { FormStatus } from "@/components/form-status"
 
-// Добавим улучшенную валидацию и обратную связь
-const formSchema = z.object({
-  name: z.string().min(2, { message: "Имя должно содержать не менее 2 символов" }),
-  email: z.string().email({ message: "Введите корректный email адрес" }),
-  phone: z
-    .string()
-    .min(6, { message: "Введите корректный номер телефона" })
-    .regex(/^[+]?[0-9]{1}[ ]?[(]?[0-9]{3}[)]?[ ]?[0-9]{3}[-]?[0-9]{2}[-]?[0-9]{2}$/, {
-      message: "Введите корректный российский номер телефона",
-    }),
-  date: z.date({
-    required_error: "Выберите дату консультации",
-  }),
-  time: z.string({
-    required_error: "Выберите время консультации",
-  }),
-  service: z.string({
-    required_error: "Выберите услугу",
-  }),
-  message: z.string().optional(),
-})
-
-const timeSlots = [
-  "09:00",
-  "09:30",
-  "10:00",
-  "10:30",
-  "11:00",
-  "11:30",
-  "12:00",
-  "12:30",
-  "13:00",
-  "13:30",
-  "14:00",
-  "14:30",
-  "15:00",
-  "15:30",
-  "16:00",
-  "16:30",
-  "17:00",
-  "17:30",
-]
-
-const services = [
-  { value: "criminal", label: "Уголовное право" },
-  { value: "military", label: "Военное право" },
-  { value: "land", label: "Земельное право" },
-  { value: "consumer", label: "Защита прав потребителей" },
-  { value: "realestate", label: "Сделки с недвижимостью" },
-  { value: "arbitration", label: "Арбитражное право" },
-  { value: "inheritance", label: "Наследство" },
-  { value: "unjust_enrichment", label: "Неосновательное обогащение" },
-  { value: "medical", label: "Медицинское право" },
-  { value: "consultation", label: "Общая консультация" },
-]
+const timeSlots = ["09:00", "10:00", "11:00", "12:00", "14:00", "15:00", "16:00", "17:00", "18:00"]
 
 export function BookingForm() {
-  const router = useRouter()
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [state, formAction, isPending] = useActionState(submitAppointment, null)
+  const [selectedDate, setSelectedDate] = useState<Date>()
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
-      message: "",
+  const containerVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        staggerChildren: 0.1,
+      },
     },
-  })
+  }
 
-  // Добавим улучшенную обратную связь при отправке формы
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsSubmitting(true)
-
-    try {
-      const formData = new FormData()
-      formData.append("name", values.name)
-      formData.append("email", values.email)
-      formData.append("phone", values.phone)
-      formData.append("date", values.date.toISOString())
-      formData.append("time", values.time)
-      formData.append("service", values.service)
-      if (values.message) formData.append("message", values.message)
-
-      const result = await bookAppointment(formData)
-
-      if (result.success) {
-        // Показываем уведомление об успешной отправке
-        toast({
-          title: "Запись создана",
-          description: "Ваша заявка на консультацию успешно отправлена",
-        })
-
-        // Redirect to confirmation page
-        router.push("/booking/confirmation")
-      } else {
-        // Handle validation errors
-        toast({
-          title: "Ошибка отправки",
-          description: "Пожалуйста, проверьте введенные данные и попробуйте снова",
-          variant: "destructive",
-        })
-
-        // Исправляем обработку ошибок сервера
-        if (result.errors) {
-          // Используем Object.entries для безопасного перебора ошибок
-          Object.entries(result.errors).forEach(([field, messages]) => {
-            if (messages && messages.length > 0) {
-              form.setError(field as any, {
-                type: "server",
-                message: messages[0],
-              })
-            }
-          })
-        }
-      }
-    } catch (error) {
-      console.error("Error submitting form:", error)
-      toast({
-        title: "Ошибка сервера",
-        description: "Произошла ошибка при отправке формы. Пожалуйста, попробуйте позже.",
-        variant: "destructive",
-      })
-    } finally {
-      setIsSubmitting(false)
-    }
+  const itemVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.4 },
+    },
   }
 
   return (
-    <div className="relative overflow-hidden rounded-lg border border-[#c4bab3]/20 bg-white p-6 shadow-lg">
-      {/* Декоративные элементы */}
-      <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-[#f8f5f2] blur-xl"></div>
-      <div className="absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-[#f8f5f2] blur-xl"></div>
+    <div className="min-h-screen bg-gradient-to-br from-[#f8f5f2] to-white py-12">
+      <div className="container mx-auto px-4">
+        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="mx-auto max-w-4xl">
+          <motion.div variants={itemVariants} className="mb-8 text-center">
+            <h1 className="mb-4 text-4xl font-bold text-[#603a30]">Записаться на консультацию</h1>
+            <p className="text-lg text-gray-600">
+              Выберите удобное время для встречи с адвокатом Довбешко Светланой Юрьевной
+            </p>
+          </motion.div>
 
-      <div className="relative">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6" aria-label="Форма записи на консультацию">
-            <div className="grid gap-6 sm:grid-cols-2">
-              <div>
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-[#603a30] flex items-center gap-2">
-                        <User className="h-4 w-4 text-[#741717]" aria-hidden="true" />
-                        <span>
-                          Имя{" "}
-                          <span aria-hidden="true" className="text-red-500">
-                            *
-                          </span>
-                          <span className="sr-only">(обязательное поле)</span>
-                        </span>
-                      </FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Input
-                            placeholder="Иван Иванов"
-                            {...field}
-                            className="border-[#c4bab3] transition-all duration-300 focus:border-[#741717] focus:ring-[#741717]"
-                            autoComplete="name"
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+          <div className="grid gap-8 lg:grid-cols-3">
+            {/* Contact Info */}
+            <motion.div variants={itemVariants} className="lg:col-span-1">
+              <Card className="border-[#c4bab3]/20">
+                <CardHeader>
+                  <CardTitle className="text-[#603a30]">Контактная информация</CardTitle>
+                  <CardDescription>Свяжитесь с нами удобным способом</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <Phone className="h-5 w-5 text-[#741717]" />
+                    <div>
+                      <p className="font-medium">Телефон</p>
+                      <p className="text-sm text-gray-600">+7 (931) 007-07-52</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Mail className="h-5 w-5 text-[#741717]" />
+                    <div>
+                      <p className="font-medium">Email</p>
+                      <p className="text-sm text-gray-600">S0070752@mail.ru</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <MapPin className="h-5 w-5 text-[#741717]" />
+                    <div>
+                      <p className="font-medium">Адрес</p>
+                      <p className="text-sm text-gray-600">Санкт-Петербург, Московский проспект 143</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Clock className="h-5 w-5 text-[#741717]" />
+                    <div>
+                      <p className="font-medium">Время работы</p>
+                      <p className="text-sm text-gray-600">Пн-Пт: 9:00-18:00</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
 
-              <div>
-                <FormField
-                  control={form.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-[#603a30] flex items-center gap-2">
-                        <Phone className="h-4 w-4 text-[#741717]" />
-                        <span>
-                          Телефон <span className="text-red-500">*</span>
-                        </span>
-                      </FormLabel>
-                      <FormControl>
+            {/* Booking Form */}
+            <motion.div variants={itemVariants} className="lg:col-span-2">
+              <Card className="border-[#c4bab3]/20">
+                <CardHeader>
+                  <CardTitle className="text-[#603a30]">Форма записи</CardTitle>
+                  <CardDescription>Заполните форму, и мы свяжемся с вами для подтверждения</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <form action={formAction} className="space-y-6">
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div className="space-y-2">
+                        <Label htmlFor="name">Имя *</Label>
                         <Input
-                          placeholder="+7 (XXX) XXX-XX-XX"
-                          {...field}
-                          className="border-[#c4bab3] transition-all duration-300 focus:border-[#741717] focus:ring-[#741717]"
-                          autoComplete="tel"
+                          id="name"
+                          name="name"
+                          placeholder="Ваше имя"
+                          required
+                          className="border-[#c4bab3]/30 focus:border-[#741717]"
                         />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="phone">Телефон *</Label>
+                        <Input
+                          id="phone"
+                          name="phone"
+                          type="tel"
+                          placeholder="+7 (___) ___-__-__"
+                          required
+                          className="border-[#c4bab3]/30 focus:border-[#741717]"
+                        />
+                      </div>
+                    </div>
 
-            <div>
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-[#603a30] flex items-center gap-2">
-                      <Mail className="h-4 w-4 text-[#741717]" />
-                      <span>
-                        Email <span className="text-red-500">*</span>
-                      </span>
-                    </FormLabel>
-                    <FormControl>
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email</Label>
                       <Input
-                        placeholder="example@mail.ru"
-                        {...field}
-                        className="border-[#c4bab3] transition-all duration-300 focus:border-[#741717] focus:ring-[#741717]"
-                        autoComplete="email"
+                        id="email"
+                        name="email"
+                        type="email"
+                        placeholder="your@email.com"
+                        className="border-[#c4bab3]/30 focus:border-[#741717]"
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+                    </div>
 
-            <div className="grid gap-6 sm:grid-cols-2">
-              <div>
-                <FormField
-                  control={form.control}
-                  name="date"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel className="text-[#603a30] flex items-center gap-2">
-                        <CalendarIcon className="h-4 w-4 text-[#741717]" />
-                        <span>
-                          Дата <span className="text-red-500">*</span>
-                        </span>
-                      </FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div className="space-y-2">
+                        <Label>Дата консультации *</Label>
+                        <Popover>
+                          <PopoverTrigger asChild>
                             <Button
-                              variant={"outline"}
+                              variant="outline"
                               className={cn(
-                                "border-[#c4bab3] pl-3 text-left font-normal transition-all duration-300 hover:border-[#741717]",
-                                !field.value && "text-muted-foreground",
+                                "w-full justify-start text-left font-normal border-[#c4bab3]/30",
+                                !selectedDate && "text-muted-foreground",
                               )}
                             >
-                              {field.value ? format(field.value, "PPP", { locale: ru }) : <span>Выберите дату</span>}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              <CalendarIcon className="mr-2 h-4 w-4" />
+                              {selectedDate ? format(selectedDate, "PPP", { locale: ru }) : <span>Выберите дату</span>}
                             </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            disabled={(date) => {
-                              // Disable past dates and weekends
-                              const today = new Date()
-                              today.setHours(0, 0, 0, 0)
-                              const day = date.getDay()
-                              return date < today || day === 0 || day === 6
-                            }}
-                            initialFocus
-                            aria-label="Выберите дату консультации"
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={selectedDate}
+                              onSelect={setSelectedDate}
+                              disabled={(date) => date < new Date() || date.getDay() === 0 || date.getDay() === 6}
+                              initialFocus
+                              locale={ru}
+                            />
+                          </PopoverContent>
+                        </Popover>
+                        <input
+                          type="hidden"
+                          name="date"
+                          value={selectedDate ? format(selectedDate, "yyyy-MM-dd") : ""}
+                        />
+                      </div>
 
-              <div>
-                <FormField
-                  control={form.control}
-                  name="time"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-[#603a30] flex items-center gap-2">
-                        <Clock className="h-4 w-4 text-[#741717]" />
-                        <span>
-                          Время <span className="text-red-500">*</span>
-                        </span>
-                      </FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger className="border-[#c4bab3] transition-all duration-300 hover:border-[#741717]">
+                      <div className="space-y-2">
+                        <Label htmlFor="time">Время *</Label>
+                        <Select name="time" required>
+                          <SelectTrigger className="border-[#c4bab3]/30 focus:border-[#741717]">
                             <SelectValue placeholder="Выберите время" />
                           </SelectTrigger>
-                        </FormControl>
+                          <SelectContent>
+                            {timeSlots.map((time) => (
+                              <SelectItem key={time} value={time}>
+                                {time}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="subject">Тема консультации</Label>
+                      <Select name="subject">
+                        <SelectTrigger className="border-[#c4bab3]/30 focus:border-[#741717]">
+                          <SelectValue placeholder="Выберите область права" />
+                        </SelectTrigger>
                         <SelectContent>
-                          {timeSlots.map((time) => (
-                            <SelectItem key={time} value={time}>
-                              {time}
-                            </SelectItem>
-                          ))}
+                          <SelectItem value="criminal">Уголовное право</SelectItem>
+                          <SelectItem value="military">Военное право</SelectItem>
+                          <SelectItem value="realestate">Недвижимость</SelectItem>
+                          <SelectItem value="inheritance">Наследственное право</SelectItem>
+                          <SelectItem value="land">Земельное право</SelectItem>
+                          <SelectItem value="consumer">Защита прав потребителей</SelectItem>
+                          <SelectItem value="arbitration">Арбитражные споры</SelectItem>
+                          <SelectItem value="medical">Медицинское право</SelectItem>
+                          <SelectItem value="other">Другое</SelectItem>
                         </SelectContent>
                       </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
+                    </div>
 
-            <div>
-              <FormField
-                control={form.control}
-                name="service"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-[#603a30] flex items-center gap-2">
-                      <FileText className="h-4 w-4 text-[#741717]" />
-                      <span>
-                        Услуга <span className="text-red-500">*</span>
-                      </span>
-                    </FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="border-[#c4bab3] transition-all duration-300 hover:border-[#741717]">
-                          <SelectValue placeholder="Выберите услугу" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {services.map((service) => (
-                          <SelectItem key={service.value} value={service.value}>
-                            {service.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div>
-              <FormField
-                control={form.control}
-                name="message"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-[#603a30] flex items-center gap-2">
-                      <FileText className="h-4 w-4 text-[#741717]" />
-                      <span>Сообщение (необязательно)</span>
-                    </FormLabel>
-                    <FormControl>
+                    <div className="space-y-2">
+                      <Label htmlFor="message">Описание вопроса</Label>
                       <Textarea
-                        placeholder="Опишите кратко вашу ситуацию или вопрос"
-                        className="min-h-[120px] border-[#c4bab3] transition-all duration-300 focus:border-[#741717] focus:ring-[#741717]"
-                        {...field}
+                        id="message"
+                        name="message"
+                        placeholder="Кратко опишите вашу ситуацию..."
+                        rows={4}
+                        className="border-[#c4bab3]/30 focus:border-[#741717]"
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+                    </div>
 
-            <div>
-              <Button
-                type="submit"
-                className="relative w-full bg-[#741717] text-white transition-all duration-300 hover:bg-[#603a30]"
-                disabled={isSubmitting}
-                aria-busy={isSubmitting}
-              >
-                <span className="relative z-10">{isSubmitting ? "Отправка..." : "Записаться на консультацию"}</span>
-                <span className="absolute inset-0 -z-0 bg-gradient-to-r from-[#8B0000] to-[#741717] opacity-0 transition-opacity duration-300 hover:opacity-100"></span>
-              </Button>
-            </div>
+                    <FormStatus state={state} />
 
-            <div>
-              <p className="text-xs text-[#603a30]">
-                * Отправляя форму, вы соглашаетесь с{" "}
-                <a href="/privacy" className="text-[#741717] hover:underline">
-                  политикой конфиденциальности
-                </a>
-              </p>
-            </div>
-          </form>
-        </Form>
+                    <Button
+                      type="submit"
+                      disabled={isPending}
+                      className="w-full bg-[#741717] hover:bg-[#8B0000] text-white"
+                    >
+                      {isPending ? "Отправка..." : "Записаться на консультацию"}
+                    </Button>
+
+                    <p className="text-sm text-gray-600">
+                      * Обязательные поля. Нажимая кнопку, вы соглашаетесь с{" "}
+                      <a href="/privacy" className="text-[#741717] hover:underline">
+                        политикой конфиденциальности
+                      </a>
+                    </p>
+                  </form>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+        </motion.div>
       </div>
     </div>
   )

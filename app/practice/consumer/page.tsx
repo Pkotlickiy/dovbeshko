@@ -2,7 +2,6 @@ import type { Metadata } from "next"
 import { Award, FileText, Scale, Users, ShoppingBag } from "lucide-react"
 import { DetailedPracticePage } from "@/components/detailed-practice-page"
 
-// Обновить метаданные для страницы "Защита прав потребителей"
 export const metadata: Metadata = {
   title: "Юрист по защите прав потребителей СПб | Возврат денег | Претензии",
   description:
@@ -20,6 +19,7 @@ export const metadata: Metadata = {
 export default function ConsumerPage() {
   return (
     <DetailedPracticePage
+      area="consumer"
       title="Защита прав потребителей"
       description="Юридическая помощь при нарушении прав потребителей"
       imageSrc="/consumer-rights-lawyer.png"
@@ -152,7 +152,6 @@ export default function ConsumerPage() {
         { title: "Недвижимость", href: "/practice/realestate" },
         { title: "Арбитражные споры", href: "/practice/arbitration" },
       ]}
-      area="consumer"
     />
   )
 }

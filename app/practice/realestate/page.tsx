@@ -19,6 +19,7 @@ export const metadata: Metadata = {
 export default function RealEstateLawPage() {
   return (
     <DetailedPracticePage
+      area="realestate"
       title="Недвижимость"
       description="Юридическое сопровождение сделок с недвижимостью, защита прав собственников, решение споров о недвижимости."
       imageSrc="/placeholder-ngets.png"
@@ -156,7 +157,6 @@ export default function RealEstateLawPage() {
         { title: "Наследственное право", href: "/practice/inheritance" },
         { title: "Арбитражные споры", href: "/practice/arbitration" },
       ]}
-      area="realestate"
     />
   )
 }

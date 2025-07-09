@@ -1,9 +1,7 @@
 import type { Metadata } from "next"
 import { Award, FileText, Scale, Users, Briefcase } from "lucide-react"
 import { DetailedPracticePage } from "@/components/detailed-practice-page"
-import { CTAConsultation } from "@/components/cta-consultation"
 
-// Обновить метаданные для страницы "Арбитражные споры"
 export const metadata: Metadata = {
   title: "Арбитражный юрист СПб | Взыскание долгов | Договорные споры",
   description:
@@ -21,6 +19,7 @@ export const metadata: Metadata = {
 export default function ArbitrationPage() {
   return (
     <DetailedPracticePage
+      area="arbitration"
       title="Арбитражные споры"
       description="Профессиональное представительство в арбитражных судах"
       imageSrc="/placeholder-qss9i.png"
@@ -152,9 +151,6 @@ export default function ArbitrationPage() {
         { title: "Недвижимость", href: "/practice/realestate" },
         { title: "Земельное право", href: "/practice/land" },
       ]}
-      area="arbitration"
-    >
-      <CTAConsultation />
-    </DetailedPracticePage>
+    />
   )
 }
