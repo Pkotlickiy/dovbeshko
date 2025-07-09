@@ -1,66 +1,65 @@
 "use client"
 
 import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { ChevronDown } from "lucide-react"
-
-interface FAQItem {
-  question: string
-  answer: string
-}
+import { ChevronDown, ChevronUp } from "lucide-react"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import type { FAQ } from "@/types/faq"
 
 interface FAQAccordionProps {
-  items: FAQItem[]
+  items: FAQ[]
+  className?: string
 }
 
-export function FAQAccordion({ items }: FAQAccordionProps) {
-  const [activeIndex, setActiveIndex] = useState<number | null>(null)
+export function FAQAccordion({ items, className = "" }: FAQAccordionProps) {
+  const [openItems, setOpenItems] = useState<Set<number>>(new Set())
 
   const toggleItem = (index: number) => {
-    setActiveIndex(activeIndex === index ? null : index)
+    const newOpenItems = new Set(openItems)
+    if (newOpenItems.has(index)) {
+      newOpenItems.delete(index)
+    } else {
+      newOpenItems.add(index)
+    }
+    setOpenItems(newOpenItems)
+  }
+
+  if (!items || items.length === 0) {
+    return null
   }
 
   return (
-    <div className="space-y-4">
-      {items.map((item, index) => (
-        <motion.div
-          key={index}
-          className="border border-gray-200 rounded-lg overflow-hidden bg-white"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.5, delay: index * 0.1 }}
-        >
-          <button
-            className="flex justify-between items-center w-full p-4 text-left focus:outline-none"
-            onClick={() => toggleItem(index)}
-            aria-expanded={activeIndex === index}
-            aria-controls={`faq-answer-${index}`}
-          >
-            <span className="font-medium text-lg">{item.question}</span>
-            <motion.div animate={{ rotate: activeIndex === index ? 180 : 0 }} transition={{ duration: 0.3 }}>
-              <ChevronDown className="h-5 w-5 text-[#741717]" />
-            </motion.div>
-          </button>
-
-          <AnimatePresence>
-            {activeIndex === index && (
-              <motion.div
-                id={`faq-answer-${index}`}
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="overflow-hidden"
+    <div className={`space-y-4 ${className}`}>
+      {items.map((item, index) => {
+        const isOpen = openItems.has(index)
+        return (
+          <Card key={index} className="border border-gray-200">
+            <CardHeader className="pb-3">
+              <Button
+                variant="ghost"
+                className="w-full justify-between text-left p-0 h-auto font-semibold text-gray-900"
+                onClick={() => toggleItem(index)}
               >
-                <div className="p-4 pt-0 border-t border-gray-100">
-                  <p className="text-gray-600">{item.answer}</p>
-                </div>
-              </motion.div>
+                <span className="text-lg">{item.question}</span>
+                {isOpen ? (
+                  <ChevronUp className="h-5 w-5 text-gray-500 flex-shrink-0" />
+                ) : (
+                  <ChevronDown className="h-5 w-5 text-gray-500 flex-shrink-0" />
+                )}
+              </Button>
+            </CardHeader>
+            {isOpen && (
+              <CardContent className="pt-0">
+                <div className="text-gray-700 leading-relaxed whitespace-pre-line">{item.answer}</div>
+              </CardContent>
             )}
-          </AnimatePresence>
-        </motion.div>
-      ))}
+          </Card>
+        )
+      })}
     </div>
   )
 }
+
+// Export with different casing for compatibility
+export { FAQAccordion as FaqAccordion }
+export default FAQAccordion

@@ -1,11 +1,4 @@
-"use client"
-
-import Script from "next/script"
-
-interface FAQ {
-  question: string
-  answer: string
-}
+import type { FAQ } from "@/types/faq"
 
 interface YandexFAQSchemaProps {
   faqs: FAQ[]
@@ -17,7 +10,7 @@ export function YandexFAQSchema({ faqs, title = "Часто задаваемые
     return null
   }
 
-  const faqSchema = {
+  const structuredData = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     name: title,
@@ -32,18 +25,15 @@ export function YandexFAQSchema({ faqs, title = "Часто задаваемые
   }
 
   return (
-    <Script
-      id="yandex-faq-schema"
+    <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{
-        __html: JSON.stringify(faqSchema),
+        __html: JSON.stringify(structuredData),
       }}
     />
   )
 }
 
-// Экспорт по умолчанию для совместимости
+// Export with different casing for compatibility
+export { YandexFAQSchema as YandexFaqSchema }
 export default YandexFAQSchema
-
-// Именованный экспорт
-export { YandexFAQSchema as YandexFAQSchemaComponent }

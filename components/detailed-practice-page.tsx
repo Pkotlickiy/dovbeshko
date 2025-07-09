@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { motion } from "framer-motion"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -14,6 +13,7 @@ import { YandexFAQSchema } from "@/components/yandex-faq-schema"
 import { useIsMobile } from "@/hooks/use-mobile"
 import Link from "next/link"
 import Image from "next/image"
+import type { FAQ } from "@/types/faq"
 
 interface Service {
   title: string
@@ -25,11 +25,6 @@ interface ProcessStep {
   title: string
   description: string
   icon?: React.ReactNode
-}
-
-interface FAQ {
-  question: string
-  answer: string
 }
 
 interface CaseExample {
@@ -57,9 +52,9 @@ interface DetailedPracticePageProps {
   imageAlt?: string
   breadcrumbs?: Breadcrumb[]
   overview: string
-  services: Service[]
-  process: ProcessStep[]
-  faqs: FAQ[]
+  services?: Service[]
+  process?: ProcessStep[]
+  faqs?: FAQ[]
   cases?: CaseExample[]
   relatedAreas?: RelatedArea[]
 }
@@ -120,7 +115,7 @@ export function DetailedPracticePage({
 
   return (
     <>
-      <YandexFAQSchema faqs={faqs} title={`Часто задаваемые вопросы - ${title}`} />
+      {faqs && faqs.length > 0 && <YandexFAQSchema faqs={faqs} title={`Часто задаваемые вопросы - ${title}`} />}
 
       <div className="min-h-screen bg-gradient-to-br from-white to-[#f8f5f2]">
         {/* Hero Section */}
@@ -179,7 +174,7 @@ export function DetailedPracticePage({
           )}
 
           {/* Services Section */}
-          {services.length > 0 && (
+          {services && services.length > 0 && (
             <motion.section variants={itemVariants} className="mb-16">
               <div className="mb-8 text-center">
                 <h2 className="mb-4 text-3xl font-bold text-[#603a30]">Наши услуги</h2>
@@ -212,7 +207,7 @@ export function DetailedPracticePage({
           )}
 
           {/* Process Section */}
-          {process.length > 0 && (
+          {process && process.length > 0 && (
             <motion.section variants={itemVariants} className="mb-16">
               <div className="mb-8 text-center">
                 <h2 className="mb-4 text-3xl font-bold text-[#603a30]">Как мы работаем</h2>
@@ -249,7 +244,7 @@ export function DetailedPracticePage({
           )}
 
           {/* FAQ Section */}
-          {faqs.length > 0 && (
+          {faqs && faqs.length > 0 && (
             <motion.section variants={itemVariants} className="mb-16">
               <div className="mb-8 text-center">
                 <h2 className="mb-4 text-3xl font-bold text-[#603a30]">Часто задаваемые вопросы</h2>
@@ -277,7 +272,7 @@ export function DetailedPracticePage({
           )}
 
           {/* Case Examples Section */}
-          {cases.length > 0 && (
+          {cases && cases.length > 0 && (
             <motion.section variants={itemVariants} className="mb-16">
               <div className="mb-8 text-center">
                 <h2 className="mb-4 text-3xl font-bold text-[#603a30]">Примеры дел</h2>
@@ -320,7 +315,7 @@ export function DetailedPracticePage({
           )}
 
           {/* Related Areas Section */}
-          {relatedAreas.length > 0 && (
+          {relatedAreas && relatedAreas.length > 0 && (
             <motion.section variants={itemVariants} className="mb-16">
               <div className="mb-8 text-center">
                 <h2 className="mb-4 text-3xl font-bold text-[#603a30]">Смежные области</h2>
@@ -366,3 +361,5 @@ export function DetailedPracticePage({
     </>
   )
 }
+
+export default DetailedPracticePage

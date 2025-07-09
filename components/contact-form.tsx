@@ -1,144 +1,124 @@
 "use client"
 
 import { useActionState } from "react"
-import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { submitContact } from "@/app/actions/contact-actions"
+import { Mail, Phone, User, MessageSquare } from "lucide-react"
+import { submitContactForm } from "@/app/actions/contact-actions"
 import { FormStatus } from "@/components/form-status"
 
 interface ContactFormProps {
   subject?: string
-  title?: string
-  description?: string
+  className?: string
 }
 
-export function ContactForm({
-  subject = "",
-  title = "Связаться с нами",
-  description = "Заполните форму, и мы свяжемся с вами в ближайшее время",
-}: ContactFormProps) {
-  const [state, formAction, isPending] = useActionState(submitContact, null)
-
-  const containerVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        staggerChildren: 0.1,
-      },
-    },
-  }
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.4 },
-    },
-  }
+export function ContactForm({ subject = "", className = "" }: ContactFormProps) {
+  const [state, formAction, isPending] = useActionState(submitContactForm, null)
 
   return (
-    <motion.div variants={containerVariants} initial="hidden" animate="visible">
-      <Card className="border-[#c4bab3]/20">
-        <CardHeader>
-          <CardTitle className="text-[#603a30]">{title}</CardTitle>
-          <CardDescription>{description}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form action={formAction} className="space-y-6">
-            <motion.div variants={itemVariants} className="grid gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="name">Имя *</Label>
-                <Input
-                  id="name"
-                  name="name"
-                  placeholder="Ваше имя"
-                  required
-                  className="border-[#c4bab3]/30 focus:border-[#741717]"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="phone">Телефон *</Label>
-                <Input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  placeholder="+7 (___) ___-__-__"
-                  required
-                  className="border-[#c4bab3]/30 focus:border-[#741717]"
-                />
-              </div>
-            </motion.div>
+    <Card className={`w-full max-w-2xl mx-auto ${className}`}>
+      <CardHeader className="text-center">
+        <CardTitle className="flex items-center justify-center gap-2 text-2xl">
+          <Mail className="h-6 w-6 text-[#741717]" />
+          Связаться с нами
+        </CardTitle>
+        <CardDescription>Отправьте нам сообщение, и мы ответим в течение 24 часов</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form action={formAction} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="contact-name" className="flex items-center gap-2">
+                <User className="h-4 w-4" />
+                Имя *
+              </Label>
+              <Input id="contact-name" name="name" type="text" placeholder="Ваше имя" required className="w-full" />
+            </div>
 
-            <motion.div variants={itemVariants} className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+            <div className="space-y-2">
+              <Label htmlFor="contact-phone" className="flex items-center gap-2">
+                <Phone className="h-4 w-4" />
+                Телефон *
+              </Label>
               <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="your@email.com"
-                className="border-[#c4bab3]/30 focus:border-[#741717]"
-              />
-            </motion.div>
-
-            <motion.div variants={itemVariants} className="space-y-2">
-              <Label htmlFor="subject">Тема обращения</Label>
-              <Select name="subject" defaultValue={subject}>
-                <SelectTrigger className="border-[#c4bab3]/30 focus:border-[#741717]">
-                  <SelectValue placeholder="Выберите тему" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="consultation">Консультация</SelectItem>
-                  <SelectItem value="criminal">Уголовное право</SelectItem>
-                  <SelectItem value="military">Военное право</SelectItem>
-                  <SelectItem value="realestate">Недвижимость</SelectItem>
-                  <SelectItem value="inheritance">Наследственное право</SelectItem>
-                  <SelectItem value="land">Земельное право</SelectItem>
-                  <SelectItem value="consumer">Защита прав потребителей</SelectItem>
-                  <SelectItem value="arbitration">Арбитражные споры</SelectItem>
-                  <SelectItem value="medical">Медицинское право</SelectItem>
-                  <SelectItem value="other">Другое</SelectItem>
-                </SelectContent>
-              </Select>
-            </motion.div>
-
-            <motion.div variants={itemVariants} className="space-y-2">
-              <Label htmlFor="message">Сообщение *</Label>
-              <Textarea
-                id="message"
-                name="message"
-                placeholder="Опишите вашу ситуацию или вопрос..."
-                rows={5}
+                id="contact-phone"
+                name="phone"
+                type="tel"
+                placeholder="+7 (___) ___-__-__"
                 required
-                className="border-[#c4bab3]/30 focus:border-[#741717]"
+                className="w-full"
               />
-            </motion.div>
+            </div>
+          </div>
 
-            <FormStatus state={state} />
+          <div className="space-y-2">
+            <Label htmlFor="contact-email" className="flex items-center gap-2">
+              <Mail className="h-4 w-4" />
+              Email *
+            </Label>
+            <Input
+              id="contact-email"
+              name="email"
+              type="email"
+              placeholder="your@email.com"
+              required
+              className="w-full"
+            />
+          </div>
 
-            <motion.div variants={itemVariants}>
-              <Button type="submit" disabled={isPending} className="w-full bg-[#741717] hover:bg-[#8B0000] text-white">
-                {isPending ? "Отправка..." : "Отправить сообщение"}
-              </Button>
-            </motion.div>
+          <div className="space-y-2">
+            <Label htmlFor="contact-subject" className="flex items-center gap-2">
+              <MessageSquare className="h-4 w-4" />
+              Тема обращения
+            </Label>
+            <Input
+              id="contact-subject"
+              name="subject"
+              type="text"
+              placeholder="Тема вашего обращения"
+              defaultValue={subject}
+              className="w-full"
+            />
+          </div>
 
-            <motion.p variants={itemVariants} className="text-sm text-gray-600">
-              * Обязательные поля. Нажимая кнопку, вы соглашаетесь с{" "}
-              <a href="/privacy" className="text-[#741717] hover:underline">
-                политикой конфиденциальности
-              </a>
-            </motion.p>
-          </form>
-        </CardContent>
-      </Card>
-    </motion.div>
+          <div className="space-y-2">
+            <Label htmlFor="contact-message" className="flex items-center gap-2">
+              <MessageSquare className="h-4 w-4" />
+              Сообщение *
+            </Label>
+            <Textarea
+              id="contact-message"
+              name="message"
+              placeholder="Опишите ваш вопрос или ситуацию..."
+              rows={6}
+              required
+              className="w-full"
+            />
+          </div>
+
+          <div className="text-sm text-gray-600 bg-gray-50 p-4 rounded-lg">
+            <p className="mb-2">
+              <strong>Конфиденциальность:</strong> Вся информация строго конфиденциальна.
+            </p>
+            <ul className="list-disc list-inside space-y-1">
+              <li>Ответ в течение 24 часов</li>
+              <li>Бесплатная первичная консультация по телефону</li>
+              <li>Соблюдение адвокатской тайны</li>
+            </ul>
+          </div>
+
+          <FormStatus state={state} />
+
+          <Button type="submit" className="w-full bg-[#741717] hover:bg-[#5a1212]" size="lg" disabled={isPending}>
+            {isPending ? "Отправка..." : "Отправить сообщение"}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
   )
 }
+
+export default ContactForm
