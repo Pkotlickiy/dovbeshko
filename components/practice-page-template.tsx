@@ -242,7 +242,7 @@ export function PracticePageTemplate({
           <AnimatedSection className="py-16 px-4">
             <div className="max-w-5xl mx-auto">
               <h2 className="text-3xl md:text-4xl font-playfair font-bold mb-12 text-center text-[#741717]">
-                Наши преимущества
+                Мои преимущества
               </h2>
 
               <div className="bg-white rounded-lg shadow-md p-6 border border-gray-100">
@@ -260,7 +260,7 @@ export function PracticePageTemplate({
           <AnimatedSection className="py-16 px-4 bg-[#f8f5f2]">
             <div className="max-w-5xl mx-auto">
               <h2 className="text-3xl md:text-4xl font-playfair font-bold mb-12 text-center text-[#741717]">
-                Как мы работаем
+                Как я работаю
               </h2>
 
               <ProcessTimeline steps={processStepsWithIcons} />
