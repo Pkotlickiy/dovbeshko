@@ -1,331 +1,356 @@
-import type { ReactNode } from "react"
-import type { Metadata } from "next"
-import { PracticeHero } from "@/components/practice-hero"
-import { AnimatedSection } from "@/components/animated-section"
+"use client"
+
+import type React from "react"
+
+import { motion } from "framer-motion"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
+import { FaqAccordion } from "@/components/faq-accordion"
 import { ProcessTimeline } from "@/components/process-timeline"
-import { AnimatedStats } from "@/components/animated-stats"
-import { FAQAccordion } from "@/components/faq-accordion"
-import { CTAConsultation } from "@/components/cta-consultation"
-import { PageDivider } from "@/components/page-divider"
-import { FormattedList } from "@/components/formatted-list"
-import { CaseCard } from "@/components/case-card"
-import { PracticeIcon } from "@/components/practice-icon"
-import { Contact as ContactForm } from "@/components/contact"
-import {
-  FileText,
-  Shield,
-  Briefcase,
-  Home,
-  Heart,
-  File,
-  Coins,
-  CheckCircle,
-  AlertTriangle,
-  Clock,
-  Award,
-  Users,
-  Gavel,
-  Scale,
-  Building,
-  Key,
-  Landmark,
-  ScrollText,
-} from "lucide-react"
-
-interface ProcessStep {
-  title: string
-  description: string
-}
-
-interface Stat {
-  value: number | string
-  label: string
-  suffix?: string
-}
-
-interface FAQItem {
-  question: string
-  answer: string
-}
-
-interface CaseExample {
-  title: string
-  description: string
-  result: string
-}
+import { CtaConsultation } from "@/components/cta-consultation"
+import { ScrollToTop } from "@/components/scroll-to-top"
+import { PracticeAreaSchema } from "@/components/practice-area-schema"
+import { BreadcrumbSchema } from "@/components/breadcrumb-schema"
+import { Breadcrumbs } from "@/components/breadcrumbs"
+import { Phone, Mail, CheckCircle, AlertTriangle, Award } from "lucide-react"
+import Link from "next/link"
+import Image from "next/image"
+import type { FAQ } from "@/types/faq"
 
 interface PracticePageTemplateProps {
   title: string
   description: string
-  metaDescription: string
-  content: string[]
+  imageSrc: string
+  imageAlt: string
   services: string[]
-  area:
-    | "criminal"
-    | "realestate"
-    | "land"
-    | "consumer"
-    | "arbitration"
-    | "inheritance"
-    | "medical"
-    | "unjust-enrichment"
-    | "military"
-  whenToContact?: string[]
-  advantages?: string[]
-  processSteps?: ProcessStep[]
-  stats?: Stat[]
-  faqs?: FAQItem[]
-  caseExamples?: CaseExample[]
-}
-
-export function generateMetadata({ title, metaDescription }: PracticePageTemplateProps): Metadata {
-  return {
-    title,
-    description: metaDescription,
-  }
+  process: Array<{
+    title: string
+    description: string
+    icon: React.ReactNode
+  }>
+  faqs: FAQ[]
+  practiceSlug: string
+  keyBenefits?: string[]
+  risks?: string[]
+  importantNotes?: string[]
 }
 
 export function PracticePageTemplate({
   title,
   description,
-  content,
+  imageSrc,
+  imageAlt,
   services,
-  area,
-  whenToContact = [],
-  advantages = [],
-  processSteps = [],
-  stats = [],
-  faqs = [],
-  caseExamples = [],
+  process,
+  faqs,
+  practiceSlug,
+  keyBenefits,
+  risks,
+  importantNotes,
 }: PracticePageTemplateProps) {
-  // Функция для получения иконки по имени
-  const getIcon = (iconName: string): ReactNode => {
-    const iconProps = { className: "h-6 w-6 text-white", strokeWidth: 2 }
-
-    switch (iconName.toLowerCase()) {
-      case "file-text":
-        return <FileText {...iconProps} />
-      case "shield":
-        return <Shield {...iconProps} />
-      case "briefcase":
-        return <Briefcase {...iconProps} />
-      case "home":
-        return <Home {...iconProps} />
-      case "heart":
-        return <Heart {...iconProps} />
-      case "file":
-        return <File {...iconProps} />
-      case "coins":
-        return <Coins {...iconProps} />
-      case "gavel":
-        return <Gavel {...iconProps} />
-      case "scale":
-        return <Scale {...iconProps} />
-      case "building":
-        return <Building {...iconProps} />
-      case "key":
-        return <Key {...iconProps} />
-      case "landmark":
-        return <Landmark {...iconProps} />
-      default:
-        return <FileText {...iconProps} />
-    }
-  }
-
-  // Функция для получения иконки для шага процесса
-  const getProcessIcon = (index: number): ReactNode => {
-    const iconProps = { className: "h-6 w-6 text-white", strokeWidth: 2 }
-
-    switch (index) {
-      case 0:
-        return <FileText {...iconProps} />
-      case 1:
-        return <CheckCircle {...iconProps} />
-      case 2:
-        return <Briefcase {...iconProps} />
-      case 3:
-        return <Award {...iconProps} />
-      case 4:
-        return <Users {...iconProps} />
-      default:
-        return <Clock {...iconProps} />
-    }
-  }
-
-  // Функция для получения тематической иконки для практики
-  const getPracticeIcon = (): ReactNode => {
-    const iconProps = { className: "w-full h-full text-[#741717]", strokeWidth: 1.5 }
-
-    switch (area) {
-      case "criminal":
-        return <Gavel {...iconProps} />
-      case "realestate":
-        return <Building {...iconProps} />
-      case "land":
-        return <Shield {...iconProps} />
-      case "consumer":
-        return <Briefcase {...iconProps} />
-      case "inheritance":
-        return <Heart {...iconProps} />
-      case "medical":
-        return <ScrollText {...iconProps} />
-      case "arbitration":
-        return <Coins {...iconProps} />
-      default:
-        return <FileText {...iconProps} />
-    }
-  }
-
-  // Добавляем иконки к шагам процесса
-  const processStepsWithIcons = processSteps.map((step, index) => ({
-    ...step,
-    icon: getProcessIcon(index),
-  }))
+  const breadcrumbItems = [
+    { label: "Главная", href: "/" },
+    { label: "Практика", href: "/practice" },
+    { label: title, href: `/practice/${practiceSlug}` },
+  ]
 
   return (
-    <main className="flex flex-col min-h-screen">
-      <PracticeHero title={title} description={description} />
+    <>
+      <BreadcrumbSchema items={breadcrumbItems} />
 
-      <AnimatedSection className="py-12 md:py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row gap-8 items-center">
-            <div className="flex justify-center md:w-1/3">
-              <div className="bg-gray-50 p-8 rounded-full shadow-md flex items-center justify-center">
-                <PracticeIcon area={area} size={96} />
-              </div>
+      <PracticeAreaSchema
+        name={title}
+        description={description}
+        url={`/practice/${practiceSlug}`}
+        practiceArea={title}
+        attorney={{
+          name: "Довбешко Светлана Юрьевна",
+          regNumber: "78/8409",
+          experience: "10+",
+        }}
+      />
+
+      <main className="pt-16">
+        {/* Hero Section */}
+        <section className="bg-gradient-to-r from-[#741717] to-[#8B0000] py-16 text-white">
+          <div className="container mx-auto px-4">
+            <div className="mx-auto max-w-4xl text-center">
+              <Breadcrumbs items={breadcrumbItems} className="mb-6 text-white/80" />
+
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="mb-6 text-4xl font-bold md:text-5xl"
+              >
+                {title}
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="mb-8 text-xl text-white/90"
+              >
+                {description}
+              </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                className="flex flex-col gap-4 sm:flex-row sm:justify-center"
+              >
+                <Button asChild size="lg" className="bg-white text-[#741717] hover:bg-gray-100">
+                  <Link href="/booking">
+                    <Phone className="mr-2 h-5 w-5" />
+                    Записаться на консультацию
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  size="lg"
+                  className="border-white text-white hover:bg-white hover:text-[#741717] bg-transparent"
+                >
+                  <Link href="/contacts">
+                    <Mail className="mr-2 h-5 w-5" />
+                    Связаться со мной
+                  </Link>
+                </Button>
+              </motion.div>
             </div>
-            <div className="md:w-2/3">
-              <h2 className="text-2xl md:text-3xl font-semibold mb-6 text-[#741717]">Описание практики</h2>
-              <div className="space-y-4">
-                {content.map((paragraph, index) => (
-                  <p key={index} className="text-gray-700">
-                    {paragraph}
-                  </p>
+          </div>
+        </section>
+
+        {/* Content Section */}
+        <section className="py-16">
+          <div className="container mx-auto px-4">
+            <div className="mx-auto max-w-6xl">
+              <div className="grid gap-12 lg:grid-cols-2">
+                {/* Services List */}
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <Card className="h-full">
+                    <CardHeader>
+                      <CardTitle className="text-2xl text-[#741717]">Мои услуги в данной области</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-3">
+                        {services.map((service, index) => (
+                          <motion.li
+                            key={index}
+                            initial={{ opacity: 0, x: -10 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.4, delay: index * 0.1 }}
+                            className="flex items-start gap-3"
+                          >
+                            <CheckCircle className="mt-1 h-5 w-5 flex-shrink-0 text-[#741717]" />
+                            <span className="text-gray-700">{service}</span>
+                          </motion.li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+
+                {/* Image */}
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6 }}
+                  className="flex items-center justify-center"
+                >
+                  <div className="relative h-96 w-full overflow-hidden rounded-lg shadow-lg">
+                    <Image
+                      src={imageSrc || "/placeholder.svg"}
+                      alt={imageAlt}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                    />
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* Key Benefits */}
+              {keyBenefits && keyBenefits.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6 }}
+                  className="mt-16"
+                >
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-2xl text-[#741717] text-center flex items-center justify-center gap-2">
+                        <Award className="h-6 w-6" />
+                        Ключевые преимущества
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid gap-4 md:grid-cols-2">
+                        {keyBenefits.map((benefit, index) => (
+                          <motion.div
+                            key={index}
+                            initial={{ opacity: 0, y: 10 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.4, delay: index * 0.1 }}
+                            className="flex items-start gap-3 p-4 rounded-lg bg-green-50 border border-green-200"
+                          >
+                            <CheckCircle className="mt-1 h-5 w-5 flex-shrink-0 text-green-600" />
+                            <span className="text-gray-700">{benefit}</span>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              )}
+
+              {/* Risks and Important Notes */}
+              {(risks && risks.length > 0) ||
+                (importantNotes && importantNotes.length > 0 && (
+                  <div className="mt-16 grid gap-8 md:grid-cols-2">
+                    {/* Risks */}
+                    {risks && risks.length > 0 && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6 }}
+                      >
+                        <Card>
+                          <CardHeader>
+                            <CardTitle className="text-xl text-[#741717] flex items-center gap-2">
+                              <AlertTriangle className="h-5 w-5 text-orange-500" />
+                              Возможные риски
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <ul className="space-y-3">
+                              {risks.map((risk, index) => (
+                                <motion.li
+                                  key={index}
+                                  initial={{ opacity: 0, x: -10 }}
+                                  whileInView={{ opacity: 1, x: 0 }}
+                                  viewport={{ once: true }}
+                                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                                  className="flex items-start gap-3 p-3 rounded-lg bg-orange-50 border border-orange-200"
+                                >
+                                  <AlertTriangle className="mt-1 h-4 w-4 flex-shrink-0 text-orange-500" />
+                                  <span className="text-gray-700 text-sm">{risk}</span>
+                                </motion.li>
+                              ))}
+                            </ul>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    )}
+
+                    {/* Important Notes */}
+                    {importantNotes && importantNotes.length > 0 && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6 }}
+                      >
+                        <Card>
+                          <CardHeader>
+                            <CardTitle className="text-xl text-[#741717] flex items-center gap-2">
+                              <CheckCircle className="h-5 w-5 text-blue-500" />
+                              Важно знать
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <ul className="space-y-3">
+                              {importantNotes.map((note, index) => (
+                                <motion.li
+                                  key={index}
+                                  initial={{ opacity: 0, x: -10 }}
+                                  whileInView={{ opacity: 1, x: 0 }}
+                                  viewport={{ once: true }}
+                                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                                  className="flex items-start gap-3 p-3 rounded-lg bg-blue-50 border border-blue-200"
+                                >
+                                  <CheckCircle className="mt-1 h-4 w-4 flex-shrink-0 text-blue-500" />
+                                  <span className="text-gray-700 text-sm">{note}</span>
+                                </motion.li>
+                              ))}
+                            </ul>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    )}
+                  </div>
                 ))}
-              </div>
             </div>
           </div>
-        </div>
-      </AnimatedSection>
+        </section>
 
-      <AnimatedSection className="py-12 md:py-16 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-center text-[#741717]">
-            Услуги в данной области
-          </h2>
-          <FormattedList items={services} />
-        </div>
-      </AnimatedSection>
+        <Separator />
 
-      {/* Когда обращаться */}
-      {whenToContact && whenToContact.length > 0 && (
-        <>
-          <PageDivider />
-          <AnimatedSection className="py-16 px-4 bg-[#f8f5f2]">
-            <div className="max-w-5xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-playfair font-bold mb-12 text-center text-[#741717]">
-                Когда обращаться к адвокату
-              </h2>
+        {/* Process Section */}
+        <section className="py-16 bg-gray-50">
+          <div className="container mx-auto px-4">
+            <div className="mx-auto max-w-4xl">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="mb-12 text-center"
+              >
+                <h2 className="mb-4 text-3xl font-bold text-[#741717]">Как я работаю</h2>
+                <p className="text-lg text-gray-600">Пошаговый процесс работы для достижения наилучшего результата</p>
+              </motion.div>
 
-              <div className="bg-white rounded-lg shadow-md p-6 border border-gray-100">
-                <FormattedList items={whenToContact} icon={<AlertTriangle className="h-5 w-5 text-[#741717]" />} />
-              </div>
+              <ProcessTimeline steps={process} />
             </div>
-          </AnimatedSection>
-        </>
-      )}
-
-      {/* Преимущества */}
-      {advantages && advantages.length > 0 && (
-        <>
-          <PageDivider />
-          <AnimatedSection className="py-16 px-4">
-            <div className="max-w-5xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-playfair font-bold mb-12 text-center text-[#741717]">
-                Мои преимущества
-              </h2>
-
-              <div className="bg-white rounded-lg shadow-md p-6 border border-gray-100">
-                <FormattedList items={advantages} icon={<CheckCircle className="h-5 w-5 text-[#741717]" />} />
-              </div>
-            </div>
-          </AnimatedSection>
-        </>
-      )}
-
-      {/* Процесс работы */}
-      {processSteps && processSteps.length > 0 && (
-        <>
-          <PageDivider />
-          <AnimatedSection className="py-16 px-4 bg-[#f8f5f2]">
-            <div className="max-w-5xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-playfair font-bold mb-12 text-center text-[#741717]">
-                Как я работаю
-              </h2>
-
-              <ProcessTimeline steps={processStepsWithIcons} />
-            </div>
-          </AnimatedSection>
-        </>
-      )}
-
-      {/* Примеры дел */}
-      {caseExamples && caseExamples.length > 0 && (
-        <>
-          <PageDivider />
-          <AnimatedSection className="py-16 px-4">
-            <div className="max-w-5xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-playfair font-bold mb-12 text-center text-[#741717]">
-                Примеры успешных дел
-              </h2>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {caseExamples.map((caseExample, index) => (
-                  <CaseCard
-                    key={index}
-                    title={caseExample.title}
-                    description={caseExample.description}
-                    result={caseExample.result}
-                    delay={index * 0.1}
-                  />
-                ))}
-              </div>
-            </div>
-          </AnimatedSection>
-        </>
-      )}
-
-      {/* Статистика */}
-      {stats && stats.length > 0 && <AnimatedStats stats={stats} />}
-
-      {/* FAQ */}
-      {faqs && faqs.length > 0 && (
-        <AnimatedSection className="py-16 px-4">
-          <div className="max-w-5xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-playfair font-bold mb-12 text-center text-[#741717]">
-              Часто задаваемые вопросы
-            </h2>
-
-            <FAQAccordion items={faqs} />
           </div>
-        </AnimatedSection>
-      )}
+        </section>
 
-      {/* Форма обратной связи */}
-      <AnimatedSection className="py-16 px-4 bg-white">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-playfair font-bold mb-12 text-center text-[#741717]">
-            Получить консультацию
-          </h2>
+        <Separator />
 
-          <div className="bg-white rounded-lg shadow-md p-6 border border-gray-100">
-            <ContactForm subject={`Консультация по практике: ${title}`} />
+        {/* FAQ Section */}
+        <section className="py-16">
+          <div className="container mx-auto px-4">
+            <div className="mx-auto max-w-4xl">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="mb-12 text-center"
+              >
+                <h2 className="mb-4 text-3xl font-bold text-[#741717]">Часто задаваемые вопросы</h2>
+                <p className="text-lg text-gray-600">Ответы на популярные вопросы по данной области права</p>
+              </motion.div>
+
+              <FaqAccordion faqs={faqs} />
+            </div>
           </div>
-        </div>
-      </AnimatedSection>
+        </section>
 
-      {/* CTA */}
-      <CTAConsultation />
-    </main>
+        {/* CTA Section */}
+        <CtaConsultation
+          title="Нужна помощь в данной области права?"
+          description="Свяжитесь со мной для получения персональной консультации по вашему вопросу"
+          buttonText="Записаться на консультацию"
+        />
+      </main>
+
+      <ScrollToTop />
+    </>
   )
 }

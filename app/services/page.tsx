@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import Link from "next/link"
 import { EnhancedServicesShowcase } from "@/components/enhanced-services-showcase"
 import { ScrollToTop } from "@/components/scroll-to-top"
 import { CtaConsultation } from "@/components/cta-consultation"
@@ -25,33 +24,30 @@ export default function ServicesPage() {
   return (
     <>
       <main className="pt-16">
-        <div className="container mx-auto px-4 py-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-[#741717] mb-6">Услуги адвоката</h1>
-          <p className="text-lg text-gray-700 mb-12 max-w-4xl">
-            Я предлагаю полный спектр юридических услуг для физических и юридических лиц. Мой 10+ летний опыт работы
-            позволяет эффективно решать правовые вопросы любой сложности. Выберите интересующую вас услугу, чтобы узнать
-            подробнее о моем подходе и условиях сотрудничества.
-          </p>
-
-          <EnhancedServicesShowcase />
-
-          <div className="mt-16 bg-[#f8f5f2] p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl font-bold text-[#741717] mb-4">Не нашли нужную услугу?</h2>
-            <p className="text-gray-700 mb-4">
-              Свяжитесь со мной для обсуждения вашей ситуации. Я предлагаю индивидуальный подход к каждому клиенту и
-              готова помочь с решением нестандартных правовых вопросов.
-            </p>
-            <Link
-              href="/contacts"
-              className="inline-block px-6 py-3 bg-[#741717] text-white font-medium rounded-md hover:bg-[#8c2020] transition-colors"
-            >
-              Связаться со мной
-            </Link>
+        {/* Hero Section */}
+        <section className="bg-gradient-to-r from-[#741717] to-[#8B0000] py-16 text-white">
+          <div className="container mx-auto px-4">
+            <div className="mx-auto max-w-4xl text-center">
+              <h1 className="mb-6 text-4xl font-bold md:text-5xl">Услуги адвоката</h1>
+              <p className="text-xl text-white/90 max-w-3xl mx-auto">
+                Предлагаю полный спектр юридических услуг для физических и юридических лиц. Мой 10+ летний опыт работы
+                позволяет эффективно решать правовые вопросы любой сложности.
+              </p>
+            </div>
           </div>
-        </div>
+        </section>
 
-        <CtaConsultation />
+        {/* Services Showcase */}
+        <EnhancedServicesShowcase />
+
+        {/* CTA Section */}
+        <CtaConsultation
+          title="Готовы получить профессиональную помощь?"
+          description="Свяжитесь со мной для получения персональной консультации по вашему вопросу"
+          buttonText="Записаться на консультацию"
+        />
       </main>
+
       <ScrollToTop />
       <WebsiteSchema />
       <YandexAttorneySchema
