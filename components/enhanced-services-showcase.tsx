@@ -17,10 +17,67 @@ interface Service {
 }
 
 interface EnhancedServicesShowcaseProps {
-  services: Service[]
+  services?: Service[]
 }
 
-export function EnhancedServicesShowcase({ services }: EnhancedServicesShowcaseProps) {
+const defaultServices: Service[] = [
+  {
+    title: "Консультации",
+    description: "Профессиональные юридические консультации по всем правовым вопросам",
+    features: [
+      "Первичная консультация 60 минут",
+      "Анализ документов и ситуации",
+      "Конкретный план действий",
+      "Оценка перспектив дела",
+    ],
+    href: "/services/consultations",
+    category: "Консультирование",
+    popular: true,
+  },
+  {
+    title: "Представительство в суде",
+    description: "Защита ваших интересов в судах всех инстанций",
+    features: [
+      "Подготовка процессуальных документов",
+      "Участие в судебных заседаниях",
+      "Защита интересов на всех стадиях",
+      "Обжалование судебных решений",
+    ],
+    href: "/services/court-representation",
+    category: "Судебная защита",
+  },
+  {
+    title: "Подготовка документов",
+    description: "Составление исков, жалоб, договоров и других юридических документов",
+    features: ["Исковые заявления и жалобы", "Договоры и соглашения", "Претензии и уведомления", "Правовые заключения"],
+    href: "/services/document-preparation",
+    category: "Документооборот",
+  },
+  {
+    title: "Досудебное урегулирование",
+    description: "Помощь в разрешении споров без обращения в суд",
+    features: ["Переговоры с контрагентами", "Составление претензий", "Медиация и арбитраж", "Мировые соглашения"],
+    href: "/services/pre-trial-settlement",
+    category: "Урегулирование",
+  },
+  {
+    title: "Правовой анализ",
+    description: "Анализ документов и правовых ситуаций с выработкой оптимальной стратегии",
+    features: ["Экспертиза документов", "Правовой аудит", "Оценка рисков", "Стратегическое планирование"],
+    href: "/services/legal-analysis",
+    category: "Аналитика",
+  },
+  {
+    title: "Абонентское обслуживание",
+    description: "Комплексное юридическое сопровождение на постоянной основе",
+    features: ["Постоянная правовая поддержка", "Приоритетное обслуживание", "Льготные тарифы", "Комплексный подход"],
+    href: "/services/subscription",
+    category: "Сопровождение",
+    popular: true,
+  },
+]
+
+export function EnhancedServicesShowcase({ services = defaultServices }: EnhancedServicesShowcaseProps) {
   return (
     <section className="py-16 bg-gradient-to-b from-white to-gray-50">
       <div className="container mx-auto px-4">
