@@ -29,11 +29,19 @@ interface BreadcrumbItem {
   href: string
 }
 
-interface ServicePageTemplateProps {
+interface Benefit {
   title: string
   description: string
-  imageSrc: string
-  imageAlt: string
+  icon: React.ReactNode
+}
+
+interface RelatedService {
+  title: string
+  href: string
+  description: string
+}
+
+interface ServicePageTemplateProps {
   breadcrumbs: BreadcrumbItem[]
   overview: string
   serviceDetails: ServiceDetails
@@ -43,18 +51,11 @@ interface ServicePageTemplateProps {
     icon: React.ReactNode
   }>
   faqs: FAQ[]
-  benefits?: string[]
-  relatedServices?: Array<{
-    title: string
-    href: string
-  }>
+  benefits?: Benefit[]
+  relatedServices?: RelatedService[]
 }
 
 export function ServicePageTemplate({
-  title,
-  description,
-  imageSrc,
-  imageAlt,
   breadcrumbs,
   overview,
   serviceDetails,
@@ -80,7 +81,7 @@ export function ServicePageTemplate({
                 transition={{ duration: 0.6 }}
                 className="mb-6 text-4xl font-bold md:text-5xl"
               >
-                {title}
+                {serviceDetails.title}
               </motion.h1>
 
               <motion.p
@@ -89,7 +90,7 @@ export function ServicePageTemplate({
                 transition={{ duration: 0.6, delay: 0.2 }}
                 className="mb-8 text-xl text-white/90"
               >
-                {description}
+                {serviceDetails.description}
               </motion.p>
 
               <motion.div
@@ -198,8 +199,8 @@ export function ServicePageTemplate({
                 >
                   <div className="relative h-96 w-full overflow-hidden rounded-lg shadow-lg">
                     <Image
-                      src={imageSrc || "/placeholder.svg"}
-                      alt={imageAlt}
+                      src="/confident-female-lawyer.png"
+                      alt="Профессиональная юридическая консультация"
                       fill
                       className="object-cover"
                       sizes="(max-width: 768px) 100vw, 50vw"
@@ -260,10 +261,20 @@ export function ServicePageTemplate({
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.4, delay: index * 0.1 }}
-                        className="flex items-start gap-3 p-4 rounded-lg bg-green-50 border border-green-200"
                       >
-                        <CheckCircle className="mt-1 h-5 w-5 flex-shrink-0 text-green-600" />
-                        <span className="text-gray-700">{benefit}</span>
+                        <Card className="h-full hover:shadow-lg transition-shadow">
+                          <CardContent className="p-6">
+                            <div className="flex items-start gap-4">
+                              <div className="flex-shrink-0 p-2 bg-[#741717]/10 rounded-lg text-[#741717]">
+                                {benefit.icon}
+                              </div>
+                              <div>
+                                <h3 className="text-lg font-semibold text-[#741717] mb-2">{benefit.title}</h3>
+                                <p className="text-gray-600">{benefit.description}</p>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
                       </motion.div>
                     ))}
                   </div>
@@ -323,7 +334,8 @@ export function ServicePageTemplate({
                       >
                         <Card className="h-full hover:shadow-lg transition-shadow">
                           <CardContent className="p-6 text-center">
-                            <h3 className="text-lg font-semibold text-[#741717] mb-4">{service.title}</h3>
+                            <h3 className="text-lg font-semibold text-[#741717] mb-2">{service.title}</h3>
+                            <p className="text-gray-600 mb-4 text-sm">{service.description}</p>
                             <Button asChild variant="outline" className="w-full bg-transparent">
                               <Link href={service.href}>Подробнее</Link>
                             </Button>
