@@ -2,7 +2,6 @@ import { ServicePageTemplate } from "@/components/service-page-template"
 import { FileText, MessageCircle, Clock, Scale, Phone } from "lucide-react"
 import type { Metadata } from "next"
 
-// Обновить метаданные для страницы "Юридические консультации"
 export const metadata: Metadata = {
   title: "Консультация юриста СПб | Первая бесплатно | Адвокат Довбешко",
   description:
@@ -17,17 +16,34 @@ export const metadata: Metadata = {
 }
 
 export default function ConsultationsPage() {
-  // Проверяем, что используются правильные пропсы:
-  // - services вместо benefits
-  const services = [
-    "Анализ правовой ситуации и оценка перспектив",
-    "Разъяснение применимых норм законодательства",
-    "Рекомендации по решению правовой проблемы",
-    "Определение оптимальной стратегии действий",
-    "Информация о необходимых процедурах и документах",
-    "Оценка юридических рисков",
-    "Ответы на конкретные правовые вопросы",
+  const breadcrumbs = [
+    { label: "Главная", href: "/" },
+    { label: "Услуги", href: "/services" },
+    { label: "Юридические консультации", href: "/services/consultations" },
   ]
+
+  const overview = `
+    Получите профессиональную юридическую консультацию для решения ваших правовых вопросов. 
+    Я предоставляю четкие рекомендации, основанные на актуальном законодательстве и многолетнем 
+    практическом опыте. Первичная консультация проводится бесплатно, что позволяет вам оценить 
+    перспективы сотрудничества без финансовых обязательств.
+  `
+
+  const serviceDetails = {
+    title: "Юридическая консультация",
+    description: "Профессиональная правовая помощь и консультирование по всем вопросам права",
+    price: "Первая консультация бесплатно",
+    duration: "60 минут",
+    includes: [
+      "Анализ правовой ситуации и оценка перспектив",
+      "Разъяснение применимых норм законодательства",
+      "Рекомендации по решению правовой проблемы",
+      "Определение оптимальной стратегии действий",
+      "Информация о необходимых процедурах и документах",
+      "Оценка юридических рисков",
+      "Ответы на конкретные правовые вопросы",
+    ],
+  }
 
   const process = [
     {
@@ -85,17 +101,43 @@ export default function ConsultationsPage() {
     },
   ]
 
+  const benefits = [
+    "Первая консультация абсолютно бесплатна",
+    "Возможность проведения онлайн-консультаций",
+    "Конфиденциальность и защита адвокатской тайной",
+    "Практический опыт в различных отраслях права",
+    "Четкие и понятные рекомендации",
+    "Индивидуальный подход к каждому клиенту",
+  ]
+
+  const relatedServices = [
+    {
+      title: "Правовой анализ документов",
+      href: "/services/legal-analysis",
+    },
+    {
+      title: "Подготовка документов",
+      href: "/services/document-preparation",
+    },
+    {
+      title: "Представительство в суде",
+      href: "/services/court-representation",
+    },
+  ]
+
   return (
     <ServicePageTemplate
       title="Юридические консультации"
       description="Получите профессиональную юридическую консультацию для решения ваших правовых вопросов. Четкие рекомендации, основанные на актуальном законодательстве и многолетнем практическом опыте."
       imageSrc="/confident-female-lawyer.png"
       imageAlt="Адвокат проводит консультацию"
-      services={services}
+      breadcrumbs={breadcrumbs}
+      overview={overview}
+      serviceDetails={serviceDetails}
       process={process}
       faqs={faqs}
-      serviceType="LegalService"
-      serviceSlug="consultations"
+      benefits={benefits}
+      relatedServices={relatedServices}
     />
   )
 }
