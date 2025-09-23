@@ -1,6 +1,8 @@
 import ConfirmationClientPage from "./ConfirmationClientPage"
 import type { Metadata } from "next"
 
+export const dynamic = "force-dynamic"
+
 export const metadata: Metadata = {
   title: "Запись подтверждена | Адвокат Довбешко С.Ю.",
   description:
