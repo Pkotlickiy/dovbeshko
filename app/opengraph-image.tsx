@@ -1,7 +1,6 @@
 import { createOgImage } from "../lib/opengraph-utils"
 import { siteConfig } from "../lib/seo"
 
-export const runtime = "edge"
 export const alt = siteConfig.name
 export const size = {
   width: 1200,

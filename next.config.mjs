@@ -9,6 +9,11 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  experimental: {
+    workerThreads: false,
+    cpus: 1,
+  },
+  output: 'standalone',
 }
 
 export default nextConfig

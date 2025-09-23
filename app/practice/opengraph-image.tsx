@@ -1,6 +1,5 @@
 import { createOgImage } from "../../lib/opengraph-utils"
 
-export const runtime = "edge"
 export const alt = "Практики адвоката"
 export const size = {
   width: 1200,

@@ -1,7 +1,6 @@
 import { ImageResponse } from "next/og"
 import { ogImageFactory } from "@/lib/og-image-factory"
 
-export const runtime = "edge"
 export const alt = "Юридическая помощь | Адвокат Довбешко С.Ю."
 export const size = {
   width: 1200,

@@ -1,6 +1,5 @@
 import { ogImageFactory } from "@/lib/og-image-factory"
 
-export const runtime = "edge"
 export const alt = "Контакты адвоката Довбешко С.Ю."
 export const size = {
   width: 1200,
